@@ -129,13 +129,14 @@ def show_task_definition():
 def update_ecs_task_definition():
     task_definition_string = json.dumps(generate_task_definition())
 
-    local(
+    response = local(
         'aws ecs register-task-definition' +
         '    --family ' + ECS_TASK_NAME +
         '    --cli-input-json \'' + task_definition_string + '\'' +
         AWS_CLI_STANDARD_OPTIONS,
         capture=True
     )
+    print response
 
 def create_or_update_ecs_service():
     # Create the service with no workers (0 desired count)
