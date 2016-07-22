@@ -96,7 +96,7 @@ def startCluster():
 	requestInfo = getAWSJsonOutput(cmd)
 	print 'Request in process. Wait until your machines are available in the cluster.'
 	print 'SpotFleetRequestId',requestInfo['SpotFleetRequestId']
-	with open('data/' + APP_NAME + '.SpotFleetRequestId','w') as fleetId:
+	with open('files/' + APP_NAME + '.SpotFleetRequestId','w') as fleetId:
 		fleetId.write(requestInfo['SpotFleetRequestId'])
 	
 	# Step 2: wait until instances in the cluster are available

@@ -1,9 +1,9 @@
 {
-  "_comment1": "Paths in this file are relative to the root of your S3 bucket"
+  "_comment1": "Paths in this file are relative to the root of your S3 bucket",
   "pipeline": "project/analysis.cppipe", 
   "data_file": "project/list_of_images.csv", 
   "output": "project/output/",
-  "_comment2": "The following groups are tasks, and each will be run in parallel"
+  "_comment2": "The following groups are tasks, and each will be run in parallel",
   "groups": [
     {"Well": "A01", "Site":1},
     {"Well": "A01", "Site":2},
