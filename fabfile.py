@@ -142,8 +142,7 @@ def create_or_update_ecs_service():
     info = local('aws ecs list-services', capture=True)
     data = json.loads(info)
     service = [srv for srv in data['serviceArns'] if srv.endswith(ECS_SERVICE_NAME)]
-    print service
-    if len(service) >= 0:
+    if len(service) > 0:
         print 'Service exists. Removing'
 	local('aws ecs delete-service --cluster ' + ECS_CLUSTER + 
 		  ' --service ' + ECS_SERVICE_NAME,
