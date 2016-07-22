@@ -119,8 +119,6 @@ def generate_task_definition():
 	    "value": str(SECONDS_TO_START)
 	}
     ]
-    print task_definition
-
     return task_definition
 
 

@@ -151,6 +151,10 @@ def monitor():
 		result = getAWSJsonOutput(cmd)
 	print 'Job done.'
 
+	# Step 4. Release other resources
+	# Remove SQS queue, ECS Task Definition, ECS Service
+
+
 #################################
 # MAIN USER INTERACTION 
 #################################
