@@ -68,6 +68,7 @@ def submitJob():
 	jobInfo = loadConfig(sys.argv[2])
 	templateMessage = {'pipeline': jobInfo["pipeline"],
 		'output': jobInfo["output"],
+            'input': jobInfo["input"],
 		'data_file': jobInfo["data_file"],
 		'Well': '', 'Site': ''
 	}

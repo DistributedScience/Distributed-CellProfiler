@@ -62,10 +62,10 @@ def runCellProfiler(message):
 	# Prepare paths and parameters
 	localOut = LOCAL_OUTPUT + '/%(Well)s-%(Site)s' % {'Well':message['Well'], 'Site':message['Site']}
 	replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
-			'DATA': DATA_ROOT, 'Well': message['Well'], 'Site': message['Site'] }
+			'DATA': DATA_ROOT, 'Well': message['Well'], 'Site': message['Site'], 'IN': message['input'] }
 	# Build and run CellProfiler command
 	cpDone = LOCAL_OUTPUT + '/cp.is.done'
-	cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -o %(OUT)s -d ' + cpDone
+	cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
 	cmd += ' --data-file=%(DATA)s/%(FL)s -g Metadata_Well=%(Well)s,Metadata_Site=%(Site)s'
 	cmd = cmd % replaceValues
 	print 'Running', cmd
