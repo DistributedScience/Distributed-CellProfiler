@@ -49,7 +49,7 @@ class JobQueue():
 
 def printAndSave(name, log, values):
 	print name.upper(),':',log
-	outFile = '%(OUT)s/%(Well)s_%(Site)s.std' + name
+	outFile = '%(OUT)s/%(Metadata)s.std' + name
 	outFile = outFile % values
 	with open(outFile, 'w') as output:
 		output.write(log)
@@ -60,7 +60,7 @@ def printAndSave(name, log, values):
 
 def runCellProfiler(message):
 	# Prepare paths and parameters
-	localOut = LOCAL_OUTPUT + '/%(Well)s-%(Site)s' % {'Well':message['Well'], 'Site':message['Site']}
+	localOut = LOCAL_OUTPUT + '/%(Metadata)s' % {'Metadata':message['Metadata']}
 	replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
 			'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'] }
 	# Build and run CellProfiler command
