@@ -70,7 +70,7 @@ def submitJob():
 		'output': jobInfo["output"],
             'input': jobInfo["input"],
 		'data_file': jobInfo["data_file"],
-		'Well': '', 'Site': ''
+		'Metadata': ''
 	}
 
 	# Step 2: Reach the queue and schedule tasks
@@ -78,8 +78,7 @@ def submitJob():
 	queue = JobQueue()
 	print 'Scheduling tasks'
 	for batch in jobInfo["groups"]:
-		templateMessage["Well"] = batch["Well"]
-		templateMessage["Site"] = batch["Site"]
+		templateMessage["Metadata"] = batch
 		queue.scheduleBatch(templateMessage)
 	print 'Job submitted. Check your queue'
 

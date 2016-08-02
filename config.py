@@ -3,7 +3,7 @@
 APP_NAME = 'DistributedCP'                # Used to generate derivative names unique to the application.
 
 # DOCKER REGISTRY INFORMATION:
-DOCKERHUB_TAG = 'jccaicedo/cellprofiler:cp4ecs'
+DOCKERHUB_TAG = 'bethcimini/cellprofiler:cp4ecs_2'
 
 # AWS GENERAL SETTINGS:
 AWS_REGION = 'us-east-1'
