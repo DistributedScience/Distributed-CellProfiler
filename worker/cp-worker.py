@@ -66,7 +66,7 @@ def runCellProfiler(message):
 	# Build and run CellProfiler command
 	cpDone = LOCAL_OUTPUT + '/cp.is.done'
 	cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
-	cmd += ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)sls '
+	cmd += ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
 	cmd = cmd % replaceValues
 	print 'Running', cmd
 	subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
