@@ -59,7 +59,9 @@ def printAndSave(name, log, values):
 #################################
 
 def runCellProfiler(message):
-	# Prepare paths and parameters
+    #List the directories in the bucket- this prevents a strange s3fs error
+    	os.system('ls '+DATA_ROOT+r'/projects')
+     # Prepare paths and parameters
 	localOut = LOCAL_OUTPUT + '/%(Metadata)s' % {'Metadata':message['Metadata']}
 	replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
 			'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'] }
