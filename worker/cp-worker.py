@@ -74,7 +74,7 @@ def runCellProfiler(message):
 	printAndSave('err', err, replaceValues)
 	# Get the outputs and move them to S3
 	if os.path.isfile(cpDone):
-		if len(glob.glob(localOut + '/*.*')) > 0:
+		if next(open(cpDone))=='Complete\n':
 			cmd = 'aws s3 mv ' + LOCAL_OUTPUT + ' s3://' + AWS_BUCKET + '/' + message['output'] + ' --recursive' 
 			subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out,err = subp.communicate()
@@ -86,7 +86,8 @@ def runCellProfiler(message):
 				print '== ERR',err
 				return 'OUTPUT_PROBLEM'
 		else:
-			print 'OUTPUT PROBLEM. No result from CP found in ' + localOut
+			print 'CP PROBLEM: Done file reports failure'
+                return 'CP_PROBLEM'
 	else:
 		print 'CP PROBLEM: Done file does not exist.'
 		return 'CP_PROBLEM'
