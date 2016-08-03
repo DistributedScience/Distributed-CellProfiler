@@ -66,7 +66,7 @@ def runCellProfiler(message):
 	# Build and run CellProfiler command
 	cpDone = LOCAL_OUTPUT + '/cp.is.done'
 	cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
-	cmd += ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
+	cmd += ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)sls '
 	cmd = cmd % replaceValues
 	print 'Running', cmd
 	subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -74,7 +74,7 @@ def runCellProfiler(message):
 	printAndSave('err', err, replaceValues)
 	# Get the outputs and move them to S3
 	if os.path.isfile(cpDone):
-		if len(glob.glob(localOut + '/*.csv')) > 0:
+		if len(glob.glob(localOut + '/*.*')) > 0:
 			cmd = 'aws s3 mv ' + LOCAL_OUTPUT + ' s3://' + AWS_BUCKET + '/' + message['output'] + ' --recursive' 
 			subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out,err = subp.communicate()
