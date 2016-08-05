@@ -4,5 +4,4 @@
 #
 # You need to install parallel to run this command.
 
-parallel echo '{\"Well\": \"{1}{2}\", \"Site\":{3}},' ::: `echo {A..P}`  ::: `seq -w 24` ::: `seq -w 9` | sort > batches.txt
-
+parallel echo '{Metadata_Plate={1},Metadata_Well={2}{3},Metadata_Site={4}},' :::  Plate1 Plate2  ::: `echo {A..P}`  ::: `seq -w 24` ::: `seq -w 9` | sort > batches.txt

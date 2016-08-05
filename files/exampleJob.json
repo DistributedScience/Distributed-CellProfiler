@@ -1,19 +1,13 @@
 {
   "_comment1": "Paths in this file are relative to the root of your S3 bucket",
-  "pipeline": "project/analysis.cppipe", 
-  "data_file": "project/list_of_images.csv", 
-  "output": "project/output/",
+  "pipeline": "projects/analysis.cppipe", 
+  "data_file": "projects/list_of_images.csv", 
+  "input": "projects/input/",
+  "output": "projects/output/",
   "_comment2": "The following groups are tasks, and each will be run in parallel",
   "groups": [
-    {"Well": "A01", "Site":1},
-    {"Well": "A01", "Site":2},
-    {"Well": "A01", "Site":3},
-    {"Well": "A01", "Site":4},
-    {"Well": "A01", "Site":5},
-    {"Well": "A01", "Site":6},
-    {"Well": "A01", "Site":7},
-    {"Well": "A01", "Site":8},
-    {"Well": "A01", "Site":9}
+    {"Metadata": "Metadata_Plate=Plate1,Metadata_Well=A01,Metadata_Site=1"},
+    {"Metadata": "Metadata_Plate=Plate1,Metadata_Well=A01,Metadata_Site=2"}
   ]
 }
 
