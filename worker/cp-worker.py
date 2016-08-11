@@ -89,7 +89,7 @@ def runCellProfiler(message):
 				return 'OUTPUT_PROBLEM'
 		else:
 			print 'CP PROBLEM: Done file reports failure'
-                return 'CP_PROBLEM'
+                	return 'CP_PROBLEM'
 	else:
 		print 'CP PROBLEM: Done file does not exist.'
 		return 'CP_PROBLEM'
