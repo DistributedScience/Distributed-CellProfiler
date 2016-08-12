@@ -33,8 +33,7 @@ AWS_CLI_STANDARD_OPTIONS = (
 )
 
 SSH_USER = 'ec2-user'
-WAIT_TIME = 5  # seconds to allow for eventual consistency to kick in.
-RETRIES = 5  # Number of retries before we give up on something.
+WAIT_TIME = 60  # seconds to allow for eventual consistency to kick in.
 
 # Templates and embedded scripts
 
@@ -56,6 +55,15 @@ TASK_DEFINITION = {
 	    "privileged": True
         }
     ]
+}
+
+SQS_DEFINITION = {
+    "DelaySeconds": "0",
+    "MaximumMessageSize": "262144",
+    "MessageRetentionPeriod": "345600",
+    "ReceiveMessageWaitTimeSeconds": "0",
+    "RedrivePolicy": "{\"deadLetterTargetArn\":\"" + SQS_DEAD_LETTER_QUEUE + "\",\"maxReceiveCount\":\"10\"}",
+    "VisibilityTimeout": str(SQS_MESSAGE_VISIBILITY)
 }
 
 # Functions
@@ -180,25 +188,21 @@ def get_queue_url():
 
 def get_or_create_queue():
     u = get_queue_url()
-    if u is None:
-        local(
-            'aws sqs create-queue' +
-            '    --queue-name ' + SQS_QUEUE_NAME + 
-	    '    --attributes VisibilityTimeout=' + str(SQS_MESSAGE_VISIBILITY) +
-            AWS_CLI_STANDARD_OPTIONS,
-            capture=True
-        )
+    if u is not None:
+	print 'Deleting existing queue.'
+        local('aws sqs delete-queue --queue-url ' + u)
+	print 'According to AWS documentation: "You must wait 60 seconds after deleting a queue before you can create another with the same name"'
+	time.sleep(WAIT_TIME)
+	print 'Attempting to create the new queue. If it fails, just give it another try later.'
+	time.sleep(5)
 
-        tries = 0
-        while True:
-            time.sleep(WAIT_TIME)
-            u = get_queue_url()
-
-            if u is not None and tries < RETRIES:
-                return u
-
-            tries += 1
-
+    local(
+        'aws sqs create-queue' +
+        '    --queue-name ' + SQS_QUEUE_NAME + 
+        '    --attributes \'' + json.dumps(SQS_DEFINITION) + '\'' +
+        AWS_CLI_STANDARD_OPTIONS,
+        capture=True
+    )
 
 # High level functions. Call these as "fab <function>"
 
