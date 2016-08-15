@@ -49,7 +49,7 @@ class JobQueue():
 
 def printAndSave(name, log, values):
 	print name.upper(),':',log
-	outFile = '%(OUT)s/%(Metadata)s.std' + name
+	outFile = '%(OUT)s/%(MetadataID)s.std' + name
 	outFile = outFile % values
 	with open(outFile, 'w') as output:
 		output.write(log)
@@ -61,10 +61,12 @@ def printAndSave(name, log, values):
 def runCellProfiler(message):
     #List the directories in the bucket- this prevents a strange s3fs error
     	os.system('ls '+DATA_ROOT+r'/projects')
-     # Prepare paths and parameters
-	localOut = LOCAL_OUTPUT + '/%(Metadata)s' % {'Metadata':message['Metadata']}
+        # Prepare paths and parameters
+        metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
+	localOut = LOCAL_OUTPUT + '/%(MetadataID)s' % {'MetadataID': metadataID}
 	replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
-			'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'] }
+			'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
+			'MetadataID':metadataID }
 	# Build and run CellProfiler command
 	cpDone = LOCAL_OUTPUT + '/cp.is.done'
 	cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
@@ -89,7 +91,7 @@ def runCellProfiler(message):
 				return 'OUTPUT_PROBLEM'
 		else:
 			print 'CP PROBLEM: Done file reports failure'
-                return 'CP_PROBLEM'
+                	return 'CP_PROBLEM'
 	else:
 		print 'CP PROBLEM: Done file does not exist.'
 		return 'CP_PROBLEM'
