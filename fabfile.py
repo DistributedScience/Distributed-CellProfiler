@@ -60,7 +60,7 @@ TASK_DEFINITION = {
 SQS_DEFINITION = {
     "DelaySeconds": "0",
     "MaximumMessageSize": "262144",
-    "MessageRetentionPeriod": "345600",
+    "MessageRetentionPeriod": "1209600",
     "ReceiveMessageWaitTimeSeconds": "0",
     "RedrivePolicy": "{\"deadLetterTargetArn\":\"" + SQS_DEAD_LETTER_QUEUE + "\",\"maxReceiveCount\":\"10\"}",
     "VisibilityTimeout": str(SQS_MESSAGE_VISIBILITY)
