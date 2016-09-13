@@ -1,6 +1,6 @@
 user = bethcimini
 project = cellprofiler
-tag = cp4ecs_2
+tag = cp4ecs_4
 
 .DEFAULT_GOAL: build
 build:
