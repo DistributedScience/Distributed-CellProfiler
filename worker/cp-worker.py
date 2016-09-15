@@ -80,7 +80,7 @@ def runCellProfiler(message):
 	# Get the outputs and move them to S3
 	if os.path.isfile(cpDone):
 		if next(open(cpDone))=='Complete\n':
-      time.sleep(30)
+                        time.sleep(30)
 			cmd = 'aws s3 mv ' + LOCAL_OUTPUT + ' s3://' + AWS_BUCKET + '/' + message['output'] + ' --recursive' 
 			subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			out,err = subp.communicate()
