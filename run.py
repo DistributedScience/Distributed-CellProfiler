@@ -103,9 +103,9 @@ def startCluster():
     print 'Request in process. Wait until your machines are available in the cluster.'
     print 'SpotFleetRequestId',requestInfo['SpotFleetRequestId']
     createMonitor=open('files/' + APP_NAME + '.SpotFleetRequestId','w')
-    createMonitor.write("MONITOR_FLEET_ID = '"+requestInfo['SpotFleetRequestId']+"'")
-    createMonitor.write("MONITOR_APP_NAME = '"+APP_NAME+"'")
-    createMonitor.write("MONITOR_ECS_CLUSTER = '"+ECS_CLUSTER+"'")
+    createMonitor.write("MONITOR_FLEET_ID = '"+requestInfo['SpotFleetRequestId']+"'\n")
+    createMonitor.write("MONITOR_APP_NAME = '"+APP_NAME+"'\n")
+    createMonitor.write("MONITOR_ECS_CLUSTER = '"+ECS_CLUSTER+"'\n")
     createMonitor.close()
     
     
