@@ -36,7 +36,7 @@ class JobQueue():
         if name==None:
             self.queue = self.sqs.get_queue_by_name(QueueName=SQS_QUEUE_NAME)
         else:
-            self.queue = self.sqs.get_queue_by_name(QueueName=name)
+            self.queue = self.sqs.get_queue_by_name(QueueName=name+'Queue')
         self.inProcess = -1 
         self.pending = -1
 
@@ -102,10 +102,10 @@ def startCluster():
     requestInfo = getAWSJsonOutput(cmd)
     print 'Request in process. Wait until your machines are available in the cluster.'
     print 'SpotFleetRequestId',requestInfo['SpotFleetRequestId']
-    createMonitor=open('files/' + APP_NAME + '.SpotFleetRequestId','w')
-    createMonitor.write("MONITOR_FLEET_ID = '"+requestInfo['SpotFleetRequestId']+"'")
-    createMonitor.write("MONITOR_APP_NAME = '"+APP_NAME+"'")
-    createMonitor.write("MONITOR_ECS_CLUSTER = '"+ECS_CLUSTER+"'")
+    createMonitor=open('files/' + APP_NAME + 'SpotFleetRequestId.json','w')
+    createMonitor.write('{"MONITOR_FLEET_ID" : "'+requestInfo['SpotFleetRequestId']+'",\n')
+    createMonitor.write('"MONITOR_APP_NAME" : "'+APP_NAME+'",\n')
+    createMonitor.write('"MONITOR_ECS_CLUSTER" : "'+ECS_CLUSTER+'"}\n')
     createMonitor.close()
     
     
@@ -127,7 +127,7 @@ def startCluster():
     subprocess.Popen(cmd.split())
 
     	# Step 4: update the ECS service to inject docker containers in EC2 instances
-    	print 'Updating service'
+    print 'Updating service'
     cmd = 'aws ecs update-service --cluster ' + ECS_CLUSTER + \
 	      ' --service ' + APP_NAME + 'Service' + \
 	      ' --desired-count ' + str(CLUSTER_MACHINES*TASKS_PER_MACHINE)
