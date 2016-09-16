@@ -9,7 +9,9 @@ FROM shntnu/cellprofiler:latest
 
 # Install S3FS 
 
-RUN apt-get -y install 		\
+RUN apt-get -y update           && \
+    apt-get -y upgrade          && \
+    apt-get -y install 		\
 	automake 		\
 	autotools-dev 		\
 	g++ 			\
