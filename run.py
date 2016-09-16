@@ -40,24 +40,24 @@ class JobQueue():
         self.inProcess = -1 
         self.pending = -1
 
-	def scheduleBatch(self, data):
-		msg = json.dumps(data)
-		response = self.queue.send_message(MessageBody=msg)
-		print 'Batch sent. Message ID:',response.get('MessageId')
+    def scheduleBatch(self, data):
+	msg = json.dumps(data)
+	response = self.queue.send_message(MessageBody=msg)
+	print 'Batch sent. Message ID:',response.get('MessageId')
 
-	def pendingLoad(self):
-		self.queue.load()
-		visible = int( self.queue.attributes['ApproximateNumberOfMessages'] )
-		nonVis = int( self.queue.attributes['ApproximateNumberOfMessagesNotVisible'] )
-		if visible != self.pending:
-			self.pending = visible
-			self.inProcess = nonVis
-			d = datetime.datetime.now()
-			print d,'In process:',nonVis,'Pending',visible
-		if visible + nonVis > 0:
-			return True
-		else:
-			return False
+    def pendingLoad(self):
+	self.queue.load()
+	visible = int( self.queue.attributes['ApproximateNumberOfMessages'] )
+	nonVis = int( self.queue.attributes['ApproximateNumberOfMessagesNotVisible'] )
+	if visible != self.pending:
+		self.pending = visible
+		self.inProcess = nonVis
+		d = datetime.datetime.now()
+		print d,'In process:',nonVis,'Pending',visible
+	if visible + nonVis > 0:
+		return True
+	else:
+		return False
 
 #################################
 # SERVICE 1: SUBMIT JOB
