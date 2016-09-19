@@ -7,6 +7,7 @@ import re
 import subprocess
 import sys 
 import time
+import watchtower
 
 #################################
 # CONSTANT PATHS IN THE CONTAINER
@@ -16,6 +17,7 @@ DATA_ROOT = '/home/ubuntu/bucket'
 LOCAL_OUTPUT = '/home/ubuntu/local_output'
 QUEUE_URL = os.environ['SQS_QUEUE_URL']
 AWS_BUCKET = os.environ['AWS_BUCKET']
+LOG_GROUP_NAME= os.environ['LOG_GROUP_NAME']
 
 #################################
 # CLASS TO HANDLE THE SQS QUEUE
@@ -48,12 +50,17 @@ class JobQueue():
 # AUXILIARY FUNCTIONS
 #################################
 
-def printAndSave(name, log, values):
-	print name.upper(),':',log
-	outFile = '%(OUT)s/%(MetadataID)s.std' + name
-	outFile = outFile % values
-	with open(outFile, 'w') as output:
-		output.write(log)
+
+def monitorAndLog(process,logger):
+    while True:
+        output= process.stdout.readline()
+        if output== '' and process.poll() is not None:
+            break
+        if output:
+            print output.strip()
+            logger.info(output)  
+
+
 
 #################################
 # RUN CELLPROFILER PROCESS
@@ -68,6 +75,11 @@ def runCellProfiler(message):
     replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
 			'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
 			'MetadataID':metadataID }
+
+    # Configure the logs
+    logger = logging.getLogger(__name__)
+    logger.addHandler(watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False))
+
     # Build and run CellProfiler command
     cpDone = LOCAL_OUTPUT + '/cp.is.done'
     if message['pipeline'][-3:]!='.h5':
@@ -77,16 +89,21 @@ def runCellProfiler(message):
         cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -o %(OUT)s -d ' + cpDone + ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
     cmd = cmd % replaceValues
     print 'Running', cmd
-    subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out,err = subp.communicate()
-    printAndSave('err', err, replaceValues)
+    logger.info(cmd)
+    
+    subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    monitorAndLog(subp,logger)
+   
+
     # Get the outputs and move them to S3
     if os.path.isfile(cpDone):
         if next(open(cpDone))=='Complete\n':
             time.sleep(30)
             cmd = 'aws s3 mv ' + LOCAL_OUTPUT + ' s3://' + AWS_BUCKET + '/' + message['output'] + ' --recursive' 
-            subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
             out,err = subp.communicate()
+            for line in out:
+                logger.info(line)
             print '== OUT',out
             if err == '':
                 return 'SUCCESS'
@@ -127,6 +144,7 @@ def main():
 #################################
 
 if __name__ == '__main__':
+	logging.basicConfig(level=logging.INFO)
 	print 'Worker started'
 	main()
 	print 'Worker finished'

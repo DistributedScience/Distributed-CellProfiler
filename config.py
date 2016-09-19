@@ -27,3 +27,5 @@ SQS_QUEUE_NAME = APP_NAME + 'Queue'
 SQS_MESSAGE_VISIBILITY = 1*60           # Timeout (secs) for messages in flight (average time to be processed)
 SQS_DEAD_LETTER_QUEUE = 'arn:aws:sqs:some-region:111111100000:DeadMessages'
 
+# LOG GROUP INFORMATION:
+LOG_GROUP_NAME = APP_NAME + '2016_09_30'

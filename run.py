@@ -86,8 +86,6 @@ def submitJob():
 		templateMessage["Metadata"] = batch["Metadata"]
 		queue.scheduleBatch(templateMessage)
 	print 'Job submitted. Check your queue'
- 
-  # Step 3: Prepare a place for the logs to go
 
 #################################
 # SERVICE 2: START CLUSTER 
@@ -126,8 +124,16 @@ def startCluster():
     resources = ' '.join( [k['InstanceId'] for k in status['ActiveInstances']] )
     cmd = 'aws ec2 create-tags --resources ' + resources + ' --tags Key=Name,Value=' + APP_NAME + 'Worker'
     subprocess.Popen(cmd.split())
-
-    	# Step 4: update the ECS service to inject docker containers in EC2 instances
+	
+	# Step 4: Create a log group for this app and date if one does not already exist
+    logclient=boto3.client('logs')
+    loggroupinfo=logclient.describe_log_groups(logGroupNamePrefix=LOG_GROUP_NAME)
+    groupnames=[d['logGroupName'] for d in loggroupinfo['logGroups']]
+    if LOG_GROUP_NAME not in groupnames:
+         logclient.create_log_group(logGroupName=LOG_GROUP_NAME)
+	 logclient.put_retention_policy(logGroupName=LOG_GROUP_NAME, retentionInDays=60)
+		
+    	# Step 5: update the ECS service to inject docker containers in EC2 instances
     print 'Updating service'
     cmd = 'aws ecs update-service --cluster ' + ECS_CLUSTER + \
 	      ' --service ' + APP_NAME + 'Service' + \
@@ -167,10 +173,14 @@ def monitor():
     result = getAWSJsonOutput(cmd)
     print 'Job done.'
 
-	# Step 4. Release other resources
+	#Step 4: Export the logs to S3
+    logclient=boto3.client('logs')
+    cmd = 'aws logs create-export-task --task-name "'+LOG_GROUP_NAME+'" --log-group-name "'+LOG_GROUP_NAME+'"'+ \
+	'--from 1441490400000 --to ''+%d' %time.time()+' --destination "'+AWS_BUCKET+'" --destination-prefix "exportedlogs"'
+    result =getAWSJsonOutput(cmd)
+    print 'Log transfer to S3 initiated'
+	# Step 5. Release other resources
 	# Remove SQS queue, ECS Task Definition, ECS Service
-
-  #Step 5- Export the logs to S3
 
 
 #################################
