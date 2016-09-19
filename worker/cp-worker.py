@@ -72,9 +72,9 @@ def runCellProfiler(message):
     cpDone = LOCAL_OUTPUT + '/cp.is.done'
     if message['pipeline'][-3:]!='.h5':
         cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
+        cmd += ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
     else:
-        cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -o %(OUT)s -d ' + cpDone
-    cmd += ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
+        cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -o %(OUT)s -d ' + cpDone + ' -g %(Metadata)s'
     cmd = cmd % replaceValues
     print 'Running', cmd
     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
