@@ -5,7 +5,7 @@
 # This wraps the cellprofiler docker registry
 #
 
-FROM shntnu/cellprofiler:latest
+FROM shntnu/cellprofiler:bethac07_stable_fixzernikes
 
 # Install S3FS 
 
