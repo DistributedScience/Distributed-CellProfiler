@@ -61,42 +61,45 @@ def printAndSave(name, log, values):
 
 def runCellProfiler(message):
     #List the directories in the bucket- this prevents a strange s3fs error
-    	os.system('ls '+DATA_ROOT+r'/projects')
-        # Prepare paths and parameters
-        metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
-	localOut = LOCAL_OUTPUT + '/%(MetadataID)s' % {'MetadataID': metadataID}
-	replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
+    os.system('ls '+DATA_ROOT+r'/projects')
+    # Prepare paths and parameters
+    metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
+    localOut = LOCAL_OUTPUT + '/%(MetadataID)s' % {'MetadataID': metadataID}
+    replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
 			'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
 			'MetadataID':metadataID }
-	# Build and run CellProfiler command
-	cpDone = LOCAL_OUTPUT + '/cp.is.done'
-	cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
-	cmd += ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
-	cmd = cmd % replaceValues
-	print 'Running', cmd
-	subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	out,err = subp.communicate()
-	printAndSave('err', err, replaceValues)
-	# Get the outputs and move them to S3
-	if os.path.isfile(cpDone):
-		if next(open(cpDone))=='Complete\n':
-                        time.sleep(30)
-			cmd = 'aws s3 mv ' + LOCAL_OUTPUT + ' s3://' + AWS_BUCKET + '/' + message['output'] + ' --recursive' 
-			subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-			out,err = subp.communicate()
-			print '== OUT',out
-			if err == '':
-				return 'SUCCESS'
-			else:
-				print 'OUTPUT PROBLEM. See below'
-				print '== ERR',err
-				return 'OUTPUT_PROBLEM'
-		else:
-			print 'CP PROBLEM: Done file reports failure'
-                	return 'CP_PROBLEM'
-	else:
-		print 'CP PROBLEM: Done file does not exist.'
-		return 'CP_PROBLEM'
+    # Build and run CellProfiler command
+    cpDone = LOCAL_OUTPUT + '/cp.is.done'
+    if message['pipeline'][-3:]!='.h5':
+        cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
+        cmd += ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
+    else:
+        cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -o %(OUT)s -d ' + cpDone + ' -g %(Metadata)s'
+    cmd = cmd % replaceValues
+    print 'Running', cmd
+    subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out,err = subp.communicate()
+    printAndSave('err', err, replaceValues)
+    # Get the outputs and move them to S3
+    if os.path.isfile(cpDone):
+        if next(open(cpDone))=='Complete\n':
+            time.sleep(30)
+            cmd = 'aws s3 mv ' + LOCAL_OUTPUT + ' s3://' + AWS_BUCKET + '/' + message['output'] + ' --recursive' 
+            subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            out,err = subp.communicate()
+            print '== OUT',out
+            if err == '':
+                return 'SUCCESS'
+            else:
+                print 'OUTPUT PROBLEM. See below'
+                print '== ERR',err
+                return 'OUTPUT_PROBLEM'
+        else:
+            print 'CP PROBLEM: Done file reports failure'
+            return 'CP_PROBLEM'
+    else:
+        print 'CP PROBLEM: Done file does not exist.'
+        return 'CP_PROBLEM'
 
 #################################
 # MAIN WOKRER LOOP
