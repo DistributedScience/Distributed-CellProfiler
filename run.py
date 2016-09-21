@@ -4,6 +4,7 @@ import datetime
 import json
 import subprocess
 import time
+from ConfigParser import ConfigParser
 
 from config import *
 MONITOR_TIME = 60
@@ -30,30 +31,34 @@ def loadConfig(configFile):
 
 class JobQueue():
 
-	def __init__(self):
-		self.sqs = boto3.resource('sqs')
-		self.queue = self.sqs.get_queue_by_name(QueueName=SQS_QUEUE_NAME)
-		self.inProcess = -1 
-		self.pending = -1
+    def __init__(self,name=None):
+        self.sqs = boto3.resource('sqs')
+        if name==None:
+            self.queue = self.sqs.get_queue_by_name(QueueName=SQS_QUEUE_NAME)
+        else:
+            self.queue = self.sqs.get_queue_by_name(QueueName=name+'Queue')
+        self.inProcess = -1 
+        self.pending = -1
 
-	def scheduleBatch(self, data):
-		msg = json.dumps(data)
-		response = self.queue.send_message(MessageBody=msg)
-		print 'Batch sent. Message ID:',response.get('MessageId')
+    def scheduleBatch(self, data):
+        msg = json.dumps(data)
+        response = self.queue.send_message(MessageBody=msg)
+        print 'Batch sent. Message ID:',response.get('MessageId')
 
-	def pendingLoad(self):
-		self.queue.load()
-		visible = int( self.queue.attributes['ApproximateNumberOfMessages'] )
-		nonVis = int( self.queue.attributes['ApproximateNumberOfMessagesNotVisible'] )
-		if visible != self.pending:
-			self.pending = visible
-			self.inProcess = nonVis
-			d = datetime.datetime.now()
-			print d,'In process:',nonVis,'Pending',visible
-		if visible + nonVis > 0:
-			return True
-		else:
-			return False
+    def pendingLoad(self):
+        self.queue.load()
+        visible = int( self.queue.attributes['ApproximateNumberOfMessages'] )
+        nonVis = int( self.queue.attributes['ApproximateNumberOfMessagesNotVisible'] )
+        if visible != self.pending:
+            self.pending = visible
+            self.inProcess = nonVis
+            d = datetime.datetime.now()
+            print d,'In process:',nonVis,'Pending',visible
+        if visible + nonVis > 0:
+            return True
+        else:
+            return False
+
 
 #################################
 # SERVICE 1: SUBMIT JOB
@@ -81,78 +86,91 @@ def submitJob():
 		templateMessage["Metadata"] = batch["Metadata"]
 		queue.scheduleBatch(templateMessage)
 	print 'Job submitted. Check your queue'
+ 
+  # Step 3: Prepare a place for the logs to go
 
 #################################
 # SERVICE 2: START CLUSTER 
 #################################
 
 def startCluster():
-	if len(sys.argv) < 3:
-		print 'Use: run.py startCluster configFile'
-		sys.exit()
+    if len(sys.argv) < 3:
+        print 'Use: run.py startCluster configFile'
+        sys.exit()
 
 	# Step 1: make a spot fleet request
-	cmd = 'aws ec2 request-spot-fleet --spot-fleet-request-config file://' + sys.argv[2]
-	requestInfo = getAWSJsonOutput(cmd)
-	print 'Request in process. Wait until your machines are available in the cluster.'
-	print 'SpotFleetRequestId',requestInfo['SpotFleetRequestId']
-	with open('files/' + APP_NAME + '.SpotFleetRequestId','w') as fleetId:
-		fleetId.write(requestInfo['SpotFleetRequestId'])
+    cmd = 'aws ec2 request-spot-fleet --spot-fleet-request-config file://' + sys.argv[2]
+    requestInfo = getAWSJsonOutput(cmd)
+    print 'Request in process. Wait until your machines are available in the cluster.'
+    print 'SpotFleetRequestId',requestInfo['SpotFleetRequestId']
+    createMonitor=open('files/' + APP_NAME + 'SpotFleetRequestId.json','w')
+    createMonitor.write('{"MONITOR_FLEET_ID" : "'+requestInfo['SpotFleetRequestId']+'",\n')
+    createMonitor.write('"MONITOR_APP_NAME" : "'+APP_NAME+'",\n')
+    createMonitor.write('"MONITOR_ECS_CLUSTER" : "'+ECS_CLUSTER+'"}\n')
+    createMonitor.close()
+    
+    
+  
 	
 	# Step 2: wait until instances in the cluster are available
-	cmd = 'aws ec2 describe-spot-fleet-instances --spot-fleet-request-id ' + requestInfo['SpotFleetRequestId']
-	status = getAWSJsonOutput(cmd)
-	while len(status['ActiveInstances']) < CLUSTER_MACHINES:
-		time.sleep(20)
-		print '.',
-		status = getAWSJsonOutput(cmd)
-	print '\nCluster ready'
+    cmd = 'aws ec2 describe-spot-fleet-instances --spot-fleet-request-id ' + requestInfo['SpotFleetRequestId']
+    status = getAWSJsonOutput(cmd)
+    while len(status['ActiveInstances']) < CLUSTER_MACHINES:
+         time.sleep(20)
+         print '.',
+         status = getAWSJsonOutput(cmd)
+    print '\nCluster ready'
 
 	# Step 3: tag all instances in the cluster
-	print 'Tagging EC2 instances'
-	resources = ' '.join( [k['InstanceId'] for k in status['ActiveInstances']] )
-	cmd = 'aws ec2 create-tags --resources ' + resources + ' --tags Key=Name,Value=' + APP_NAME + 'Worker'
-	subprocess.Popen(cmd.split())
+    print 'Tagging EC2 instances'
+    resources = ' '.join( [k['InstanceId'] for k in status['ActiveInstances']] )
+    cmd = 'aws ec2 create-tags --resources ' + resources + ' --tags Key=Name,Value=' + APP_NAME + 'Worker'
+    subprocess.Popen(cmd.split())
 
-	# Step 4: update the ECS service to inject docker containers in EC2 instances
-	print 'Updating service'
-	cmd = 'aws ecs update-service --cluster ' + ECS_CLUSTER + \
+    	# Step 4: update the ECS service to inject docker containers in EC2 instances
+    print 'Updating service'
+    cmd = 'aws ecs update-service --cluster ' + ECS_CLUSTER + \
 	      ' --service ' + APP_NAME + 'Service' + \
 	      ' --desired-count ' + str(CLUSTER_MACHINES*TASKS_PER_MACHINE)
-	update = getAWSJsonOutput(cmd)
-	print 'Service updated. Your job should start in a few minutes.'
+    update = getAWSJsonOutput(cmd)
+    print 'Service updated. Your job should start in a few minutes.'
 
 #################################
 # SERVICE 3: MONITOR JOB 
 #################################
 
 def monitor():
-	if len(sys.argv) < 3:
-		print 'Use: run.py monitor spotFleetIdFile'
-		sys.exit()
-	
-	# Step 1: Create job and count messages periodically
-	queue = JobQueue()
-	while queue.pendingLoad():
-		time.sleep(MONITOR_TIME)
+    if len(sys.argv) < 3:
+        print 'Use: run.py monitor spotFleetIdFile'
+        sys.exit()
+    
+    monitorInfo = loadConfig(sys.argv[2])
+    monitorcluster=monitorInfo["MONITOR_ECS_CLUSTER"]
+    monitorapp=monitorInfo["MONITOR_APP_NAME"]
+    fleetId=monitorInfo["MONITOR_FLEET_ID"]
+
+    	# Step 1: Create job and count messages periodically
+    queue = JobQueue(name=monitorapp)
+    while queue.pendingLoad():
+        time.sleep(MONITOR_TIME)
 	
 	# Step 2: When no messages are pending, stop service
-	cmd = 'aws ecs update-service --cluster ' + ECS_CLUSTER + \
-	      ' --service ' + APP_NAME + 'Service' + \
+    	cmd = 'aws ecs update-service --cluster ' + monitorcluster + \
+	      ' --service ' + monitorapp + 'Service' + \
 	      ' --desired-count 0'
-	update = getAWSJsonOutput(cmd)
-	print 'Service has been downscaled'
+    update = getAWSJsonOutput(cmd)
+    print 'Service has been downscaled'
 
 	# Step 3: Read spot fleet id and terminate all EC2 instances
-	with open(sys.argv[2],'r') as idFile:
-		fleetId = idFile.readline()
-		print 'Shutting down spot fleet',fleetId
-		cmd = 'aws ec2 cancel-spot-fleet-requests --spot-fleet-request-ids '+ fleetId +' --terminate-instances'
-		result = getAWSJsonOutput(cmd)
-	print 'Job done.'
+    print 'Shutting down spot fleet',fleetId
+    cmd = 'aws ec2 cancel-spot-fleet-requests --spot-fleet-request-ids '+ fleetId +' --terminate-instances'
+    result = getAWSJsonOutput(cmd)
+    print 'Job done.'
 
 	# Step 4. Release other resources
 	# Remove SQS queue, ECS Task Definition, ECS Service
+
+  #Step 5- Export the logs to S3
 
 
 #################################
