@@ -188,15 +188,7 @@ def get_queue_url():
 
 def get_or_create_queue():
     	u = get_queue_url()
-    	if u is not None:
-		pass
-	'''print 'Deleting existing queue.'
-        local('aws sqs delete-queue --queue-url ' + u)
-	print 'According to AWS documentation: "You must wait 60 seconds after deleting a queue before you can create another with the same name"'
-	time.sleep(WAIT_TIME)
-	print 'Attempting to create the new queue. If it fails, just give it another try later.'
-	time.sleep(5)'''
-	else:
+    	if u is None:
 	    local(
 		'aws sqs create-queue' +
 		'    --queue-name ' + SQS_QUEUE_NAME + 
