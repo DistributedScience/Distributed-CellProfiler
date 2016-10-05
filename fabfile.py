@@ -127,6 +127,14 @@ def generate_task_definition():
 	    "value": LOG_GROUP_NAME
 	},
 	{
+	    "name": "CHECK_IF_DONE_BOOL",
+	    "value": CHECK_IF_DONE_BOOL
+	},
+	{
+	    "name": "EXPECTED_NUMBER_FILES",
+	    "value": str(EXPECTED_NUMBER_FILES)
+	},
+	{
 	    "name": "SECONDS_TO_START",
 	    "value": str(SECONDS_TO_START)
 	}

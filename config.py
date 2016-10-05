@@ -29,3 +29,7 @@ SQS_DEAD_LETTER_QUEUE = 'arn:aws:sqs:some-region:111111100000:DeadMessages'
 
 # LOG GROUP INFORMATION:
 LOG_GROUP_NAME = APP_NAME + '2016_09_30'
+
+# REDUNDANCY CHECKS
+CHECK_IF_DONE_BOOL = 'True'  #True or False- should it check if there are a certain number of non-empty files and delete the job if yes?
+EXPECTED_NUMBER_FILES = 7    #What is the number of files that trigger skipping a job?
