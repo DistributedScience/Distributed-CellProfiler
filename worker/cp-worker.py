@@ -102,9 +102,7 @@ def runCellProfiler(message):
             cmd = 'aws s3 mv ' + LOCAL_OUTPUT + ' s3://' + AWS_BUCKET + '/' + message['output'] + ' --recursive' 
             subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
             out,err = subp.communicate()
-            for line in out:
-                logger.info(line)
-            print '== OUT',out
+            printandlog('== OUT'+out, logger)
             if err == '':
 		printandlog('SUCCESS',logger)
 		logger.removeHandler(watchtowerlogger)
