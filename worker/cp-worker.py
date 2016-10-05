@@ -60,7 +60,9 @@ def monitorAndLog(process,logger):
             print output.strip()
             logger.info(output)  
 
-
+def printandlog(text,logger):
+    print text
+    logger.info(text)
 
 #################################
 # RUN CELLPROFILER PROCESS
@@ -75,11 +77,10 @@ def runCellProfiler(message):
     replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
 			'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
 			'MetadataID':metadataID }
-
     # Configure the logs
     logger = logging.getLogger(__name__)
-    logger.addHandler(watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False))
-
+    watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
+    logger.addHandler(watchtowerlogger)
     # Build and run CellProfiler command
     cpDone = LOCAL_OUTPUT + '/cp.is.done'
     if message['pipeline'][-3:]!='.h5':
@@ -94,7 +95,6 @@ def runCellProfiler(message):
     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     monitorAndLog(subp,logger)
    
-
     # Get the outputs and move them to S3
     if os.path.isfile(cpDone):
         if next(open(cpDone))=='Complete\n':
@@ -106,17 +106,24 @@ def runCellProfiler(message):
                 logger.info(line)
             print '== OUT',out
             if err == '':
+		printandlog('SUCCESS',logger)
+		logger.removeHandler(watchtowerlogger)
                 return 'SUCCESS'
             else:
-                print 'OUTPUT PROBLEM. See below'
-                print '== ERR',err
-                return 'OUTPUT_PROBLEM'
+			
+                printandlog('OUTPUT PROBLEM. See below',logger)
+                printandlog('== ERR'+err,logger)
+		logger.removeHandler(watchtowerlogger)
+		return 'OUTPUT_PROBLEM'
         else:
-            print 'CP PROBLEM: Done file reports failure'
+            printandlog('CP PROBLEM: Done file reports failure',logger)
+	    logger.removeHandler(watchtowerlogger)
             return 'CP_PROBLEM'
     else:
-        print 'CP PROBLEM: Done file does not exist.'
+        printandlog('CP PROBLEM: Done file does not exist.',logger)
+	logger.removeHandler(watchtowerlogger)
         return 'CP_PROBLEM'
+    
 
 #################################
 # MAIN WOKRER LOOP
