@@ -36,7 +36,7 @@ class JobQueue():
         if name==None:
             self.queue = self.sqs.get_queue_by_name(QueueName=SQS_QUEUE_NAME)
         else:
-            self.queue = self.sqs.get_queue_by_name(QueueName=name+'Queue')
+            self.queue = self.sqs.get_queue_by_name(QueueName=name)
         self.inProcess = -1 
         self.pending = -1
 
@@ -104,7 +104,10 @@ def startCluster():
     createMonitor=open('files/' + APP_NAME + 'SpotFleetRequestId.json','w')
     createMonitor.write('{"MONITOR_FLEET_ID" : "'+requestInfo['SpotFleetRequestId']+'",\n')
     createMonitor.write('"MONITOR_APP_NAME" : "'+APP_NAME+'",\n')
-    createMonitor.write('"MONITOR_ECS_CLUSTER" : "'+ECS_CLUSTER+'"}\n')
+    createMonitor.write('"MONITOR_ECS_CLUSTER" : "'+ECS_CLUSTER+'",\n')
+    createMonitor.write('"MONITOR_QUEUE_NAME" : "'+SQS_QUEUE_NAME+'",\n')
+    createMonitor.write('"MONITOR_BUCKET_NAME" : "'+AWS_BUCKET+'",\n')
+    createMonitor.write('"MONITOR_LOG_GROUP_NAME" : "'+LOG_GROUP_NAME+'"}\n')
     createMonitor.close()
     
     
@@ -154,9 +157,12 @@ def monitor():
     monitorcluster=monitorInfo["MONITOR_ECS_CLUSTER"]
     monitorapp=monitorInfo["MONITOR_APP_NAME"]
     fleetId=monitorInfo["MONITOR_FLEET_ID"]
+    queueId=monitorInfo["MONITOR_QUEUE_NAME"]
+    bucketId=monitorInfo["MONITOR_BUCKET_NAME"]
+    loggroupId=monitorInfo["MONITOR_LOG_GROUP_NAME"]
 
     	# Step 1: Create job and count messages periodically
-    queue = JobQueue(name=monitorapp)
+    queue = JobQueue(name=queueId)
     while queue.pendingLoad():
         time.sleep(MONITOR_TIME)
 	
@@ -175,8 +181,8 @@ def monitor():
 
 	#Step 4: Export the logs to S3
     logclient=boto3.client('logs')
-    cmd = 'aws logs create-export-task --task-name "'+LOG_GROUP_NAME+'" --log-group-name "'+LOG_GROUP_NAME+'"'+ \
-	'--from 1441490400000 --to ''+%d' %time.time()+' --destination "'+AWS_BUCKET+'" --destination-prefix "exportedlogs/'+LOG_GROUP_NAME+ '"'
+    cmd = 'aws logs create-export-task --task-name "'+loggroupId+'" --log-group-name "'+loggroupId+'"'+ \
+	'--from 1441490400000 --to ''+%d' %time.time()+' --destination "'+bucketId+'" --destination-prefix "exportedlogs/'+loggroupId+ '"'
     result =getAWSJsonOutput(cmd)
     print 'Log transfer to S3 initiated'
 	# Step 5. Release other resources
