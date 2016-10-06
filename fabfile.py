@@ -102,6 +102,10 @@ def generate_task_definition():
     task_definition = TASK_DEFINITION.copy()
     key, secret = get_aws_credentials()
     task_definition['containerDefinitions'][0]['environment'] += [
+	{
+            'name': 'APP_NAME',
+            'value': APP_NAME
+        },
         {
             'name': 'SQS_QUEUE_URL',
             'value': get_queue_url()

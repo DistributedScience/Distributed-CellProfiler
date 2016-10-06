@@ -25,6 +25,23 @@ def loadConfig(configFile):
 		data = json.load(conf)
 	return data
 
+def killdeadAlarms(fleetId,monitorapp):
+	checkdates=[datetime.datetime.now().strftime('%Y-%m-%d'),(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d')]
+	todel=[]
+	for eachdate in checkdates:
+         cmd="aws ec2 describe-spot-fleet-request-history --spot-fleet-request-id "+fleetId+" --start-time "+eachdate 
+         datedead=getAWSJsonOutput(cmd)
+         for eachevent in datedead['HistoryRecords']:
+             if eachevent['EventType']=='instanceChange':
+                 if eachevent['EventInformation']['EventSubType']=='terminated':
+                     todel.append(eachevent['EventInformation']['InstanceId'])
+	for eachmachine in todel:
+	 	cmd='aws cloudwatch delete-alarms --alarm-name '+monitorapp+'_'+eachmachine
+		subprocess.Popen(cmd.split())
+		time.sleep(3) #Avoid Rate exceeded error
+		print 'Deleted', monitorapp+'_'+eachmachine, 'if it existed'
+	print 'Old alarms deleted'
+
 #################################
 # CLASS TO HANDLE SQS QUEUE
 #################################
@@ -36,7 +53,7 @@ class JobQueue():
         if name==None:
             self.queue = self.sqs.get_queue_by_name(QueueName=SQS_QUEUE_NAME)
         else:
-            self.queue = self.sqs.get_queue_by_name(QueueName=name+'Queue')
+            self.queue = self.sqs.get_queue_by_name(QueueName=name)
         self.inProcess = -1 
         self.pending = -1
 
@@ -104,7 +121,10 @@ def startCluster():
     createMonitor=open('files/' + APP_NAME + 'SpotFleetRequestId.json','w')
     createMonitor.write('{"MONITOR_FLEET_ID" : "'+requestInfo['SpotFleetRequestId']+'",\n')
     createMonitor.write('"MONITOR_APP_NAME" : "'+APP_NAME+'",\n')
-    createMonitor.write('"MONITOR_ECS_CLUSTER" : "'+ECS_CLUSTER+'"}\n')
+    createMonitor.write('"MONITOR_ECS_CLUSTER" : "'+ECS_CLUSTER+'",\n')
+    createMonitor.write('"MONITOR_QUEUE_NAME" : "'+SQS_QUEUE_NAME+'",\n')
+    createMonitor.write('"MONITOR_BUCKET_NAME" : "'+AWS_BUCKET+'",\n')
+    createMonitor.write('"MONITOR_LOG_GROUP_NAME" : "'+LOG_GROUP_NAME+'"}\n')
     createMonitor.close()
     
     
@@ -154,10 +174,18 @@ def monitor():
     monitorcluster=monitorInfo["MONITOR_ECS_CLUSTER"]
     monitorapp=monitorInfo["MONITOR_APP_NAME"]
     fleetId=monitorInfo["MONITOR_FLEET_ID"]
+    queueId=monitorInfo["MONITOR_QUEUE_NAME"]
+    bucketId=monitorInfo["MONITOR_BUCKET_NAME"]
+    loggroupId=monitorInfo["MONITOR_LOG_GROUP_NAME"]
 
     	# Step 1: Create job and count messages periodically
-    queue = JobQueue(name=monitorapp)
+    queue = JobQueue(name=queueId)
     while queue.pendingLoad():
+	#Once a day check for terminated machines and delete their alarms.  
+	#These records are only kept for 48 hours, which is why we don't just do it at the end
+        curtime=datetime.datetime.now().strftime('%H%M')
+        if curtime=='1200':
+            killdeadAlarms(fleetId,monitorapp)
         time.sleep(MONITOR_TIME)
 	
 	# Step 2: When no messages are pending, stop service
@@ -167,18 +195,26 @@ def monitor():
     update = getAWSJsonOutput(cmd)
     print 'Service has been downscaled'
 
-	# Step 3: Read spot fleet id and terminate all EC2 instances
+	# Step3: Delete the alarms from active machines 
+    cmd= 'aws ec2 describe-spot-fleet-instances --spot-fleet-request-id '+fleetId+" --query 'ActiveInstances[*]' --output json"
+    result= getAWSJsonOutput(cmd)
+    for eachinstance in result:
+        delalarm='aws cloudwatch delete-alarms --alarm-name '+monitorapp+'_'+eachinstance["InstanceId"]
+        subprocess.Popen(delalarm.split())
+	
+	# Step 4: Read spot fleet id and terminate all EC2 instances
     print 'Shutting down spot fleet',fleetId
     cmd = 'aws ec2 cancel-spot-fleet-requests --spot-fleet-request-ids '+ fleetId +' --terminate-instances'
     result = getAWSJsonOutput(cmd)
     print 'Job done.'
 
-	#Step 4: Export the logs to S3
+	#Step 5: Export the logs to S3
     logclient=boto3.client('logs')
-    cmd = 'aws logs create-export-task --task-name "'+LOG_GROUP_NAME+'" --log-group-name "'+LOG_GROUP_NAME+'"'+ \
-	'--from 1441490400000 --to ''+%d' %time.time()+' --destination "'+AWS_BUCKET+'" --destination-prefix "exportedlogs/'+LOG_GROUP_NAME+ '"'
+    cmd = 'aws logs create-export-task --task-name "'+loggroupId+'" --log-group-name "'+loggroupId+'"'+ \
+	'--from 1441490400000 --to ''+%d' %time.time()+' --destination "'+bucketId+'" --destination-prefix "exportedlogs/'+loggroupId+ '"'
     result =getAWSJsonOutput(cmd)
     print 'Log transfer to S3 initiated'
+
 	# Step 5. Release other resources
 	# Remove SQS queue, ECS Task Definition, ECS Service
 
