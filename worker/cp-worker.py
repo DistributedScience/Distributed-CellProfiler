@@ -18,6 +18,8 @@ LOCAL_OUTPUT = '/home/ubuntu/local_output'
 QUEUE_URL = os.environ['SQS_QUEUE_URL']
 AWS_BUCKET = os.environ['AWS_BUCKET']
 LOG_GROUP_NAME= os.environ['LOG_GROUP_NAME']
+CHECK_IF_DONE_BOOL= os.environ['CHECK_IF_DONE_BOOL']
+EXPECTED_NUMBER_FILES= os.environ['EXPECTED_NUMBER_FILES']
 
 #################################
 # CLASS TO HANDLE THE SQS QUEUE
@@ -77,6 +79,18 @@ def runCellProfiler(message):
     replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
 			'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
 			'MetadataID':metadataID }
+    # See if this is a message you've already handled, if you've so chosen
+    if CHECK_IF_DONE_BOOL == 'True':
+        try:
+		remotePrefix= os.path.join(message['output'],metadataID)
+		s3client=boto3.client('s3')
+		bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remotePrefix)
+		objectsizelist=[k['Size'] for k in bucketlist['Contents']]
+		if len(objectsizelist)>=int(EXPECTED_NUMBER_FILES):
+		    if 0 not in objectsizelist:
+			return 'SUCCESS'
+	except KeyError: #Returned if that folder does not exist
+		pass
     # Configure the logs
     logger = logging.getLogger(__name__)
     watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
@@ -108,7 +122,6 @@ def runCellProfiler(message):
 		logger.removeHandler(watchtowerlogger)
                 return 'SUCCESS'
             else:
-			
                 printandlog('OUTPUT PROBLEM. See below',logger)
                 printandlog('== ERR'+err,logger)
 		logger.removeHandler(watchtowerlogger)
