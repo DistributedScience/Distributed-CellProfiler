@@ -76,15 +76,15 @@ def runCellProfiler(message):
     # Prepare paths and parameters
     metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
     localOut = LOCAL_OUTPUT + '/%(MetadataID)s' % {'MetadataID': metadataID}
+    remoteOut= os.path.join(message['output'],metadataID)
     replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
 			'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
 			'MetadataID':metadataID }
     # See if this is a message you've already handled, if you've so chosen
     if CHECK_IF_DONE_BOOL == 'True':
         try:
-		remotePrefix= os.path.join(message['output'],metadataID)
 		s3client=boto3.client('s3')
-		bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remotePrefix)
+		bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut)
 		objectsizelist=[k['Size'] for k in bucketlist['Contents']]
 		if len(objectsizelist)>=int(EXPECTED_NUMBER_FILES):
 		    if 0 not in objectsizelist:
