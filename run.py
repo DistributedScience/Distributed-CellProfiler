@@ -176,7 +176,7 @@ def monitor():
 	#Step 4: Export the logs to S3
     logclient=boto3.client('logs')
     cmd = 'aws logs create-export-task --task-name "'+LOG_GROUP_NAME+'" --log-group-name "'+LOG_GROUP_NAME+'"'+ \
-	'--from 1441490400000 --to ''+%d' %time.time()+' --destination "'+AWS_BUCKET+'" --destination-prefix "exportedlogs"'
+	'--from 1441490400000 --to ''+%d' %time.time()+' --destination "'+AWS_BUCKET+'" --destination-prefix "exportedlogs/'+LOG_GROUP_NAME+ '"'
     result =getAWSJsonOutput(cmd)
     print 'Log transfer to S3 initiated'
 	# Step 5. Release other resources
