@@ -10,7 +10,7 @@ aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
 aws configure set default.region $AWS_REGION
 INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 OWNER_ID=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --output text --query 'Reservations[0].[OwnerId]')
-aws ec2 create-tags --resources $INSTANCE_ID --tags Key=Name,Value= ${APP_NAME}_Worker
+aws ec2 create-tags --resources $INSTANCE_ID --tags Key=Name,Value=${APP_NAME}Worker
 
 # 2. MOUNT S3 
 echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /credentials.txt
