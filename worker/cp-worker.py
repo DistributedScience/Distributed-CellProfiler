@@ -76,15 +76,15 @@ def runCellProfiler(message):
     # Prepare paths and parameters
     metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
     localOut = LOCAL_OUTPUT + '/%(MetadataID)s' % {'MetadataID': metadataID}
+    remoteOut= os.path.join(message['output'],metadataID)
     replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
 			'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
 			'MetadataID':metadataID }
     # See if this is a message you've already handled, if you've so chosen
     if CHECK_IF_DONE_BOOL == 'True':
         try:
-		remotePrefix= os.path.join(message['output'],metadataID)
 		s3client=boto3.client('s3')
-		bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remotePrefix)
+		bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut)
 		objectsizelist=[k['Size'] for k in bucketlist['Contents']]
 		if len(objectsizelist)>=int(EXPECTED_NUMBER_FILES):
 		    if 0 not in objectsizelist:
@@ -113,17 +113,27 @@ def runCellProfiler(message):
     if os.path.isfile(cpDone):
         if next(open(cpDone))=='Complete\n':
             time.sleep(30)
-            cmd = 'aws s3 mv ' + LOCAL_OUTPUT + ' s3://' + AWS_BUCKET + '/' + message['output'] + ' --recursive' 
-            subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
-            out,err = subp.communicate()
-            printandlog('== OUT'+out, logger)
-            if err == '':
+	    mvtries=0
+	    while mvtries <3:
+	    	try:
+            		printandlog('Move attempt #'+(mvtries)+1,logger)
+			cmd = 'aws s3 mv ' + localOut + ' s3://' + AWS_BUCKET + '/' + remoteOut + ' --recursive' 
+            		subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
+           		out,err = subp.communicate()
+            		printandlog('== OUT /n'+out, logger)
+            		if err == '':
+				break
+		except
+			printandlog('Move failed',logger)
+			printandlog('== ERR /n'+err,logger)
+			time.sleep(30)
+			mvtries+=1
+	    if mvtries<3:
 		printandlog('SUCCESS',logger)
 		logger.removeHandler(watchtowerlogger)
-                return 'SUCCESS'
+		return 'SUCCESS'
             else:
-                printandlog('OUTPUT PROBLEM. See below',logger)
-                printandlog('== ERR'+err,logger)
+                printandlog('OUTPUT PROBLEM. Giving up on '+metadataID,logger)
 		logger.removeHandler(watchtowerlogger)
 		return 'OUTPUT_PROBLEM'
         else:
@@ -137,7 +147,7 @@ def runCellProfiler(message):
     
 
 #################################
-# MAIN WOKRER LOOP
+# MAIN WORKER LOOP
 #################################
 
 def main():
