@@ -20,7 +20,8 @@ RUN apt-get -y update           && \
 	libfuse-dev 		\
 	libssl-dev 		\
 	libxml2-dev 		\
-	make pkg-config         
+	make pkg-config		\
+	curl
 
 WORKDIR /usr/local/src
 RUN git clone https://github.com/s3fs-fuse/s3fs-fuse.git
