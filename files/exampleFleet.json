@@ -14,6 +14,7 @@
       "IamInstanceProfile": {
         "Arn": "arn:aws:iam::XXXXXXXXXXXX:instance-profile/ecsInstanceRole"
       },
+      "UserData": "IyEvYmluL2Jhc2gKZWNobyBFQ1NfQ0xVU1RFUj1kZWZhdWx0ID4+IC9ldGMvZWNzL2Vjcy5jb25maWc=",
       "BlockDeviceMappings": [
         {
           "DeviceName": "/dev/xvda",
