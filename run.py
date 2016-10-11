@@ -40,7 +40,8 @@ def killdeadAlarms(fleetId,monitorapp):
 		subprocess.Popen(cmd.split())
 		time.sleep(3) #Avoid Rate exceeded error
 		print 'Deleted', monitorapp+'_'+eachmachine, 'if it existed'
-	print 'Old alarms deleted'
+	  print 'Old alarms deleted'
+
 
 #################################
 # CLASS TO HANDLE SQS QUEUE
@@ -139,13 +140,7 @@ def startCluster():
          status = getAWSJsonOutput(cmd)
     print '\nCluster ready'
 
-	# Step 3: tag all instances in the cluster
-    print 'Tagging EC2 instances'
-    resources = ' '.join( [k['InstanceId'] for k in status['ActiveInstances']] )
-    cmd = 'aws ec2 create-tags --resources ' + resources + ' --tags Key=Name,Value=' + APP_NAME + 'Worker'
-    subprocess.Popen(cmd.split())
-	
-	# Step 4: Create a log group for this app and date if one does not already exist
+	# Step 3: Create a log group for this app and date if one does not already exist
     logclient=boto3.client('logs')
     loggroupinfo=logclient.describe_log_groups(logGroupNamePrefix=LOG_GROUP_NAME)
     groupnames=[d['logGroupName'] for d in loggroupinfo['logGroups']]
@@ -153,7 +148,7 @@ def startCluster():
          logclient.create_log_group(logGroupName=LOG_GROUP_NAME)
 	 logclient.put_retention_policy(logGroupName=LOG_GROUP_NAME, retentionInDays=60)
 		
-    	# Step 5: update the ECS service to inject docker containers in EC2 instances
+    	# Step 4: update the ECS service to inject docker containers in EC2 instances
     print 'Updating service'
     cmd = 'aws ecs update-service --cluster ' + ECS_CLUSTER + \
 	      ' --service ' + APP_NAME + 'Service' + \
