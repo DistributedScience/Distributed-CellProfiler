@@ -131,7 +131,7 @@ def runCellProfiler(message):
 	    if mvtries<3:
 		printandlog('SUCCESS',logger)
 		logger.removeHandler(watchtowerlogger)
-               	return 'SUCCESS'
+		return 'SUCCESS'
             else:
                 printandlog('OUTPUT PROBLEM. Giving up on '+metadataID,logger)
 		logger.removeHandler(watchtowerlogger)
