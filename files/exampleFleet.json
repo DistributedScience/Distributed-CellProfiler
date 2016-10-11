@@ -28,7 +28,7 @@
       "NetworkInterfaces": [
         {
           "DeviceIndex": 0,
-          "SubnetId": "subnet-YYYYYYYY",
+          "SubnetId": "subnet-WWWWWWWW, subnet-XXXXXXXX, subnet-YYYYYYYY, subnet-ZZZZZZZZ",
           "DeleteOnTermination": true,
           "AssociatePublicIpAddress": true,
           "Groups": [
