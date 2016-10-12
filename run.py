@@ -4,6 +4,7 @@ import datetime
 import json
 import subprocess
 import time
+from base64 import b64encode
 from ConfigParser import ConfigParser
 
 from config import *
@@ -40,8 +41,24 @@ def killdeadAlarms(fleetId,monitorapp):
 		subprocess.Popen(cmd.split())
 		time.sleep(3) #Avoid Rate exceeded error
 		print 'Deleted', monitorapp+'_'+eachmachine, 'if it existed'
-	  print 'Old alarms deleted'
+	print 'Old alarms deleted'
 
+def generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client):
+	configfile=open('configtemp.config','w')
+	configfile.write('ECS_CLUSTER='+ECS_CLUSTER+'\n')
+	configfile.write('ECS_AVAILABLE_LOGGING_DRIVERS=["json-file","awslogs"]')
+	configfile.close()
+	s3client.upload_file('configtemp.config',AWS_BUCKET,'ecsconfigs/'+APP_NAME+'_ecs.config')
+	os.remove('configtemp.config')
+	return 's3://'+AWS_BUCKET+'/ecsconfigs/'+APP_NAME+'_ecs.config'
+	
+
+def generateUserData(ecsConfigFile):
+	userData= '#!/bin/bash \n'
+	userData+='yum install -y aws-cli \n'
+	userData+='aws s3 cp '+ecsConfigFile+' /etc/ecs/ecs.config \n'
+	return b64encode(userData)
+	
 
 #################################
 # CLASS TO HANDLE SQS QUEUE
@@ -114,8 +131,16 @@ def startCluster():
         print 'Use: run.py startCluster configFile'
         sys.exit()
 
-	# Step 1: make a spot fleet request
-    cmd = 'aws ec2 request-spot-fleet --spot-fleet-request-config file://' + sys.argv[2]
+	#Step 1: set up the configuration files
+    s3client=boto3.client(s3)
+    ecsConfigFile=generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client)
+    spotfleetConfig=loadConfig(sys.argv[2])
+    userData=generateUserData(ecsConfigFile)
+    spotfleetConfig['LaunchSpecifications'][0]["UserData"]=userData
+    spotfleetConfigString=json.dumps(spotfleetConfig)
+
+	# Step 2: make the spot fleet request
+    cmd = 'aws ec2 request-spot-fleet --cli-input-json '+spotfleetConfigString
     requestInfo = getAWSJsonOutput(cmd)
     print 'Request in process. Wait until your machines are available in the cluster.'
     print 'SpotFleetRequestId',requestInfo['SpotFleetRequestId']
