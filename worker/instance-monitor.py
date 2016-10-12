@@ -10,10 +10,11 @@ import time
 import logging
 import watchtower
 import os
+import sys
 
 LOG_GROUP_NAME= os.environ['LOG_GROUP_NAME']
-MY_INSTANCE_ID= os.environ['MY_INSTANCE_ID']
-MY_TASK_NAME= os.environ['MY_TASK_NAME']
+MY_INSTANCE_ID= sys.argv[1]
+MY_TASK_NAME= sys.argv[2]
 
 def monitor():
     logger = logging.getLogger(__name__)

@@ -58,7 +58,7 @@ TASK_DEFINITION = {
         	"options": {
           	"awslogs-group": LOG_GROUP_NAME+"_perInstance",
           	"awslogs-region": AWS_REGION,
-          	"awslogs-stream-prefix": ''
+		"awslogs-stream-prefix": APP_NAME
         	}
       	    }
         }

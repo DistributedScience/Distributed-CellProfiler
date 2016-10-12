@@ -19,10 +19,10 @@ CONTAINER_INSTANCES=$(aws ecs list-container-instances --query "containerInstanc
 INSTANCE_STRINGS=$(for ci in $CONTAINER_INSTANCES; do echo $ci| cut -d'/' -f 2|cut -d '"' -f 1; done)
 
 for i in $INSTANCE_STRINGS; do 
-    INSTANCE_ID=$(aws ecs describe-container-instances --cluster Cluster2 --container-instances $i --query "containerInstances[*].ec2InstanceId" --output text); 
+    INSTANCE_ID=$(aws ecs describe-container-instances --cluster $ECS_CLUSTER --container-instances $i --query "containerInstances[*].ec2InstanceId" --output text); 
     if [ "$INSTANCE_ID" == "$MY_INSTANCE_ID" ]; 
     then 
-        MY_CONTAINER_ARN=$(aws ecs describe-container-instances --cluster Cluster2 --container-instances $i --query "containerInstances[*].containerInstanceArn" --output text); 
+        MY_CONTAINER_ARN=$(aws ecs describe-container-instances --cluster $ECS_CLUSTER --container-instances $i --query "containerInstances[*].containerInstanceArn" --output text); 
     fi;
 done   
 
@@ -30,10 +30,10 @@ TASK_LIST=$( aws ecs list-tasks --query "taskArns[*]" --output text)
 TASK_STRINGS=$(for tl in $TASK_LIST; do echo $tl| cut -d'/' -f 2|cut -d '"' -f 1; done)
 
 for k in $TASK_STRINGS; do 
-    CONTAINER_ARN=$(aws ecs describe-tasks --cluster Cluster2 --tasks $k  --query "tasks[*].[containerInstanceArn]" --output text); 
+    CONTAINER_ARN=$(aws ecs describe-tasks --cluster $ECS_CLUSTER --tasks $k  --query "tasks[*].[containerInstanceArn]" --output text); 
     if [ "$CONTAINER_ARN" == "$MY_CONTAINER_ARN" ]; 
     then 
-        MY_TASK_NAME=$(aws ecs describe-tasks --cluster Cluster2 --tasks $k  --query "tasks[*].overrides.[containerOverrides]" --output text); 
+        MY_TASK_NAME=$(aws ecs describe-tasks --cluster $ECS_CLUSTER --tasks $k  --query "tasks[*].overrides.[containerOverrides]" --output text); 
     fi; 
 done   
 
@@ -51,7 +51,7 @@ aws cloudwatch put-metric-alarm --alarm-name ${APP_NAME}_${MY_INSTANCE_ID} --ala
 
 # 5. RUN VM STAT MONITOR
 
-python instance-monitor.py &
+python instance-monitor.py $MY_INSTANCE_ID $MY_TASK_NAME &
 
 # 6. RUN CP WORKERS
 for((k=0; k<$DOCKER_CORES; k++)); do
