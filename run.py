@@ -172,6 +172,9 @@ def startCluster():
     if LOG_GROUP_NAME not in groupnames:
          logclient.create_log_group(logGroupName=LOG_GROUP_NAME)
 	 logclient.put_retention_policy(logGroupName=LOG_GROUP_NAME, retentionInDays=60)
+    if LOG_GROUP_NAME+'_perInstance' not in groupnames:
+         logclient.create_log_group(logGroupName=LOG_GROUP_NAME+'_perInstance')
+	 logclient.put_retention_policy(logGroupName=LOG_GROUP_NAME+'_perInstance', retentionInDays=60)
 		
     	# Step 4: update the ECS service to inject docker containers in EC2 instances
     print 'Updating service'
@@ -233,7 +236,11 @@ def monitor():
     cmd = 'aws logs create-export-task --task-name "'+loggroupId+'" --log-group-name "'+loggroupId+'"'+ \
 	'--from 1441490400000 --to ''+%d' %time.time()+' --destination "'+bucketId+'" --destination-prefix "exportedlogs/'+loggroupId+ '"'
     result =getAWSJsonOutput(cmd)
-    print 'Log transfer to S3 initiated'
+    print 'Log transfer 1 to S3 initiated'
+    cmd = 'aws logs create-export-task --task-name "'+loggroupId+'_perInstance" --log-group-name "'+loggroupId+'_perInstance"'+ \
+	'--from 1441490400000 --to ''+%d' %time.time()+' --destination "'+bucketId+'" --destination-prefix "exportedlogs/'+loggroupId+ '_perInstance"'
+    result =getAWSJsonOutput(cmd)
+    print 'Log transfer 2 to S3 initiated'
 
 	# Step 5. Release other resources
 	# Remove SQS queue, ECS Task Definition, ECS Service
