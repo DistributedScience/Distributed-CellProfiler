@@ -51,6 +51,7 @@ RUN \
 RUN mkdir -p /home/ubuntu/
 WORKDIR /home/ubuntu
 COPY cp-worker.py .
+COPY instance-monitor.py .
 COPY run-worker.sh .
 RUN chmod 755 run-worker.sh
 
