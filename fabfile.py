@@ -147,6 +147,10 @@ def generate_task_definition():
 	    "value": str(EXPECTED_NUMBER_FILES)
 	},
 	{
+	    "name": "ECS_CLUSTER",
+	    "value": ECS_CLUSTER
+	},
+	{
 	    "name": "SECONDS_TO_START",
 	    "value": str(SECONDS_TO_START)
 	}
