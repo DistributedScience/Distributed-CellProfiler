@@ -51,11 +51,11 @@ aws cloudwatch put-metric-alarm --alarm-name ${APP_NAME}_${MY_INSTANCE_ID} --ala
 
 # 5. RUN VM STAT MONITOR
 
-python -v instance-monitor.py &
+python instance-monitor.py &
 
 # 6. RUN CP WORKERS
 for((k=0; k<$DOCKER_CORES; k++)); do
-    python -v cp-worker.py |& tee $k.out &
+    python cp-worker.py |& tee $k.out &
     sleep $SECONDS_TO_START
 done
 wait
