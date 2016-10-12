@@ -9,6 +9,7 @@ aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
 aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
 aws configure set default.region $AWS_REGION
 INSTANCE_ID=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+echo "Instance ID $INSTANCE_ID"
 OWNER_ID=$(aws ec2 describe-instances --instance-ids $INSTANCE_ID --output text --query 'Reservations[0].[OwnerId]')
 aws ec2 create-tags --resources $INSTANCE_ID --tags Key=Name,Value=${APP_NAME}Worker
 
@@ -24,7 +25,7 @@ aws cloudwatch put-metric-alarm --alarm-name ${APP_NAME}_${INSTANCE_ID} --alarm-
 
 # 4. RUN CP WORKERS
 for((k=0; k<$DOCKER_CORES; k++)); do
-    stdbuf -o0 python cp-worker.py > $k.out 2> $k.err &
+    python cp-worker.py |& tee $k.out 
     sleep $SECONDS_TO_START
 done
 wait

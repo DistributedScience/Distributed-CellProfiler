@@ -6,6 +6,7 @@ import subprocess
 import time
 from base64 import b64encode
 from ConfigParser import ConfigParser
+from pprint import pprint
 
 from config import *
 MONITOR_TIME = 60
@@ -55,8 +56,9 @@ def generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client):
 
 def generateUserData(ecsConfigFile):
 	userData= '#!/bin/bash \n'
-	userData+='yum install -y aws-cli \n'
-	userData+='aws s3 cp '+ecsConfigFile+' /etc/ecs/ecs.config \n'
+	userData+='sudo yum install -y aws-cli \n'
+	userData+='sudo yum install -y awslogs \n'
+	userData+='aws s3 cp '+ecsConfigFile+' /etc/ecs/ecs.config'
 	return b64encode(userData)
 	
 
@@ -132,16 +134,16 @@ def startCluster():
         sys.exit()
 
 	#Step 1: set up the configuration files
-    s3client=boto3.client(s3)
+    s3client=boto3.client('s3')
     ecsConfigFile=generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client)
     spotfleetConfig=loadConfig(sys.argv[2])
     userData=generateUserData(ecsConfigFile)
     spotfleetConfig['LaunchSpecifications'][0]["UserData"]=userData
-    spotfleetConfigString=json.dumps(spotfleetConfig)
+
 
 	# Step 2: make the spot fleet request
-    cmd = 'aws ec2 request-spot-fleet --cli-input-json '+spotfleetConfigString
-    requestInfo = getAWSJsonOutput(cmd)
+    ec2client=boto3.client('ec2')
+    requestInfo = ec2client.request_spot_fleet(SpotFleetRequestConfig=spotfleetConfig)
     print 'Request in process. Wait until your machines are available in the cluster.'
     print 'SpotFleetRequestId',requestInfo['SpotFleetRequestId']
     createMonitor=open('files/' + APP_NAME + 'SpotFleetRequestId.json','w')
