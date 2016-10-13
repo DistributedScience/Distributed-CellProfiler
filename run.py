@@ -44,6 +44,16 @@ def killdeadAlarms(fleetId,monitorapp):
 		print 'Deleted', monitorapp+'_'+eachmachine, 'if it existed'
 	print 'Old alarms deleted'
 
+def seeIfLogExportIsDone(logExportId):
+	while True:
+		cmd='aws logs describe-export-tasks --task-id '+logExportId
+		result =getAWSJsonOutput(cmd) 
+		if result['exportTasks'][0]['status']['code']!='PENDING':
+			if result['exportTasks'][0]['status']['code']!='RUNNING':
+				print result['exportTasks'][0]['status']['code']
+				break
+		time.sleep(30)
+	
 def generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client):
 	configfile=open('configtemp.config','w')
 	configfile.write('ECS_CLUSTER='+ECS_CLUSTER+'\n')
@@ -52,15 +62,29 @@ def generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client):
 	s3client.upload_file('configtemp.config',AWS_BUCKET,'ecsconfigs/'+APP_NAME+'_ecs.config')
 	os.remove('configtemp.config')
 	return 's3://'+AWS_BUCKET+'/ecsconfigs/'+APP_NAME+'_ecs.config'
-	
 
 def generateUserData(ecsConfigFile):
-	userData= '#!/bin/bash \n'
-	userData+='sudo yum install -y aws-cli \n'
-	userData+='sudo yum install -y awslogs \n'
-	userData+='aws s3 cp '+ecsConfigFile+' /etc/ecs/ecs.config'
-	userData+='sudo vgextend docker /dev/xvdcy'
-	userData+='sudo lvextend -L+'+str(EBS_VOL_SIZE)+'G /dev/docker/docker-pool'
+	userData= '''Content-Type: multipart/mixed; boundary="===============BOUNDARY=="
+	MIME-Version: 1.0
+ 	--===============BOUNDARY==
+	MIME-Version: 1.0
+	Content-Type: text/x-shellscript; charset="us-ascii"
+	Content-Transfer-Encoding: 7bit
+	Content-Disposition: inline;
+	#!/bin/bash
+	sudo yum install -y aws-cli
+	sudo yum install -y awslogs 
+        aws s3 cp '''+ecsConfigFile+''' /etc/ecs/ecs.config 
+	--===============BOUNDARY==
+	MIME-Version: 1.0
+	Content-Type: text/cloud-boothook; charset="us-ascii"
+	Content-Transfer-Encoding: 7bit
+	Content-Disposition: inline;
+ 
+	#cloud-boothook
+	echo 'OPTIONS="${OPTIONS} --storage-opt dm.basesize='''+str(EBS_VOL_SIZE)+'''G"' >> /etc/sysconfig/docker
+	--===============BOUNDARY==--'''
+	print userData
 	return b64encode(userData)
 	
 
@@ -141,7 +165,7 @@ def startCluster():
     spotfleetConfig=loadConfig(sys.argv[2])
     userData=generateUserData(ecsConfigFile)
     spotfleetConfig['LaunchSpecifications'][0]["UserData"]=userData
-    spotfleetConfig['LaunchSpecifications'][0]['BlockDeviceMappings'][0]['Ebs']["VolumeSize"]= EBS_VOL_SIZE
+    spotfleetConfig['LaunchSpecifications'][0]['BlockDeviceMappings'][1]['Ebs']["VolumeSize"]= EBS_VOL_SIZE
 
 
 	# Step 2: make the spot fleet request
@@ -224,9 +248,9 @@ def monitor():
     print 'Service has been downscaled'
 
 	# Step3: Delete the alarms from active machines 
-    cmd= 'aws ec2 describe-spot-fleet-instances --spot-fleet-request-id '+fleetId+" --query 'ActiveInstances[*]' --output json"
+    cmd= 'aws ec2 describe-spot-fleet-instances --spot-fleet-request-id '+fleetId+" --output json"
     result= getAWSJsonOutput(cmd)
-    for eachinstance in result:
+    for eachinstance in result['ActiveInstances']:
         delalarm='aws cloudwatch delete-alarms --alarm-name '+monitorapp+'_'+eachinstance["InstanceId"]
         subprocess.Popen(delalarm.split())
 	
@@ -237,16 +261,17 @@ def monitor():
     print 'Job done.'
 
 	#Step 5: Export the logs to S3
-    logclient=boto3.client('logs')
-    cmd = 'aws logs create-export-task --task-name "'+loggroupId+'" --log-group-name "'+loggroupId+'"'+ \
-	'--from 1441490400000 --to ''+%d' %time.time()+' --destination "'+bucketId+'" --destination-prefix "exportedlogs/'+loggroupId+ '"'
+    cmd = 'aws logs create-export-task --task-name "'+loggroupId+'" --log-group-name '+loggroupId+ \
+	' --from 1441490400000 --to '+'%d' %time.time()*1000+' --destination '+bucketId+' --destination-prefix exportedlogs/'+loggroupId
     result =getAWSJsonOutput(cmd)
     print 'Log transfer 1 to S3 initiated'
-    cmd = 'aws logs create-export-task --task-name "'+loggroupId+'_perInstance" --log-group-name "'+loggroupId+'_perInstance"'+ \
-	'--from 1441490400000 --to ''+%d' %time.time()+' --destination "'+bucketId+'" --destination-prefix "exportedlogs/'+loggroupId+ '_perInstance"'
+    seeIfLogExportIsDone(result['taskId'])
+    cmd = 'aws logs create-export-task --task-name "'+loggroupId+'_perInstance" --log-group-name '+loggroupId+'_perInstance '+ \
+	'--from 1441490400000 --to '+'%d' %time.time()*1000+' --destination '+bucketId+' --destination-prefix exportedlogs/'+loggroupId+'_perInstance'
     result =getAWSJsonOutput(cmd)
     print 'Log transfer 2 to S3 initiated'
-
+    seeIfLogExportIsDone(result['taskId'])
+    print 'All export tasks done'
 	# Step 5. Release other resources
 	# Remove SQS queue, ECS Task Definition, ECS Service
 
