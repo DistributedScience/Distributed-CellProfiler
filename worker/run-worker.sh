@@ -33,7 +33,7 @@ for k in $TASK_STRINGS; do
     CONTAINER_ARN=$(aws ecs describe-tasks --cluster $ECS_CLUSTER --tasks $k  --query "tasks[*].[containerInstanceArn]" --output text); 
     if [ "$CONTAINER_ARN" == "$MY_CONTAINER_ARN" ]; 
     then 
-        MY_TASK_NAME=$(aws ecs describe-tasks --cluster $ECS_CLUSTER --tasks $k  --query "tasks[*].overrides.[containerOverrides]" --output text); 
+        MY_TASK_NAME=$(aws ecs describe-tasks --cluster $ECS_CLUSTER --tasks $k  --query "tasks[*].containers[*].[taskArn]" --output text); 
     fi; 
 done   
 

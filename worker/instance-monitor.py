@@ -21,7 +21,7 @@ def monitor():
     watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME+'_perInstance', stream_name=MY_INSTANCE_ID+'_'+MY_TASK_NAME,create_log_group=False)
     logger.addHandler(watchtowerlogger)
     while True:
-        cmd='vmstat -SM'
+        cmd='top -n 1'
         process=subprocess.Popen(cmd.split(),stdout=subprocess.PIPE)
         out,err=process.communicate()
         logger.info(out)
