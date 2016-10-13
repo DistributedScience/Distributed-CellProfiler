@@ -16,12 +16,10 @@
       },
       "BlockDeviceMappings": [
         {
-          "DeviceName": "/dev/xvda",
+          "DeviceName": "/dev/xvdcy",
           "Ebs": {
             "DeleteOnTermination": true,
-            "VolumeType": "gp2",
-            "VolumeSize": 30,
-            "SnapshotId": "snap-02fc09c83e0fd39c1"
+            "VolumeType": "gp2"
           }
         }
       ],
