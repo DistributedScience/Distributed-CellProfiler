@@ -21,6 +21,7 @@ RUN apt-get -y update           && \
 	libssl-dev 		\
 	libxml2-dev 		\
 	make pkg-config		\
+	sysstat			\
 	curl
 
 WORKDIR /usr/local/src
