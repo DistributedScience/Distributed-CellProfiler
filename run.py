@@ -60,7 +60,7 @@ def generateUserData(ecsConfigFile):
 	userData+='sudo yum install -y awslogs \n'
 	userData+='aws s3 cp '+ecsConfigFile+' /etc/ecs/ecs.config'
 	userData+='sudo vgextend docker /dev/xvdcy'
-	userData+='sudo lvextend -L+'+EBS_VOL_SIZE+'G /dev/docker/docker-pool'
+	userData+='sudo lvextend -L+'+str(EBS_VOL_SIZE)+'G /dev/docker/docker-pool'
 	return b64encode(userData)
 	
 
