@@ -15,7 +15,7 @@ AWS_BUCKET = 'your-bucket-name'
 ECS_CLUSTER = 'default'
 CLUSTER_MACHINES = 3
 TASKS_PER_MACHINE = 1
-EBS_VOL_SIZE = 30
+EBS_VOL_SIZE = 30                       # In GB.  Minimum allowed is 22.
 
 # DOCKER INSTANCE RUNNING ENVIRONMENT:
 DOCKER_CORES = 1                        # Number of CellProfiler processes to run inside a docker container

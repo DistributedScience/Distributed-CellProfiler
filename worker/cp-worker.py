@@ -84,7 +84,7 @@ def runCellProfiler(message):
     if CHECK_IF_DONE_BOOL == 'True':
         try:
 		s3client=boto3.client('s3')
-		bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut)
+		bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut+'/')
 		objectsizelist=[k['Size'] for k in bucketlist['Contents']]
 		if len(objectsizelist)>=int(EXPECTED_NUMBER_FILES):
 		    if 0 not in objectsizelist:
@@ -96,7 +96,7 @@ def runCellProfiler(message):
     watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
     logger.addHandler(watchtowerlogger)
     # Build and run CellProfiler command
-    cpDone = LOCAL_OUTPUT + '/cp.is.done'
+    cpDone = localOut + '/cp.is.done'
     if message['pipeline'][-3:]!='.h5':
         cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
         cmd += ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'

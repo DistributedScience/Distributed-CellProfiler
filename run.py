@@ -64,27 +64,10 @@ def generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client):
 	return 's3://'+AWS_BUCKET+'/ecsconfigs/'+APP_NAME+'_ecs.config'
 
 def generateUserData(ecsConfigFile):
-	userData= '''Content-Type: multipart/mixed; boundary="===============BOUNDARY=="
-	MIME-Version: 1.0
- 	--===============BOUNDARY==
-	MIME-Version: 1.0
-	Content-Type: text/x-shellscript; charset="us-ascii"
-	Content-Transfer-Encoding: 7bit
-	Content-Disposition: inline;
-	#!/bin/bash
-	sudo yum install -y aws-cli
-	sudo yum install -y awslogs 
-        aws s3 cp '''+ecsConfigFile+''' /etc/ecs/ecs.config 
-	--===============BOUNDARY==
-	MIME-Version: 1.0
-	Content-Type: text/cloud-boothook; charset="us-ascii"
-	Content-Transfer-Encoding: 7bit
-	Content-Disposition: inline;
- 
-	#cloud-boothook
-	echo 'OPTIONS="${OPTIONS} --storage-opt dm.basesize='''+str(EBS_VOL_SIZE)+'''G"' >> /etc/sysconfig/docker
-	--===============BOUNDARY==--'''
-	print userData
+	userData= '#!/bin/bash \n'
+	userData+='sudo yum install -y aws-cli \n'
+	userData+='sudo yum install -y awslogs \n'
+	userData+='aws s3 cp '+ecsConfigFile+' /etc/ecs/ecs.config'
 	return b64encode(userData)
 	
 
@@ -179,7 +162,8 @@ def startCluster():
     createMonitor.write('"MONITOR_ECS_CLUSTER" : "'+ECS_CLUSTER+'",\n')
     createMonitor.write('"MONITOR_QUEUE_NAME" : "'+SQS_QUEUE_NAME+'",\n')
     createMonitor.write('"MONITOR_BUCKET_NAME" : "'+AWS_BUCKET+'",\n')
-    createMonitor.write('"MONITOR_LOG_GROUP_NAME" : "'+LOG_GROUP_NAME+'"}\n')
+    createMonitor.write('"MONITOR_LOG_GROUP_NAME" : "'+LOG_GROUP_NAME+'",\n')
+    createMonitor.write('"MONITOR_START_TIME" : "'+str(int(time.time()*1000))+'"}\n')
     createMonitor.close()
     
     
@@ -229,6 +213,7 @@ def monitor():
     queueId=monitorInfo["MONITOR_QUEUE_NAME"]
     bucketId=monitorInfo["MONITOR_BUCKET_NAME"]
     loggroupId=monitorInfo["MONITOR_LOG_GROUP_NAME"]
+    starttime=monitorInfo["MONITOR_START_TIME"]
 
     	# Step 1: Create job and count messages periodically
     queue = JobQueue(name=queueId)
@@ -241,18 +226,19 @@ def monitor():
         time.sleep(MONITOR_TIME)
 	
 	# Step 2: When no messages are pending, stop service
-    	cmd = 'aws ecs update-service --cluster ' + monitorcluster + \
+    cmd = 'aws ecs update-service --cluster ' + monitorcluster + \
 	      ' --service ' + monitorapp + 'Service' + \
 	      ' --desired-count 0'
     update = getAWSJsonOutput(cmd)
     print 'Service has been downscaled'
 
-	# Step3: Delete the alarms from active machines 
+	# Step3: Delete the alarms from active machines and machines that have died since the last sweep 
     cmd= 'aws ec2 describe-spot-fleet-instances --spot-fleet-request-id '+fleetId+" --output json"
     result= getAWSJsonOutput(cmd)
     for eachinstance in result['ActiveInstances']:
         delalarm='aws cloudwatch delete-alarms --alarm-name '+monitorapp+'_'+eachinstance["InstanceId"]
         subprocess.Popen(delalarm.split())
+    killdeadAlarms(fleetId,monitorapp)
 	
 	# Step 4: Read spot fleet id and terminate all EC2 instances
     print 'Shutting down spot fleet',fleetId
@@ -262,12 +248,12 @@ def monitor():
 
 	#Step 5: Export the logs to S3
     cmd = 'aws logs create-export-task --task-name "'+loggroupId+'" --log-group-name '+loggroupId+ \
-	' --from 1441490400000 --to '+'%d' %time.time()*1000+' --destination '+bucketId+' --destination-prefix exportedlogs/'+loggroupId
+	' --from '+starttime+' --to '+'%d' %(time.time()*1000)+' --destination '+bucketId+' --destination-prefix exportedlogs/'+loggroupId
     result =getAWSJsonOutput(cmd)
     print 'Log transfer 1 to S3 initiated'
     seeIfLogExportIsDone(result['taskId'])
     cmd = 'aws logs create-export-task --task-name "'+loggroupId+'_perInstance" --log-group-name '+loggroupId+'_perInstance '+ \
-	'--from 1441490400000 --to '+'%d' %time.time()*1000+' --destination '+bucketId+' --destination-prefix exportedlogs/'+loggroupId+'_perInstance'
+	'--from '+starttime+' --to '+'%d' %(time.time()*1000)+' --destination '+bucketId+' --destination-prefix exportedlogs/'+loggroupId+'_perInstance'
     result =getAWSJsonOutput(cmd)
     print 'Log transfer 2 to S3 initiated'
     seeIfLogExportIsDone(result['taskId'])
