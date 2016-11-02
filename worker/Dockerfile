@@ -21,6 +21,7 @@ RUN apt-get -y update           && \
 	libssl-dev 		\
 	libxml2-dev 		\
 	make pkg-config		\
+	sysstat			\
 	curl
 
 WORKDIR /usr/local/src
@@ -51,6 +52,7 @@ RUN \
 RUN mkdir -p /home/ubuntu/
 WORKDIR /home/ubuntu
 COPY cp-worker.py .
+COPY instance-monitor.py .
 COPY run-worker.sh .
 RUN chmod 755 run-worker.sh
 

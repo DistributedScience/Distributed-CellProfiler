@@ -8,21 +8,27 @@
   "TerminateInstancesWithExpiration": true,
   "LaunchSpecifications": [
     {
-      "ImageId": "ami-2b3b6041",
+      "ImageId": "ami-03562b14",
       "InstanceType": "m4.xlarge",
       "KeyName": "your_key_file_name",
       "IamInstanceProfile": {
         "Arn": "arn:aws:iam::XXXXXXXXXXXX:instance-profile/ecsInstanceRole"
       },
-      "UserData": "IyEvYmluL2Jhc2gKZWNobyBFQ1NfQ0xVU1RFUj1kZWZhdWx0ID4+IC9ldGMvZWNzL2Vjcy5jb25maWc=",
       "BlockDeviceMappings": [
         {
           "DeviceName": "/dev/xvda",
           "Ebs": {
             "DeleteOnTermination": true,
             "VolumeType": "gp2",
-            "VolumeSize": 30,
-            "SnapshotId": "snap-76fc8317"
+            "VolumeSize": 8,
+            "SnapshotId": "snap-02fc09c83e0fd39c1"
+          }
+        },
+        {
+          "DeviceName": "/dev/xvdcz",
+          "Ebs": {
+            "DeleteOnTermination": true,
+            "VolumeType": "gp2"
           }
         }
       ],

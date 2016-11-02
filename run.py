@@ -4,7 +4,9 @@ import datetime
 import json
 import subprocess
 import time
+from base64 import b64encode
 from ConfigParser import ConfigParser
+from pprint import pprint
 
 from config import *
 MONITOR_TIME = 60
@@ -40,8 +42,34 @@ def killdeadAlarms(fleetId,monitorapp):
 		subprocess.Popen(cmd.split())
 		time.sleep(3) #Avoid Rate exceeded error
 		print 'Deleted', monitorapp+'_'+eachmachine, 'if it existed'
-	  print 'Old alarms deleted'
+	print 'Old alarms deleted'
 
+def seeIfLogExportIsDone(logExportId):
+	while True:
+		cmd='aws logs describe-export-tasks --task-id '+logExportId
+		result =getAWSJsonOutput(cmd) 
+		if result['exportTasks'][0]['status']['code']!='PENDING':
+			if result['exportTasks'][0]['status']['code']!='RUNNING':
+				print result['exportTasks'][0]['status']['code']
+				break
+		time.sleep(30)
+	
+def generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client):
+	configfile=open('configtemp.config','w')
+	configfile.write('ECS_CLUSTER='+ECS_CLUSTER+'\n')
+	configfile.write('ECS_AVAILABLE_LOGGING_DRIVERS=["json-file","awslogs"]')
+	configfile.close()
+	s3client.upload_file('configtemp.config',AWS_BUCKET,'ecsconfigs/'+APP_NAME+'_ecs.config')
+	os.remove('configtemp.config')
+	return 's3://'+AWS_BUCKET+'/ecsconfigs/'+APP_NAME+'_ecs.config'
+
+def generateUserData(ecsConfigFile):
+	userData= '#!/bin/bash \n'
+	userData+='sudo yum install -y aws-cli \n'
+	userData+='sudo yum install -y awslogs \n'
+	userData+='aws s3 cp '+ecsConfigFile+' /etc/ecs/ecs.config'
+	return b64encode(userData)
+	
 
 #################################
 # CLASS TO HANDLE SQS QUEUE
@@ -114,9 +142,18 @@ def startCluster():
         print 'Use: run.py startCluster configFile'
         sys.exit()
 
-	# Step 1: make a spot fleet request
-    cmd = 'aws ec2 request-spot-fleet --spot-fleet-request-config file://' + sys.argv[2]
-    requestInfo = getAWSJsonOutput(cmd)
+	#Step 1: set up the configuration files
+    s3client=boto3.client('s3')
+    ecsConfigFile=generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client)
+    spotfleetConfig=loadConfig(sys.argv[2])
+    userData=generateUserData(ecsConfigFile)
+    spotfleetConfig['LaunchSpecifications'][0]["UserData"]=userData
+    spotfleetConfig['LaunchSpecifications'][0]['BlockDeviceMappings'][1]['Ebs']["VolumeSize"]= EBS_VOL_SIZE
+
+
+	# Step 2: make the spot fleet request
+    ec2client=boto3.client('ec2')
+    requestInfo = ec2client.request_spot_fleet(SpotFleetRequestConfig=spotfleetConfig)
     print 'Request in process. Wait until your machines are available in the cluster.'
     print 'SpotFleetRequestId',requestInfo['SpotFleetRequestId']
     createMonitor=open('files/' + APP_NAME + 'SpotFleetRequestId.json','w')
@@ -125,7 +162,8 @@ def startCluster():
     createMonitor.write('"MONITOR_ECS_CLUSTER" : "'+ECS_CLUSTER+'",\n')
     createMonitor.write('"MONITOR_QUEUE_NAME" : "'+SQS_QUEUE_NAME+'",\n')
     createMonitor.write('"MONITOR_BUCKET_NAME" : "'+AWS_BUCKET+'",\n')
-    createMonitor.write('"MONITOR_LOG_GROUP_NAME" : "'+LOG_GROUP_NAME+'"}\n')
+    createMonitor.write('"MONITOR_LOG_GROUP_NAME" : "'+LOG_GROUP_NAME+'",\n')
+    createMonitor.write('"MONITOR_START_TIME" : "'+str(int(time.time()*1000))+'"}\n')
     createMonitor.close()
     
     
@@ -147,6 +185,9 @@ def startCluster():
     if LOG_GROUP_NAME not in groupnames:
          logclient.create_log_group(logGroupName=LOG_GROUP_NAME)
 	 logclient.put_retention_policy(logGroupName=LOG_GROUP_NAME, retentionInDays=60)
+    if LOG_GROUP_NAME+'_perInstance' not in groupnames:
+         logclient.create_log_group(logGroupName=LOG_GROUP_NAME+'_perInstance')
+	 logclient.put_retention_policy(logGroupName=LOG_GROUP_NAME+'_perInstance', retentionInDays=60)
 		
     	# Step 4: update the ECS service to inject docker containers in EC2 instances
     print 'Updating service'
@@ -172,6 +213,7 @@ def monitor():
     queueId=monitorInfo["MONITOR_QUEUE_NAME"]
     bucketId=monitorInfo["MONITOR_BUCKET_NAME"]
     loggroupId=monitorInfo["MONITOR_LOG_GROUP_NAME"]
+    starttime=monitorInfo["MONITOR_START_TIME"]
 
     	# Step 1: Create job and count messages periodically
     queue = JobQueue(name=queueId)
@@ -184,18 +226,19 @@ def monitor():
         time.sleep(MONITOR_TIME)
 	
 	# Step 2: When no messages are pending, stop service
-    	cmd = 'aws ecs update-service --cluster ' + monitorcluster + \
+    cmd = 'aws ecs update-service --cluster ' + monitorcluster + \
 	      ' --service ' + monitorapp + 'Service' + \
 	      ' --desired-count 0'
     update = getAWSJsonOutput(cmd)
     print 'Service has been downscaled'
 
-	# Step3: Delete the alarms from active machines 
-    cmd= 'aws ec2 describe-spot-fleet-instances --spot-fleet-request-id '+fleetId+" --query 'ActiveInstances[*]' --output json"
+	# Step3: Delete the alarms from active machines and machines that have died since the last sweep 
+    cmd= 'aws ec2 describe-spot-fleet-instances --spot-fleet-request-id '+fleetId+" --output json"
     result= getAWSJsonOutput(cmd)
-    for eachinstance in result:
+    for eachinstance in result['ActiveInstances']:
         delalarm='aws cloudwatch delete-alarms --alarm-name '+monitorapp+'_'+eachinstance["InstanceId"]
         subprocess.Popen(delalarm.split())
+    killdeadAlarms(fleetId,monitorapp)
 	
 	# Step 4: Read spot fleet id and terminate all EC2 instances
     print 'Shutting down spot fleet',fleetId
@@ -204,12 +247,17 @@ def monitor():
     print 'Job done.'
 
 	#Step 5: Export the logs to S3
-    logclient=boto3.client('logs')
-    cmd = 'aws logs create-export-task --task-name "'+loggroupId+'" --log-group-name "'+loggroupId+'"'+ \
-	'--from 1441490400000 --to ''+%d' %time.time()+' --destination "'+bucketId+'" --destination-prefix "exportedlogs/'+loggroupId+ '"'
+    cmd = 'aws logs create-export-task --task-name "'+loggroupId+'" --log-group-name '+loggroupId+ \
+	' --from '+starttime+' --to '+'%d' %(time.time()*1000)+' --destination '+bucketId+' --destination-prefix exportedlogs/'+loggroupId
     result =getAWSJsonOutput(cmd)
-    print 'Log transfer to S3 initiated'
-
+    print 'Log transfer 1 to S3 initiated'
+    seeIfLogExportIsDone(result['taskId'])
+    cmd = 'aws logs create-export-task --task-name "'+loggroupId+'_perInstance" --log-group-name '+loggroupId+'_perInstance '+ \
+	'--from '+starttime+' --to '+'%d' %(time.time()*1000)+' --destination '+bucketId+' --destination-prefix exportedlogs/'+loggroupId+'_perInstance'
+    result =getAWSJsonOutput(cmd)
+    print 'Log transfer 2 to S3 initiated'
+    seeIfLogExportIsDone(result['taskId'])
+    print 'All export tasks done'
 	# Step 5. Release other resources
 	# Remove SQS queue, ECS Task Definition, ECS Service
 

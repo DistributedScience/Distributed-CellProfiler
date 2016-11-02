@@ -52,7 +52,15 @@ TASK_DEFINITION = {
             "cpu": CPU_SHARES,
             "memory": MEMORY,
             "essential": True,
-	    "privileged": True
+	    "privileged": True,
+	    "logConfiguration": {
+        	"logDriver": "awslogs",
+        	"options": {
+          	"awslogs-group": LOG_GROUP_NAME+"_perInstance",
+          	"awslogs-region": AWS_REGION,
+		"awslogs-stream-prefix": APP_NAME
+        	}
+      	    }
         }
     ]
 }
@@ -137,6 +145,10 @@ def generate_task_definition():
 	{
 	    "name": "EXPECTED_NUMBER_FILES",
 	    "value": str(EXPECTED_NUMBER_FILES)
+	},
+	{
+	    "name": "ECS_CLUSTER",
+	    "value": ECS_CLUSTER
 	},
 	{
 	    "name": "SECONDS_TO_START",
