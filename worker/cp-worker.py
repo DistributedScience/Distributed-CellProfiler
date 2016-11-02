@@ -81,7 +81,7 @@ def runCellProfiler(message):
 			'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
 			'MetadataID':metadataID }
     # See if this is a message you've already handled, if you've so chosen
-    if CHECK_IF_DONE_BOOL == 'True':
+    if CHECK_IF_DONE_BOOL.upper() == 'TRUE':
         try:
 		s3client=boto3.client('s3')
 		bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut+'/')
