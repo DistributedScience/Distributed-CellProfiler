@@ -3,7 +3,7 @@
 APP_NAME = 'DistributedCP'                # Used to generate derivative names unique to the application.
 
 # DOCKER REGISTRY INFORMATION:
-DOCKERHUB_TAG = 'bethcimini/cellprofiler:cp4ecs_2'
+DOCKERHUB_TAG = 'bethcimini/cellprofiler_bugfix:latest'
 
 # AWS GENERAL SETTINGS:
 AWS_REGION = 'us-east-1'
@@ -29,7 +29,7 @@ SQS_MESSAGE_VISIBILITY = 1*60           # Timeout (secs) for messages in flight 
 SQS_DEAD_LETTER_QUEUE = 'arn:aws:sqs:some-region:111111100000:DeadMessages'
 
 # LOG GROUP INFORMATION:
-LOG_GROUP_NAME = APP_NAME + '2016_09_30'
+LOG_GROUP_NAME = APP_NAME 
 
 # REDUNDANCY CHECKS
 CHECK_IF_DONE_BOOL = 'True'  #True or False- should it check if there are a certain number of non-empty files and delete the job if yes?
