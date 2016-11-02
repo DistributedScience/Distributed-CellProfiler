@@ -70,7 +70,26 @@ def generateUserData(ecsConfigFile):
 	userData+='aws s3 cp '+ecsConfigFile+' /etc/ecs/ecs.config'
 	return b64encode(userData)
 	
-
+def removequeue(queueName):
+    cmd='aws sqs list-queues --queue-name-prefix ' + queueName
+    queueoutput=getAWSJsonOutput(cmd)
+    if len(queueoutput["QueueUrls"])==1:
+	queueUrl=queueoutput["QueueUrls"][0]
+    else: #In case we have "AnalysisQueue" and "AnalysisQueue1" and only want to delete the first of those
+	for eachUrl in queueoutput["QueueUrls"]:
+		if eachUrl.split('/')[-1] == queueName:
+			queueUrl=eachUrl
+    cmd='aws sqs delete-queue --queue-url ' + queueUrl
+    subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
+	
+def deregistertask(taskName):
+    cmd='aws ecs list-task-definitions --family-prefix '+taskName+' --status ACTIVE'
+    taskArns=getAWSJsonOutput(cmd)
+    for eachtask in taskArns['taskDefinitionArns']:
+	fulltaskname=eachtask.split('/')[-1]
+	cmd='aws ecs deregister-task-definition --task-definition '+fulltaskname
+	result=getAWSJsonOutput(cmd) 
+	
 #################################
 # CLASS TO HANDLE SQS QUEUE
 #################################
@@ -258,8 +277,21 @@ def monitor():
     print 'Log transfer 2 to S3 initiated'
     seeIfLogExportIsDone(result['taskId'])
     print 'All export tasks done'
-	# Step 5. Release other resources
+	
+	# Step 6. Release other resources
 	# Remove SQS queue, ECS Task Definition, ECS Service
+    ECS_TASK_NAME = monitorapp + 'Task'
+    ECS_SERVICE_NAME = monitorapp + 'Service'
+    print 'Deleting existing queue.'
+    removequeue(queueId)
+    print 'Deleting service'
+    cmd='aws ecs delete-service --cluster '+monitorcluster+' --service '+ECS_SERVICE_NAME
+    result=getAWSJsonOutput(cmd)
+    print 'De-registering task'
+    deregistertask(ECS_TASK_NAME)
+	
+
+    
 
 
 #################################
