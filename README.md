@@ -56,16 +56,10 @@ everything is setup, and saves the spot fleet identifier in a file for further r
 ### Step 4
 When the cluster is up and running, you can monitor progress using the following command:
 
- $ python run.py monitor files/APP_NAME.SpotFleetRequestId
+ $ python run.py monitor files/APP_NAMESpotFleetRequestId.json
 
-The file APP_NAME.SpotFleetRequestId is created after the cluster is setup in step 3. It is 
+The file APP_NAMESpotFleetRequestId.json is created after the cluster is setup in step 3. It is 
 important to keep this monitor running if you want to automatically shutdown computing resources
 when there are no more tasks in the queue (recommended).
 
-
-## TODO
-* Port the fab script to Terraform or other resource handler
-* Make uniform use of AWS CLI or boto, or standardize their use
-* Clean the string formation of the CellProfiler process
-* Change the use of credentials for AWS IAM roles
-* Remove the dependency of the worker on the cp.done file and use exit codes instead
+See the wiki for more information about each step of the process.
