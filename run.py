@@ -284,7 +284,7 @@ def monitor():
     print 'Log transfer 1 to S3 initiated'
     seeIfLogExportIsDone(result['taskId'])
     cmd = 'aws logs create-export-task --task-name "'+loggroupId+'_perInstance" --log-group-name '+loggroupId+'_perInstance '+ \
-	'--from '+starttime+' --to '+'%d' %(time.time()*1000)+' --destination '+bucketId+' --destination-prefix exportedlogs/'+loggroupId+'_perInstance'
+	'--from '+starttime+' --to '+'%d' %(time.time()*1000)+' --destination '+bucketId+' --destination-prefix exportedlogs/'+loggroupId
     result =getAWSJsonOutput(cmd)
     print 'Log transfer 2 to S3 initiated'
     seeIfLogExportIsDone(result['taskId'])
