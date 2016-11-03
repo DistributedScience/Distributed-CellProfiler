@@ -265,7 +265,19 @@ def monitor():
     result = getAWSJsonOutput(cmd)
     print 'Job done.'
 
-	#Step 5: Export the logs to S3
+	# Step 5. Release other resources
+	# Remove SQS queue, ECS Task Definition, ECS Service
+    ECS_TASK_NAME = monitorapp + 'Task'
+    ECS_SERVICE_NAME = monitorapp + 'Service'
+    print 'Deleting existing queue.'
+    removequeue(queueId)
+    print 'Deleting service'
+    cmd='aws ecs delete-service --cluster '+monitorcluster+' --service '+ECS_SERVICE_NAME
+    result=getAWSJsonOutput(cmd)
+    print 'De-registering task'
+    deregistertask(ECS_TASK_NAME)	
+	
+	#Step 6: Export the logs to S3
     cmd = 'aws logs create-export-task --task-name "'+loggroupId+'" --log-group-name '+loggroupId+ \
 	' --from '+starttime+' --to '+'%d' %(time.time()*1000)+' --destination '+bucketId+' --destination-prefix exportedlogs/'+loggroupId
     result =getAWSJsonOutput(cmd)
@@ -277,23 +289,8 @@ def monitor():
     print 'Log transfer 2 to S3 initiated'
     seeIfLogExportIsDone(result['taskId'])
     print 'All export tasks done'
+
 	
-	# Step 6. Release other resources
-	# Remove SQS queue, ECS Task Definition, ECS Service
-    ECS_TASK_NAME = monitorapp + 'Task'
-    ECS_SERVICE_NAME = monitorapp + 'Service'
-    print 'Deleting existing queue.'
-    removequeue(queueId)
-    print 'Deleting service'
-    cmd='aws ecs delete-service --cluster '+monitorcluster+' --service '+ECS_SERVICE_NAME
-    result=getAWSJsonOutput(cmd)
-    print 'De-registering task'
-    deregistertask(ECS_TASK_NAME)
-	
-
-    
-
-
 #################################
 # MAIN USER INTERACTION 
 #################################
