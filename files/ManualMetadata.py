@@ -1,19 +1,24 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Aug 15 12:27:08 2016
+''' A script to create a list of all the metadata combinations present in a given CSV
+This is designed to be called from the command line with 
+$ python ManualMetadata.py pathtocsv/csvfile.csv "['Metadata_Metadata1','Metadata_Metadata2']" 
+'''
 
-@author: bcimini
-"""
 import pandas as pd
 import sys
+import ast
 
 csv=sys.argv[1]
+metadatalist=ast.literal_eval(sys.argv[2])
 
 def manualmetadata():
     incsv=pd.read_csv(csv)
     manmet=open(csv[:-4]+'batch.txt','w')
     print incsv.shape
     for i in range(incsv.shape[0]):
-        manmet.write('{"Metadata": "Metadata_Plate='+str(incsv.Metadata_Plate[i])+',Metadata_Well='+str(incsv.Metadata_Well[i])+',Metadata_Site='+str(int(incsv.Metadata_Site[i]))+'"},\n')
+            metadatatext='{"Metadata": "'
+            for j in metadatalist:
+                metadatatext+=j+'='+str(incsv[j][i])+','
+            metadatatext=metadatatext[:-1]+'"}, \n'
+            manmet.write(metadatatext)
     manmet.close()
 manualmetadata()
