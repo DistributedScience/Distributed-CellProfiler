@@ -114,7 +114,7 @@ class JobQueue():
         self.queue.load()
         visible = int( self.queue.attributes['ApproximateNumberOfMessages'] )
         nonVis = int( self.queue.attributes['ApproximateNumberOfMessagesNotVisible'] )
-        if visible != self.pending:
+        if [visible, nonVis] != [self.pending,self.inProcess]:
             self.pending = visible
             self.inProcess = nonVis
             d = datetime.datetime.now()
