@@ -14,11 +14,15 @@ def manualmetadata():
     incsv=pd.read_csv(csv)
     manmet=open(csv[:-4]+'batch.txt','w')
     print incsv.shape
+    done=[]
     for i in range(incsv.shape[0]):
             metadatatext='{"Metadata": "'
             for j in metadatalist:
                 metadatatext+=j+'='+str(incsv[j][i])+','
             metadatatext=metadatatext[:-1]+'"}, \n'
-            manmet.write(metadatatext)
+            if metadatatext not in done:
+                manmet.write(metadatatext)
+                done.append(metadatatext)
     manmet.close()
+    print str(len(done)), 'batches found'
 manualmetadata()
