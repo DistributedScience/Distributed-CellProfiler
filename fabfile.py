@@ -173,6 +173,14 @@ def update_ecs_task_definition():
         capture=True
     )
 
+def get_or_create_cluster():
+    info = local('aws ecs list-clusters', capture=True)
+    data = json.loads(info)
+    cluster = [clu for clu in data['clusters']['clusterName'] if clu == ECS_CLUSTER]
+    if len(cluster) == 0:
+	local('aws ecs create-cluster --cluster-name '+ECS_CLUSTER,capture=True)
+	time.sleep(WAIT_TIME)
+
 def create_or_update_ecs_service():
     # Create the service with no workers (0 desired count)
     info = local('aws ecs list-services', capture=True)
@@ -226,6 +234,7 @@ def get_or_create_queue():
 	    )
 	time.sleep(WAIT_TIME)
 
+
 # High level functions. Call these as "fab <function>"
 
 
@@ -234,6 +243,7 @@ def update_bucket():
 
 
 def update_ecs():
+    get_or_create_cluster()
     update_ecs_task_definition()
     create_or_update_ecs_service()
 
