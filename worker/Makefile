@@ -1,5 +1,5 @@
 user = bethcimini
-project = cellprofiler_bugfix
+project = distributed-cellprofiler
 tag = latest
 
 .DEFAULT_GOAL: build
