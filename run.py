@@ -89,6 +89,14 @@ def deregistertask(taskName):
 	fulltaskname=eachtask.split('/')[-1]
 	cmd='aws ecs deregister-task-definition --task-definition '+fulltaskname
 	result=getAWSJsonOutput(cmd) 
+
+def removeClusterIfUnused(clusterName):
+    if clusterName != 'default'
+	cmd = 'aws ecs describe-clusters --cluster '+clusterName
+	result=getAWSJsonOutput(cmd) 
+	if sum([result['clusters']['pendingTasksCount'],result['clusters']['runningTasksCount'],result['clusters']['activeServicesCount']])==0:
+	    cmd = 'aws ecs delete-cluster --cluster '+clusterName
+	    result=getAWSJsonOutput(cmd)
 	
 #################################
 # CLASS TO HANDLE SQS QUEUE
@@ -275,7 +283,9 @@ def monitor():
     cmd='aws ecs delete-service --cluster '+monitorcluster+' --service '+ECS_SERVICE_NAME
     result=getAWSJsonOutput(cmd)
     print 'De-registering task'
-    deregistertask(ECS_TASK_NAME)	
+    deregistertask(ECS_TASK_NAME)
+    print "Removing cluster if it's not the default and not otherwise in use"
+    removeClusterIfUnused(monitorcluster)
 	
 	#Step 6: Export the logs to S3
     cmd = 'aws logs create-export-task --task-name "'+loggroupId+'" --log-group-name '+loggroupId+ \
