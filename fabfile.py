@@ -224,6 +224,7 @@ def get_or_create_queue():
 		AWS_CLI_STANDARD_OPTIONS,
 		capture=True
 	    )
+	time.sleep(WAIT_TIME)
 
 # High level functions. Call these as "fab <function>"
 
