@@ -94,7 +94,7 @@ def removeClusterIfUnused(clusterName):
     if clusterName != 'default':
 	cmd = 'aws ecs describe-clusters --cluster '+clusterName
 	result=getAWSJsonOutput(cmd) 
-	if sum([result['clusters']['pendingTasksCount'],result['clusters']['runningTasksCount'],result['clusters']['activeServicesCount']])==0:
+	if sum([result['clusters'][0]['pendingTasksCount'],result['clusters'][0]['runningTasksCount'],result['clusters'][0]['activeServicesCount']])==0:
 	    cmd = 'aws ecs delete-cluster --cluster '+clusterName
 	    result=getAWSJsonOutput(cmd)
 	
