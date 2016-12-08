@@ -91,7 +91,7 @@ def deregistertask(taskName):
 	result=getAWSJsonOutput(cmd) 
 
 def removeClusterIfUnused(clusterName):
-    if clusterName != 'default'
+    if clusterName != 'default':
 	cmd = 'aws ecs describe-clusters --cluster '+clusterName
 	result=getAWSJsonOutput(cmd) 
 	if sum([result['clusters']['pendingTasksCount'],result['clusters']['runningTasksCount'],result['clusters']['activeServicesCount']])==0:
