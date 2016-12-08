@@ -31,7 +31,7 @@ def killdeadAlarms(fleetId,monitorapp):
 	checkdates=[datetime.datetime.now().strftime('%Y-%m-%d'),(datetime.datetime.now()-datetime.timedelta(days=1)).strftime('%Y-%m-%d')]
 	todel=[]
 	for eachdate in checkdates:
-         cmd="aws ec2 describe-spot-fleet-request-history --spot-fleet-request-id "+fleetId+" --start-time "+eachdate 
+         cmd="aws ec2 describe-spot-fleet-request-history --spot-fleet-request-id "+fleetId+" --start-time "+eachdate+" --output json" 
          datedead=getAWSJsonOutput(cmd)
          for eachevent in datedead['HistoryRecords']:
              if eachevent['EventType']=='instanceChange':
