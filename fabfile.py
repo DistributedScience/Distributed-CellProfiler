@@ -176,7 +176,7 @@ def update_ecs_task_definition():
 def get_or_create_cluster():
     info = local('aws ecs list-clusters', capture=True)
     data = json.loads(info)
-    cluster = [clu for clu in data['clusters']['clusterName'] if clu == ECS_CLUSTER]
+    cluster = [clu for clu in data['clusterArns'] if clu.endswith(ECS_CLUSTER)]
     if len(cluster) == 0:
 	local('aws ecs create-cluster --cluster-name '+ECS_CLUSTER,capture=True)
 	time.sleep(WAIT_TIME)
