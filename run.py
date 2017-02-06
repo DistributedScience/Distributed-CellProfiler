@@ -77,7 +77,8 @@ def generateUserData(ecsConfigFile):
    		"temp_config.txt:text/x-shellscript "
 	subprocess.Popen(cmd.split())
 	userData=''
-	with open('temp_userdata.txt','r') as mimefile:
+	print os.path.exists('temp_userdata.txt')
+	with open('temp_userdata.txt','rb') as mimefile:
 		for line in mimefile:
 			userData += line
 	os.remove('temp_boothook.txt')
