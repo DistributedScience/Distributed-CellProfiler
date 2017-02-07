@@ -76,6 +76,7 @@ def generateUserData(ecsConfigFile):
 		"temp_boothook.txt:text/cloud-boothook " + \
    		"temp_config.txt:text/x-shellscript "
 	subprocess.Popen(cmd.split())
+	time.sleep(10)
 	userData=''
 	print os.path.exists('temp_userdata.txt')
 	with open('temp_userdata.txt','rb') as mimefile:
