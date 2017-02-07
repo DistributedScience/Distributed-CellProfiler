@@ -63,7 +63,7 @@ def generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client):
 	os.remove('configtemp.config')
 	return 's3://'+AWS_BUCKET+'/ecsconfigs/'+APP_NAME+'_ecs.config'
 
-def generateUserData(ecsConfigFile):
+def generateUserData(ecsConfigFile,dockerBaseSize):
 	with open('temp_config.txt','w') as tempconfig:
 		tempconfig.write('#!/bin/bash \n')
 		tempconfig.write('sudo yum install -y aws-cli \n')
@@ -71,14 +71,13 @@ def generateUserData(ecsConfigFile):
 		tempconfig.write('aws s3 cp '+ecsConfigFile+' /etc/ecs/ecs.config')
 	with open('temp_boothook.txt','w') as tempboot:
 		tempboot.write('#!/bin/bash \n')
-		tempboot.write("echo 'OPTIONS="+'"${OPTIONS} --storage-opt dm.basesize=20G"'+"' >> /etc/sysconfig/docker")
+		tempboot.write("echo 'OPTIONS="+'"${OPTIONS} --storage-opt dm.basesize='+str(dockerBaseSize)+'G"'+"' >> /etc/sysconfig/docker")
 	cmd = "write-mime-multipart --output=temp_userdata.txt " + \
 		"temp_boothook.txt:text/cloud-boothook " + \
    		"temp_config.txt:text/x-shellscript "
 	subprocess.Popen(cmd.split())
-	time.sleep(10)
+	time.sleep(5)
 	userData=''
-	print os.path.exists('temp_userdata.txt')
 	with open('temp_userdata.txt','rb') as mimefile:
 		for line in mimefile:
 			userData += line
@@ -190,7 +189,7 @@ def startCluster():
     s3client=boto3.client('s3')
     ecsConfigFile=generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client)
     spotfleetConfig=loadConfig(sys.argv[2])
-    userData=generateUserData(ecsConfigFile)
+    userData=generateUserData(ecsConfigFile,DOCKER_BASE_SIZE)
     spotfleetConfig['LaunchSpecifications'][0]["UserData"]=userData
     spotfleetConfig['LaunchSpecifications'][0]['BlockDeviceMappings'][1]['Ebs']["VolumeSize"]= EBS_VOL_SIZE
 
