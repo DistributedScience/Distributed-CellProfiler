@@ -8,6 +8,7 @@ import subprocess
 import sys 
 import time
 import watchtower
+import string
 
 #################################
 # CONSTANT PATHS IN THE CONTAINER
@@ -73,8 +74,34 @@ def printandlog(text,logger):
 def runCellProfiler(message):
     #List the directories in the bucket- this prevents a strange s3fs error
     os.system('ls '+DATA_ROOT+r'/projects')
+	
     # Prepare paths and parameters
-    metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
+    if type(message['Metadata'])==dict: #support for cellprofiler --print-groups output
+	if  message['output_structure']=='':
+		printandlog('You must specify an output structure when passing Metadata as dictionaries',logger)
+		logger.removeHandler(watchtowerlogger)
+		return 'INPUT_PROBLEM'
+	else:
+		metadataID = message['output_structure']
+		for eachMetadata in message['Metadata'].keys():
+			if eachMetadata not in metadataID:
+				printandlog('Your specified output structure does not match the Metadata passed',logger)
+				logger.removeHandler(watchtowerlogger)
+				return 'INPUT_PROBLEM'
+			else:
+				metadataID = string.replace(metadataID,eachMetadata,message['Metadata'][eachMetadata])
+    elif message['output_structure']!='': #support for explicit output structuring
+	metadataID = message['output_structure']
+	for eachMetadata in message['Metadata'].split(','):
+		if eachMetadata not in metadataID:
+			printandlog('Your specified output structure does not match the Metadata passed',logger)
+			logger.removeHandler(watchtowerlogger)
+			return 'INPUT_PROBLEM' 
+		else:
+			metadataID = string.replace(metadataID,eachMetadata.split('=')[0],eachMetadata.split('=')[1])
+    else: #backwards compatability with 1.0.0 and/or no desire to structure output
+    	metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
+	
     localOut = LOCAL_OUTPUT + '/%(MetadataID)s' % {'MetadataID': metadataID}
     remoteOut= os.path.join(message['output'],metadataID)
     replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
