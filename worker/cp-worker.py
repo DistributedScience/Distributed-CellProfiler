@@ -74,6 +74,12 @@ def printandlog(text,logger):
 def runCellProfiler(message):
     #List the directories in the bucket- this prevents a strange s3fs error
     os.system('ls '+DATA_ROOT+r'/projects')
+    
+    # Configure the logs
+    logger = logging.getLogger(__name__)
+    watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
+    logger.addHandler(watchtowerlogger)
+	
 	
     # Prepare paths and parameters
     if type(message['Metadata'])==dict: #support for cellprofiler --print-groups output
@@ -118,10 +124,7 @@ def runCellProfiler(message):
 			return 'SUCCESS'
 	except KeyError: #Returned if that folder does not exist
 		pass
-    # Configure the logs
-    logger = logging.getLogger(__name__)
-    watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
-    logger.addHandler(watchtowerlogger)
+
     # Build and run CellProfiler command
     cpDone = localOut + '/cp.is.done'
     if message['pipeline'][-3:]!='.h5':
