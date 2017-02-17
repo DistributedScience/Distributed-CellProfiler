@@ -4,6 +4,7 @@
   "data_file": "projects/list_of_images.csv", 
   "input": "projects/input/",
   "output": "projects/output/",
+  "output_structure": "Metadata_Plate-Metadata_Well-Metadata_Site",
   "_comment2": "The following groups are tasks, and each will be run in parallel",
   "groups": [
     {"Metadata": "Metadata_Plate=Plate1,Metadata_Well=A01,Metadata_Site=1"},

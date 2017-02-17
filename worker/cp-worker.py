@@ -8,6 +8,7 @@ import subprocess
 import sys 
 import time
 import watchtower
+import string
 
 #################################
 # CONSTANT PATHS IN THE CONTAINER
@@ -73,8 +74,51 @@ def printandlog(text,logger):
 def runCellProfiler(message):
     #List the directories in the bucket- this prevents a strange s3fs error
     os.system('ls '+DATA_ROOT+r'/projects')
+    
+    # Configure the logs
+    logger = logging.getLogger(__name__)
+
+	
+	
     # Prepare paths and parameters
-    metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
+    if type(message['Metadata'])==dict: #support for cellprofiler --print-groups output
+	if  message['output_structure']=='':
+		watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=str(message['Metadata'].values()),create_log_group=False)
+    		logger.addHandler(watchtowerlogger)
+		printandlog('You must specify an output structure when passing Metadata as dictionaries',logger)
+		logger.removeHandler(watchtowerlogger)
+		return 'INPUT_PROBLEM'
+	else:
+		metadataID = message['output_structure']
+		metadataForCall = ''
+		for eachMetadata in message['Metadata'].keys():
+			if eachMetadata not in metadataID:
+				watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=str(message['Metadata'].values()),create_log_group=False)
+    				logger.addHandler(watchtowerlogger)
+				printandlog('Your specified output structure does not match the Metadata passed',logger)
+				logger.removeHandler(watchtowerlogger)
+				return 'INPUT_PROBLEM'
+			else:
+				metadataID = string.replace(metadataID,eachMetadata,message['Metadata'][eachMetadata])
+				metadataForCall+=eachMetadata+'='+message['Metadata'][eachMetadata]+','
+		message['Metadata']=metadataForCall[:-1]
+    elif message['output_structure']!='': #support for explicit output structuring
+	metadataID = message['output_structure']
+	for eachMetadata in message['Metadata'].split(','):
+		if eachMetadata.split('=')[0] not in metadataID:
+			watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=message['Metadata'],create_log_group=False)
+    			logger.addHandler(watchtowerlogger)
+			printandlog('Your specified output structure does not match the Metadata passed',logger)
+			logger.removeHandler(watchtowerlogger)
+			return 'INPUT_PROBLEM' 
+		else:
+			metadataID = string.replace(metadataID,eachMetadata.split('=')[0],eachMetadata.split('=')[1])
+    else: #backwards compatability with 1.0.0 and/or no desire to structure output
+    	metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
+
+    watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
+    logger.addHandler(watchtowerlogger)	
+	
     localOut = LOCAL_OUTPUT + '/%(MetadataID)s' % {'MetadataID': metadataID}
     remoteOut= os.path.join(message['output'],metadataID)
     replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
@@ -91,10 +135,7 @@ def runCellProfiler(message):
 			return 'SUCCESS'
 	except KeyError: #Returned if that folder does not exist
 		pass
-    # Configure the logs
-    logger = logging.getLogger(__name__)
-    watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
-    logger.addHandler(watchtowerlogger)
+
     # Build and run CellProfiler command
     cpDone = localOut + '/cp.is.done'
     if message['pipeline'][-3:]!='.h5':

@@ -160,11 +160,14 @@ def submitJob():
 
 	# Step 1: Read the job configuration file
 	jobInfo = loadConfig(sys.argv[2])
-	templateMessage = {'pipeline': jobInfo["pipeline"],
+	if 'output_structure' not in jobInfo.keys(): #backwards compatibility for 1.0.0
+		jobInfo["output_structure"]=''
+	templateMessage = {'Metadata': '',
+		'pipeline': jobInfo["pipeline"],
 		'output': jobInfo["output"],
             	'input': jobInfo["input"],
 		'data_file': jobInfo["data_file"],
-		'Metadata': ''
+		'output_structure':jobInfo["output_structure"]
 	}
 
 	# Step 2: Reach the queue and schedule tasks
@@ -172,7 +175,11 @@ def submitJob():
 	queue = JobQueue()
 	print 'Scheduling tasks'
 	for batch in jobInfo["groups"]:
-		templateMessage["Metadata"] = batch["Metadata"]
+		#support Metadata passed as either a single string or as a list
+		try: #single string ('canonical' DCP)
+			templateMessage["Metadata"] = batch["Metadata"]
+		except KeyError: #list of parameters (cellprofiler --print-groups)
+			templateMessage["Metadata"] = batch
 		queue.scheduleBatch(templateMessage)
 	print 'Job submitted. Check your queue'
 
