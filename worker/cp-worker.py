@@ -77,13 +77,14 @@ def runCellProfiler(message):
     
     # Configure the logs
     logger = logging.getLogger(__name__)
-    watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
-    logger.addHandler(watchtowerlogger)
+
 	
 	
     # Prepare paths and parameters
     if type(message['Metadata'])==dict: #support for cellprofiler --print-groups output
 	if  message['output_structure']=='':
+		watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=str(message['Metadata'].values()),create_log_group=False)
+    		logger.addHandler(watchtowerlogger)
 		printandlog('You must specify an output structure when passing Metadata as dictionaries',logger)
 		logger.removeHandler(watchtowerlogger)
 		return 'INPUT_PROBLEM'
@@ -91,6 +92,8 @@ def runCellProfiler(message):
 		metadataID = message['output_structure']
 		for eachMetadata in message['Metadata'].keys():
 			if eachMetadata not in metadataID:
+				watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=str(message['Metadata'].values()),create_log_group=False)
+    				logger.addHandler(watchtowerlogger)
 				printandlog('Your specified output structure does not match the Metadata passed',logger)
 				logger.removeHandler(watchtowerlogger)
 				return 'INPUT_PROBLEM'
@@ -100,6 +103,8 @@ def runCellProfiler(message):
 	metadataID = message['output_structure']
 	for eachMetadata in message['Metadata'].split(','):
 		if eachMetadata not in metadataID:
+			watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=message['Metadata'],create_log_group=False)
+    			logger.addHandler(watchtowerlogger)
 			printandlog('Your specified output structure does not match the Metadata passed',logger)
 			logger.removeHandler(watchtowerlogger)
 			return 'INPUT_PROBLEM' 
@@ -107,6 +112,9 @@ def runCellProfiler(message):
 			metadataID = string.replace(metadataID,eachMetadata.split('=')[0],eachMetadata.split('=')[1])
     else: #backwards compatability with 1.0.0 and/or no desire to structure output
     	metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
+
+    watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
+    logger.addHandler(watchtowerlogger)	
 	
     localOut = LOCAL_OUTPUT + '/%(MetadataID)s' % {'MetadataID': metadataID}
     remoteOut= os.path.join(message['output'],metadataID)
