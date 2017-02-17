@@ -90,6 +90,7 @@ def runCellProfiler(message):
 		return 'INPUT_PROBLEM'
 	else:
 		metadataID = message['output_structure']
+		metadataForCall = ''
 		for eachMetadata in message['Metadata'].keys():
 			if eachMetadata not in metadataID:
 				watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=str(message['Metadata'].values()),create_log_group=False)
@@ -99,6 +100,8 @@ def runCellProfiler(message):
 				return 'INPUT_PROBLEM'
 			else:
 				metadataID = string.replace(metadataID,eachMetadata,message['Metadata'][eachMetadata])
+				metadataForCall+=eachMetadata+'='+message['Metadata'][eachMetadata]+','
+		message['Metadata']=metadataForCall[:-1]
     elif message['output_structure']!='': #support for explicit output structuring
 	metadataID = message['output_structure']
 	for eachMetadata in message['Metadata'].split(','):
