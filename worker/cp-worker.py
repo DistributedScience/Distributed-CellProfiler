@@ -73,8 +73,12 @@ def printandlog(text,logger):
 
 def runCellProfiler(message):
     #List the directories in the bucket- this prevents a strange s3fs error
-    os.system('ls '+os.path.join(DATA_ROOT,os.path.split(message['pipeline'])[0]))
-    
+    rootlist=os.listdir(DATA_ROOT)
+    for eachSubDir in rootlist:
+	subDirName=os.path.join(DATA_ROOT,eachSubDir)
+	if os.path.isdir(subDirName):
+		trashvar=os.system('ls '+subDirName)
+
     # Configure the logs
     logger = logging.getLogger(__name__)
 
