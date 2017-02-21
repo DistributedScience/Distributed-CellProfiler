@@ -8,7 +8,7 @@
   "TerminateInstancesWithExpiration": true,
   "LaunchSpecifications": [
     {
-      "ImageId": "ami-492ffd29",
+      "ImageId": "ami-1ccd1f7c",
       "InstanceType": "m4.xlarge",
       "KeyName": "your_key_file_name",
       "IamInstanceProfile": {
@@ -21,7 +21,7 @@
             "DeleteOnTermination": true,
             "VolumeType": "gp2",
             "VolumeSize": 8,
-            "SnapshotId": "snap-ef8c2213"
+            "SnapshotId": "snap-b2c2989c"
           }
         },
         {
