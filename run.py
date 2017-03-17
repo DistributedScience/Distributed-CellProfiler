@@ -261,9 +261,6 @@ def monitor():
     monitorapp=monitorInfo["MONITOR_APP_NAME"]
     fleetId=monitorInfo["MONITOR_FLEET_ID"]
     queueId=monitorInfo["MONITOR_QUEUE_NAME"]
-    bucketId=monitorInfo["MONITOR_BUCKET_NAME"]
-    loggroupId=monitorInfo["MONITOR_LOG_GROUP_NAME"]
-    starttime=monitorInfo["MONITOR_START_TIME"]
 
     	# Step 1: Create job and count messages periodically
     queue = JobQueue(name=queueId)
@@ -276,6 +273,17 @@ def monitor():
         time.sleep(MONITOR_TIME)
 	
 	# Step 2: When no messages are pending, stop service
+
+	# Reload the monitor info, because for long jobs new fleets may have been started, etc
+    monitorInfo = loadConfig(sys.argv[2])
+    monitorcluster=monitorInfo["MONITOR_ECS_CLUSTER"]
+    monitorapp=monitorInfo["MONITOR_APP_NAME"]
+    fleetId=monitorInfo["MONITOR_FLEET_ID"]
+    queueId=monitorInfo["MONITOR_QUEUE_NAME"]
+    bucketId=monitorInfo["MONITOR_BUCKET_NAME"]
+    loggroupId=monitorInfo["MONITOR_LOG_GROUP_NAME"]
+    starttime=monitorInfo["MONITOR_START_TIME"]    
+
     cmd = 'aws ecs update-service --cluster ' + monitorcluster + \
 	      ' --service ' + monitorapp + 'Service' + \
 	      ' --desired-count 0'
