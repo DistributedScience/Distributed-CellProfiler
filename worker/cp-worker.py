@@ -168,12 +168,15 @@ def runCellProfiler(message):
 			cmd = 'aws s3 mv ' + localOut + ' s3://' + AWS_BUCKET + '/' + remoteOut + ' --recursive' 
             		subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
            		out,err = subp.communicate()
-            		printandlog('== OUT /n'+out, logger)
+            		printandlog('== OUT \n'+out, logger)
             		if err == '':
 				break
+			else:
+				printandlog('== ERR \n'+err,logger)
+				mvtries+=1
 		except:
 			printandlog('Move failed',logger)
-			printandlog('== ERR /n'+err,logger)
+			printandlog('== ERR \n'+err,logger)
 			time.sleep(30)
 			mvtries+=1
 	    if mvtries<3:
