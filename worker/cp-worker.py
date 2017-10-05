@@ -100,8 +100,6 @@ def runCellProfiler(message):
 				watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=str(message['Metadata'].values()),create_log_group=False)
     				logger.addHandler(watchtowerlogger)
 				printandlog('Your specified output structure does not match the Metadata passed',logger)
-				logger.removeHandler(watchtowerlogger)
-				return 'INPUT_PROBLEM'
 			else:
 				metadataID = string.replace(metadataID,eachMetadata,message['Metadata'][eachMetadata])
 				metadataForCall+=eachMetadata+'='+message['Metadata'][eachMetadata]+','
