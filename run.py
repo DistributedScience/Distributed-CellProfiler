@@ -206,6 +206,7 @@ def startCluster():
     requestInfo = ec2client.request_spot_fleet(SpotFleetRequestConfig=spotfleetConfig)
     print 'Request in process. Wait until your machines are available in the cluster.'
     print 'SpotFleetRequestId',requestInfo['SpotFleetRequestId']
+    starttime=str(int(time.time()*1000))
     createMonitor=open('files/' + APP_NAME + 'SpotFleetRequestId.json','w')
     createMonitor.write('{"MONITOR_FLEET_ID" : "'+requestInfo['SpotFleetRequestId']+'",\n')
     createMonitor.write('"MONITOR_APP_NAME" : "'+APP_NAME+'",\n')
@@ -213,7 +214,7 @@ def startCluster():
     createMonitor.write('"MONITOR_QUEUE_NAME" : "'+SQS_QUEUE_NAME+'",\n')
     createMonitor.write('"MONITOR_BUCKET_NAME" : "'+AWS_BUCKET+'",\n')
     createMonitor.write('"MONITOR_LOG_GROUP_NAME" : "'+LOG_GROUP_NAME+'",\n')
-    createMonitor.write('"MONITOR_START_TIME" : "'+str(int(time.time()*1000))+'"}\n')
+    createMonitor.write('"MONITOR_START_TIME" : "'+ starttime+'"}\n')
     createMonitor.close()
     
     
@@ -221,8 +222,20 @@ def startCluster():
 	
 	# Step 2: wait until instances in the cluster are available
     cmd = 'aws ec2 describe-spot-fleet-instances --spot-fleet-request-id ' + requestInfo['SpotFleetRequestId']
+    cmd_tbl='aws ec2 describe-spot-fleet-request-history --spot-fleet-request-id ' + requestInfo['SpotFleetRequestId'] + \
+	' --event-type error --start-time '+ datetime.date.isoformat(datetime.date.today())
     status = getAWSJsonOutput(cmd)
     while len(status['ActiveInstances']) < CLUSTER_MACHINES:
+	 # First check to make sure there's not a problem
+	 errorcheck = getAWSJsonOutput(cmd_tbl)
+	 if len(errorcheck['HistoryRecords']) != 0:
+		print 'Your spot fleet request is causing an error and is now being cancelled.  Please check your configuration and try again'
+		for eacherror in errorcheck['HistoryRecords']:
+			print eacherror['EventInformation']['EventSubType'] + ' : ' + eacherror['EventInformation']['EventDescription']
+		cmd = 'aws ec2 cancel-spot-fleet-requests --spot-fleet-request-ids ' + requestInfo['SpotFleetRequestId'] + ' --terminate-instances'
+    		result = getAWSJsonOutput(cmd)
+		return
+	 # If everything seems good, just bide your time until you're ready to go
          time.sleep(20)
          print '.',
          status = getAWSJsonOutput(cmd)
