@@ -119,9 +119,6 @@ def runCellProfiler(message):
     else: #backwards compatability with 1.0.0 and/or no desire to structure output
     	metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
 
-    watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
-    logger.addHandler(watchtowerlogger)	
-	
     localOut = LOCAL_OUTPUT + '/%(MetadataID)s' % {'MetadataID': metadataID}
     remoteOut= os.path.join(message['output'],metadataID)
     replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
@@ -139,6 +136,10 @@ def runCellProfiler(message):
 	except KeyError: #Returned if that folder does not exist
 		pass
 
+    # Start loggging now that we have a job we care about
+    watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
+    logger.addHandler(watchtowerlogger)		
+	
     # Build and run CellProfiler command
     cpDone = localOut + '/cp.is.done'
     if message['pipeline'][-3:]!='.h5':
