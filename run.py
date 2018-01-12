@@ -206,6 +206,8 @@ def startCluster():
     requestInfo = ec2client.request_spot_fleet(SpotFleetRequestConfig=spotfleetConfig)
     print 'Request in process. Wait until your machines are available in the cluster.'
     print 'SpotFleetRequestId',requestInfo['SpotFleetRequestId']
+	
+	# Step 3: Make the monitor
     starttime=str(int(time.time()*1000))
     createMonitor=open('files/' + APP_NAME + 'SpotFleetRequestId.json','w')
     createMonitor.write('{"MONITOR_FLEET_ID" : "'+requestInfo['SpotFleetRequestId']+'",\n')
@@ -217,10 +219,26 @@ def startCluster():
     createMonitor.write('"MONITOR_START_TIME" : "'+ starttime+'"}\n')
     createMonitor.close()
     
-    
-  
+	# Step 4: Create a log group for this app and date if one does not already exist
+    logclient=boto3.client('logs')
+    loggroupinfo=logclient.describe_log_groups(logGroupNamePrefix=LOG_GROUP_NAME)
+    groupnames=[d['logGroupName'] for d in loggroupinfo['logGroups']]
+    if LOG_GROUP_NAME not in groupnames:
+         logclient.create_log_group(logGroupName=LOG_GROUP_NAME)
+	 logclient.put_retention_policy(logGroupName=LOG_GROUP_NAME, retentionInDays=60)
+    if LOG_GROUP_NAME+'_perInstance' not in groupnames:
+         logclient.create_log_group(logGroupName=LOG_GROUP_NAME+'_perInstance')
+	 logclient.put_retention_policy(logGroupName=LOG_GROUP_NAME+'_perInstance', retentionInDays=60)
+		
+    	# Step 5: update the ECS service to be ready to inject docker containers in EC2 instances
+    print 'Updating service'
+    cmd = 'aws ecs update-service --cluster ' + ECS_CLUSTER + \
+	      ' --service ' + APP_NAME + 'Service' + \
+	      ' --desired-count ' + str(CLUSTER_MACHINES*TASKS_PER_MACHINE)
+    update = getAWSJsonOutput(cmd)
+    print 'Service updated.' 
 	
-	# Step 2: wait until instances in the cluster are available
+	# Step 6: Monitor the creation of the instances until all are present
     cmd = 'aws ec2 describe-spot-fleet-instances --spot-fleet-request-id ' + requestInfo['SpotFleetRequestId']
     cmd_tbl='aws ec2 describe-spot-fleet-request-history --spot-fleet-request-id ' + requestInfo['SpotFleetRequestId'] + \
 	' --event-type error --start-time '+ datetime.date.isoformat(datetime.date.today())
@@ -239,26 +257,7 @@ def startCluster():
          time.sleep(20)
          print '.',
          status = getAWSJsonOutput(cmd)
-    print '\nCluster ready'
-
-	# Step 3: Create a log group for this app and date if one does not already exist
-    logclient=boto3.client('logs')
-    loggroupinfo=logclient.describe_log_groups(logGroupNamePrefix=LOG_GROUP_NAME)
-    groupnames=[d['logGroupName'] for d in loggroupinfo['logGroups']]
-    if LOG_GROUP_NAME not in groupnames:
-         logclient.create_log_group(logGroupName=LOG_GROUP_NAME)
-	 logclient.put_retention_policy(logGroupName=LOG_GROUP_NAME, retentionInDays=60)
-    if LOG_GROUP_NAME+'_perInstance' not in groupnames:
-         logclient.create_log_group(logGroupName=LOG_GROUP_NAME+'_perInstance')
-	 logclient.put_retention_policy(logGroupName=LOG_GROUP_NAME+'_perInstance', retentionInDays=60)
-		
-    	# Step 4: update the ECS service to inject docker containers in EC2 instances
-    print 'Updating service'
-    cmd = 'aws ecs update-service --cluster ' + ECS_CLUSTER + \
-	      ' --service ' + APP_NAME + 'Service' + \
-	      ' --desired-count ' + str(CLUSTER_MACHINES*TASKS_PER_MACHINE)
-    update = getAWSJsonOutput(cmd)
-    print 'Service updated. Your job should start in a few minutes.'
+    print 'Spot fleet successfully created. Your job should start in a few minutes.'
 
 #################################
 # SERVICE 3: MONITOR JOB 
