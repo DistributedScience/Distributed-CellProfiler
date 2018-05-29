@@ -106,14 +106,15 @@ def runCellProfiler(message):
 		message['Metadata']=metadataForCall[:-1]
     elif 'output_structure' in message.keys():
 	    if message['output_structure']!='': #support for explicit output structuring
+		logger.addHandler(watchtowerlogger)
 		metadataID = message['output_structure']
+		watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=message['Metadata'],create_log_group=False)
 		for eachMetadata in message['Metadata'].split(','):
 			if eachMetadata.split('=')[0] not in metadataID:
-				watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=message['Metadata'],create_log_group=False)
-				logger.addHandler(watchtowerlogger)
 				printandlog('Your specified output structure does not match the Metadata passed',logger)
 			else:
 				metadataID = string.replace(metadataID,eachMetadata.split('=')[0],eachMetadata.split('=')[1])
+		printandlog('metadataID =',metadataID)
 	    else: #backwards compatability with 1.0.0 and/or no desire to structure output
     		metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
     else: #backwards compatability with 1.0.0 and/or no desire to structure output
