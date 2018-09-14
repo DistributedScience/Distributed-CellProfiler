@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os, sys
 import boto, boto3
 import datetime
@@ -41,8 +42,8 @@ def killdeadAlarms(fleetId,monitorapp):
 	 	cmd='aws cloudwatch delete-alarms --alarm-name '+monitorapp+'_'+eachmachine
 		subprocess.Popen(cmd.split())
 		time.sleep(3) #Avoid Rate exceeded error
-		print 'Deleted', monitorapp+'_'+eachmachine, 'if it existed'
-	print 'Old alarms deleted'
+		print('Deleted', monitorapp+'_'+eachmachine, 'if it existed')
+	print('Old alarms deleted')
 
 def seeIfLogExportIsDone(logExportId):
 	while True:
@@ -50,7 +51,7 @@ def seeIfLogExportIsDone(logExportId):
 		result =getAWSJsonOutput(cmd) 
 		if result['exportTasks'][0]['status']['code']!='PENDING':
 			if result['exportTasks'][0]['status']['code']!='RUNNING':
-				print result['exportTasks'][0]['status']['code']
+				print(result['exportTasks'][0]['status']['code'])
 				break
 		time.sleep(30)
 	
@@ -132,7 +133,7 @@ class JobQueue():
     def scheduleBatch(self, data):
         msg = json.dumps(data)
         response = self.queue.send_message(MessageBody=msg)
-        print 'Batch sent. Message ID:',response.get('MessageId')
+        print('Batch sent. Message ID:',response.get('MessageId'))
 
     def pendingLoad(self):
         self.queue.load()
@@ -142,7 +143,7 @@ class JobQueue():
             self.pending = visible
             self.inProcess = nonVis
             d = datetime.datetime.now()
-            print d,'In process:',nonVis,'Pending',visible
+            print(d,'In process:',nonVis,'Pending',visible)
         if visible + nonVis > 0:
             return True
         else:
@@ -155,7 +156,7 @@ class JobQueue():
 
 def submitJob():
 	if len(sys.argv) < 3:
-		print 'Use: run.py submitJob jobfile'
+		print('Use: run.py submitJob jobfile')
 		sys.exit()
 
 	# Step 1: Read the job configuration file
@@ -171,9 +172,9 @@ def submitJob():
 	}
 
 	# Step 2: Reach the queue and schedule tasks
-	print 'Contacting queue'
+	print('Contacting queue')
 	queue = JobQueue()
-	print 'Scheduling tasks'
+	print('Scheduling tasks')
 	for batch in jobInfo["groups"]:
 		#support Metadata passed as either a single string or as a list
 		try: #single string ('canonical' DCP)
@@ -181,7 +182,7 @@ def submitJob():
 		except KeyError: #list of parameters (cellprofiler --print-groups)
 			templateMessage["Metadata"] = batch
 		queue.scheduleBatch(templateMessage)
-	print 'Job submitted. Check your queue'
+	print('Job submitted. Check your queue')
 
 #################################
 # SERVICE 2: START CLUSTER 
@@ -189,7 +190,7 @@ def submitJob():
 
 def startCluster():
     if len(sys.argv) < 3:
-        print 'Use: run.py startCluster configFile'
+        print('Use: run.py startCluster configFile')
         sys.exit()
 
 	#Step 1: set up the configuration files
@@ -204,8 +205,8 @@ def startCluster():
 	# Step 2: make the spot fleet request
     ec2client=boto3.client('ec2')
     requestInfo = ec2client.request_spot_fleet(SpotFleetRequestConfig=spotfleetConfig)
-    print 'Request in process. Wait until your machines are available in the cluster.'
-    print 'SpotFleetRequestId',requestInfo['SpotFleetRequestId']
+    print('Request in process. Wait until your machines are available in the cluster.')
+    print('SpotFleetRequestId',requestInfo['SpotFleetRequestId'])
 	
 	# Step 3: Make the monitor
     starttime=str(int(time.time()*1000))
@@ -231,12 +232,12 @@ def startCluster():
 	 logclient.put_retention_policy(logGroupName=LOG_GROUP_NAME+'_perInstance', retentionInDays=60)
 		
     	# Step 5: update the ECS service to be ready to inject docker containers in EC2 instances
-    print 'Updating service'
+    print('Updating service')
     cmd = 'aws ecs update-service --cluster ' + ECS_CLUSTER + \
 	      ' --service ' + APP_NAME + 'Service' + \
 	      ' --desired-count ' + str(CLUSTER_MACHINES*TASKS_PER_MACHINE)
     update = getAWSJsonOutput(cmd)
-    print 'Service updated.' 
+    print('Service updated.') 
 	
 	# Step 6: Monitor the creation of the instances until all are present
     cmd = 'aws ec2 describe-spot-fleet-instances --spot-fleet-request-id ' + requestInfo['SpotFleetRequestId']
@@ -247,17 +248,17 @@ def startCluster():
 	 # First check to make sure there's not a problem
 	 errorcheck = getAWSJsonOutput(cmd_tbl)
 	 if len(errorcheck['HistoryRecords']) != 0:
-		print 'Your spot fleet request is causing an error and is now being cancelled.  Please check your configuration and try again'
+		print('Your spot fleet request is causing an error and is now being cancelled.  Please check your configuration and try again')
 		for eacherror in errorcheck['HistoryRecords']:
-			print eacherror['EventInformation']['EventSubType'] + ' : ' + eacherror['EventInformation']['EventDescription']
+			print(eacherror['EventInformation']['EventSubType'] + ' : ' + eacherror['EventInformation']['EventDescription'])
 		cmd = 'aws ec2 cancel-spot-fleet-requests --spot-fleet-request-ids ' + requestInfo['SpotFleetRequestId'] + ' --terminate-instances'
     		result = getAWSJsonOutput(cmd)
 		return
 	 # If everything seems good, just bide your time until you're ready to go
          time.sleep(20)
-         print '.',
+         print('.', end=' ')
          status = getAWSJsonOutput(cmd)
-    print 'Spot fleet successfully created. Your job should start in a few minutes.'
+    print('Spot fleet successfully created. Your job should start in a few minutes.')
 
 #################################
 # SERVICE 3: MONITOR JOB 
@@ -265,7 +266,7 @@ def startCluster():
 
 def monitor():
     if len(sys.argv) < 3:
-        print 'Use: run.py monitor spotFleetIdFile'
+        print('Use: run.py monitor spotFleetIdFile')
         sys.exit()
     
     monitorInfo = loadConfig(sys.argv[2])
@@ -300,7 +301,7 @@ def monitor():
 	      ' --service ' + monitorapp + 'Service' + \
 	      ' --desired-count 0'
     update = getAWSJsonOutput(cmd)
-    print 'Service has been downscaled'
+    print('Service has been downscaled')
 
 	# Step3: Delete the alarms from active machines and machines that have died since the last sweep 
     cmd= 'aws ec2 describe-spot-fleet-instances --spot-fleet-request-id '+fleetId+" --output json"
@@ -311,37 +312,37 @@ def monitor():
     killdeadAlarms(fleetId,monitorapp)
 	
 	# Step 4: Read spot fleet id and terminate all EC2 instances
-    print 'Shutting down spot fleet',fleetId
+    print('Shutting down spot fleet',fleetId)
     cmd = 'aws ec2 cancel-spot-fleet-requests --spot-fleet-request-ids '+ fleetId +' --terminate-instances'
     result = getAWSJsonOutput(cmd)
-    print 'Job done.'
+    print('Job done.')
 
 	# Step 5. Release other resources
 	# Remove SQS queue, ECS Task Definition, ECS Service
     ECS_TASK_NAME = monitorapp + 'Task'
     ECS_SERVICE_NAME = monitorapp + 'Service'
-    print 'Deleting existing queue.'
+    print('Deleting existing queue.')
     removequeue(queueId)
-    print 'Deleting service'
+    print('Deleting service')
     cmd='aws ecs delete-service --cluster '+monitorcluster+' --service '+ECS_SERVICE_NAME
     result=getAWSJsonOutput(cmd)
-    print 'De-registering task'
+    print('De-registering task')
     deregistertask(ECS_TASK_NAME)
-    print "Removing cluster if it's not the default and not otherwise in use"
+    print("Removing cluster if it's not the default and not otherwise in use")
     removeClusterIfUnused(monitorcluster)
 	
 	#Step 6: Export the logs to S3
     cmd = 'aws logs create-export-task --task-name "'+loggroupId+'" --log-group-name '+loggroupId+ \
 	' --from '+starttime+' --to '+'%d' %(time.time()*1000)+' --destination '+bucketId+' --destination-prefix exportedlogs/'+loggroupId
     result =getAWSJsonOutput(cmd)
-    print 'Log transfer 1 to S3 initiated'
+    print('Log transfer 1 to S3 initiated')
     seeIfLogExportIsDone(result['taskId'])
     cmd = 'aws logs create-export-task --task-name "'+loggroupId+'_perInstance" --log-group-name '+loggroupId+'_perInstance '+ \
 	'--from '+starttime+' --to '+'%d' %(time.time()*1000)+' --destination '+bucketId+' --destination-prefix exportedlogs/'+loggroupId
     result =getAWSJsonOutput(cmd)
-    print 'Log transfer 2 to S3 initiated'
+    print('Log transfer 2 to S3 initiated')
     seeIfLogExportIsDone(result['taskId'])
-    print 'All export tasks done'
+    print('All export tasks done')
 
 	
 #################################
@@ -350,7 +351,7 @@ def monitor():
 
 if __name__ == '__main__':
 	if len(sys.argv) < 2:
-		print 'Use: run.py submitJob | startCluster | monitor'
+		print('Use: run.py submitJob | startCluster | monitor')
 		sys.exit()
 	if sys.argv[1] == 'submitJob':
 		submitJob()
