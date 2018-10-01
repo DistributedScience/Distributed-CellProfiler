@@ -2,6 +2,7 @@
 This is designed to be called from the command line with 
 $ python ManualMetadata.py pathtocsv/csvfile.csv "['Metadata_Metadata1','Metadata_Metadata2']" 
 '''
+from __future__ import print_function
 
 import pandas as pd
 import sys
@@ -13,7 +14,7 @@ metadatalist=ast.literal_eval(sys.argv[2])
 def manualmetadata():
     incsv=pd.read_csv(csv)
     manmet=open(csv[:-4]+'batch.txt','w')
-    print incsv.shape
+    print(incsv.shape)
     done=[]
     for i in range(incsv.shape[0]):
             metadatatext='{"Metadata": "'
@@ -24,5 +25,5 @@ def manualmetadata():
                 manmet.write(metadatatext)
                 done.append(metadatatext)
     manmet.close()
-    print str(len(done)), 'batches found'
+    print(str(len(done)), 'batches found')
 manualmetadata()

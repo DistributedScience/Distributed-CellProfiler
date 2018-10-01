@@ -1,3 +1,4 @@
+from __future__ import print_function
 import boto3
 import glob
 import json
@@ -60,11 +61,11 @@ def monitorAndLog(process,logger):
         if output== '' and process.poll() is not None:
             break
         if output:
-            print output.strip()
+            print(output.strip())
             logger.info(output)  
 
 def printandlog(text,logger):
-    print text
+    print(text)
     logger.info(text)
 
 #################################
@@ -148,7 +149,7 @@ def runCellProfiler(message):
     else:
         cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -o %(OUT)s -d ' + cpDone + ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
     cmd = cmd % replaceValues
-    print 'Running', cmd
+    print('Running', cmd)
     logger.info(cmd)
     
     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -206,13 +207,13 @@ def main():
 		if msg is not None:
 			result = runCellProfiler(msg)
 			if result == 'SUCCESS':
-				print 'Batch completed successfully.'
+				print('Batch completed successfully.')
 				queue.deleteMessage(handle)
 			else:
-				print 'Returning message to the queue.'
+				print('Returning message to the queue.')
 				queue.returnMessage(handle)
 		else:
-			print 'No messages in the queue'
+			print('No messages in the queue')
 			break
 
 #################################
@@ -221,7 +222,7 @@ def main():
 
 if __name__ == '__main__':
 	logging.basicConfig(level=logging.INFO)
-	print 'Worker started'
+	print('Worker started')
 	main()
-	print 'Worker finished'
+	print('Worker finished')
 

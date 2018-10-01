@@ -1,3 +1,4 @@
+from __future__ import print_function
 import boto
 import boto.s3
 import json
@@ -103,7 +104,7 @@ def generate_dockerfile():
 
 
 def show_dockerfile():
-    print generate_dockerfile()
+    print(generate_dockerfile())
 
 
 def generate_task_definition():
@@ -159,7 +160,7 @@ def generate_task_definition():
 
 
 def show_task_definition():
-    print json.dumps(generate_task_definition(), indent=4)
+    print(json.dumps(generate_task_definition(), indent=4))
 
 
 def update_ecs_task_definition():
@@ -187,13 +188,13 @@ def create_or_update_ecs_service():
     data = json.loads(info)
     service = [srv for srv in data['serviceArns'] if srv.endswith(ECS_SERVICE_NAME)]
     if len(service) > 0:
-        print 'Service exists. Removing'
+        print('Service exists. Removing')
 	local('aws ecs delete-service --cluster ' + ECS_CLUSTER + 
 		  ' --service ' + ECS_SERVICE_NAME,
 		  capture=True)
 	time.sleep(WAIT_TIME)
 
-    print 'Creating new service'
+    print('Creating new service')
     local('aws ecs create-service --cluster ' + ECS_CLUSTER + 
 	      ' --service-name ' + ECS_SERVICE_NAME + 
 	      ' --task-definition ' + ECS_TASK_NAME + 
