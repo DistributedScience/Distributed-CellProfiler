@@ -143,12 +143,20 @@ def runCellProfiler(message):
     logger.addHandler(watchtowerlogger)		
 	
     # Build and run CellProfiler command
+    cp2 = False
+    with open(os.path.join(replaceValues['DATA'],replaceValues['PL']), 'r') as openpipe:
+	for line in openpipe:
+		if 'DateRevision:2' in line: #comes from a CP2 pipeline
+			cp2 = True
+			cmdstem = 'cellprofiler -c -r -b '
+    if not cp2:
+	cmdstem = 'cellprofiler -c -r '
     cpDone = localOut + '/cp.is.done'
     if message['pipeline'][-3:]!='.h5':
-        cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
+        cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
         cmd += ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
     else:
-        cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -o %(OUT)s -d ' + cpDone + ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
+        cmd = cmdstem + '-p %(DATA)s/%(PL)s -o %(OUT)s -d ' + cpDone + ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
     cmd = cmd % replaceValues
     print('Running', cmd)
     logger.info(cmd)
