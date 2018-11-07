@@ -5,7 +5,7 @@
 # This wraps the cellprofiler docker registry
 #
 
-FROM cellprofiler/cellprofiler:2.3.1
+FROM cellprofiler/cellprofiler:3.1.5
 
 # Install S3FS 
 
@@ -40,7 +40,7 @@ RUN \
 # Install boto3
 
 RUN \
-  pip install boto3
+  pip install -U boto3
 
 # Install watchtower for logging
 
