@@ -107,15 +107,15 @@ def runCellProfiler(message):
 		message['Metadata']=metadataForCall[:-1]
     elif 'output_structure' in message.keys():
 	    if message['output_structure']!='': #support for explicit output structuring
+		watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=message['Metadata'],create_log_group=False)
 		logger.addHandler(watchtowerlogger)
 		metadataID = message['output_structure']
-		watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=message['Metadata'],create_log_group=False)
 		for eachMetadata in message['Metadata'].split(','):
 			if eachMetadata.split('=')[0] not in metadataID:
 				printandlog('Your specified output structure does not match the Metadata passed',logger)
 			else:
 				metadataID = string.replace(metadataID,eachMetadata.split('=')[0],eachMetadata.split('=')[1])
-		printandlog('metadataID =',metadataID)
+		printandlog('metadataID ='+metadataID, logger)
 	    else: #backwards compatability with 1.0.0 and/or no desire to structure output
     		metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
     else: #backwards compatability with 1.0.0 and/or no desire to structure output
@@ -143,12 +143,20 @@ def runCellProfiler(message):
     logger.addHandler(watchtowerlogger)		
 	
     # Build and run CellProfiler command
+    cp2 = False
+    with open(os.path.join(replaceValues['DATA'],replaceValues['PL']), 'r') as openpipe:
+	for line in openpipe:
+		if 'DateRevision:2' in line: #comes from a CP2 pipeline
+			cp2 = True
+			cmdstem = 'cellprofiler -c -r -b '
+    if not cp2:
+	cmdstem = 'cellprofiler -c -r '
     cpDone = localOut + '/cp.is.done'
     if message['pipeline'][-3:]!='.h5':
-        cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
+        cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
         cmd += ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
     else:
-        cmd = 'cellprofiler -c -r -b -p %(DATA)s/%(PL)s -o %(OUT)s -d ' + cpDone + ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
+        cmd = cmdstem + '-p %(DATA)s/%(PL)s -o %(OUT)s -d ' + cpDone + ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
     cmd = cmd % replaceValues
     print('Running', cmd)
     logger.info(cmd)
