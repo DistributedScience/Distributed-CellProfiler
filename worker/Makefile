@@ -1,4 +1,4 @@
-user = bethcimini
+user = cellprofiler
 project = distributed-cellprofiler
 tag = latest
 
