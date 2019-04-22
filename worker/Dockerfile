@@ -56,6 +56,8 @@ COPY instance-monitor.py .
 COPY run-worker.sh .
 RUN chmod 755 run-worker.sh
 
+RUN git clone https://github.com/CellProfiler/CellProfiler-plugins.git
+
 ENTRYPOINT ["./run-worker.sh"]
 CMD [""]
 
