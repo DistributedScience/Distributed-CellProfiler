@@ -184,7 +184,7 @@ def get_or_create_cluster():
 
 def create_or_update_ecs_service():
     # Create the service with no workers (0 desired count)
-    info = local('aws ecs list-services', capture=True)
+    info = local('aws ecs list-services --cluster-name '+ECS_CLUSTER, capture=True)
     data = json.loads(info)
     service = [srv for srv in data['serviceArns'] if srv.endswith(ECS_SERVICE_NAME)]
     if len(service) > 0:
