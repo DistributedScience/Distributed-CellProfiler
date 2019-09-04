@@ -305,7 +305,7 @@ def monitor():
 	#This can help keep costs down if, for example, you start up 100+ machines to run a large job, and
 	#1-10 jobs with errors are keeping it rattling around for hours.
 	if curtime[-1:]=='9':
-	    downscaleSpotFleet(queue, fleetID)
+	    downscaleSpotFleet(queue, fleetId)
         time.sleep(MONITOR_TIME)
 	
 	# Step 2: When no messages are pending, stop service
