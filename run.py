@@ -129,7 +129,7 @@ def downscaleSpotFleet(queue, spotFleetID):
 	cmd = 'aws ec2 describe-spot-fleet-instances --spot-fleet-request-id ' + spotFleetID
         status = getAWSJsonOutput(cmd)
         toScaleTo = min(len(status['ActiveInstances']), nonvisible)
-        cmd="aws ec2 modfiy-spot-fleet-request --excess-capacity-termination-policy NoTermination --target-capacity " + str(toScaleTo)+ " --spot-fleet-request-id " + spotFleetID
+        cmd="aws ec2 modify-spot-fleet-request --excess-capacity-termination-policy NoTermination --target-capacity " + str(toScaleTo)+ " --spot-fleet-request-id " + spotFleetID
 	result=getAWSJsonOutput(cmd)
 	
 #################################
