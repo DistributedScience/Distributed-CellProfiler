@@ -19,7 +19,13 @@ MONITOR_TIME = 60
 def getAWSJsonOutput(cmd):
 	process = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
 	out, err = process.communicate()
-	requestInfo = json.loads(out)
+	try:
+	    requestInfo = json.loads(out)
+	except ValueError as e:
+	    if str(e) == "No JSON object could be decoded":
+		requestInfo = out
+	    else:
+		requestInfo = out + err	
 	return requestInfo
 
 def loadConfig(configFile):
