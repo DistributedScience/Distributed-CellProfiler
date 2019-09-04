@@ -338,6 +338,7 @@ def monitor():
     for eachinstance in result['ActiveInstances']:
         delalarm='aws cloudwatch delete-alarms --alarm-name '+monitorapp+'_'+eachinstance["InstanceId"]
         subprocess.Popen(delalarm.split())
+	time.sleep(3)
     killdeadAlarms(fleetId,monitorapp)
 	
 	# Step 4: Read spot fleet id and terminate all EC2 instances
