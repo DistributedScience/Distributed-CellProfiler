@@ -114,6 +114,14 @@ def removeClusterIfUnused(clusterName):
 	if sum([result['clusters'][0]['pendingTasksCount'],result['clusters'][0]['runningTasksCount'],result['clusters'][0]['activeServicesCount']])==0:
 	    cmd = 'aws ecs delete-cluster --cluster '+clusterName
 	    result=getAWSJsonOutput(cmd)
+		
+def downscaleSpotFleet(queue, spotFleetID):
+    visible, nonvisible = queue.returnLoad()
+    if visible > 0:
+        return
+    else:
+        cmd="aws ec2 modfiy-spot-fleet-request --excess-capacity-termination-policy NoTermination --target-capacity " + str(nonvisible)+ " --spot-fleet-request-id " + spotFleetID
+	result=getAWSJsonOutput(cmd)
 	
 #################################
 # CLASS TO HANDLE SQS QUEUE
@@ -148,6 +156,12 @@ class JobQueue():
             return True
         else:
             return False
+
+    def returnLoad(self):
+        self.queue.load()
+        visible = int( self.queue.attributes['ApproximateNumberOfMessages'] )
+        nonVis = int( self.queue.attributes['ApproximateNumberOfMessagesNotVisible'] )
+	return visible, nonVis
 
 
 #################################
@@ -278,11 +292,16 @@ def monitor():
     	# Step 1: Create job and count messages periodically
     queue = JobQueue(name=queueId)
     while queue.pendingLoad():
-	#Once a day check for terminated machines and delete their alarms.  
-	#These records are only kept for 48 hours, which is why we don't just do it at the end
+	#Once an hour check for terminated machines and delete their alarms.  
+	#This is slooooooow, which is why we don't just do it at the end
         curtime=datetime.datetime.now().strftime('%H%M')
-        if curtime=='1200':
+        if cur[-2:]=='00':
             killdeadAlarms(fleetId,monitorapp)
+	#Once every 10 minutes, check if all jobs are in process, and if so scale the spot fleet size to match
+	#This can help keep costs down if, for example, you start up 100+ machines to run a large job, and
+	#1-10 jobs with errors are keeping it rattling around for hours.
+	if cur[-:]=='9':
+	    downscaleSpotFleet(queue, spotFleetID)
         time.sleep(MONITOR_TIME)
 	
 	# Step 2: When no messages are pending, stop service
