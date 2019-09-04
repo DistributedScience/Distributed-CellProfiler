@@ -298,9 +298,10 @@ def monitor():
         if cur[-2:]=='00':
             killdeadAlarms(fleetId,monitorapp)
 	#Once every 10 minutes, check if all jobs are in process, and if so scale the spot fleet size to match
+	#the number of jobs still in process WITHOUT force terminating them.
 	#This can help keep costs down if, for example, you start up 100+ machines to run a large job, and
 	#1-10 jobs with errors are keeping it rattling around for hours.
-	if cur[-:]=='9':
+	if cur[-1:]=='9':
 	    downscaleSpotFleet(queue, spotFleetID)
         time.sleep(MONITOR_TIME)
 	
