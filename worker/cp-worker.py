@@ -136,7 +136,6 @@ def runCellProfiler(message):
 		s3client=boto3.client('s3')
 		bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut+'/')
 		objectsizelist=[k['Size'] for k in bucketlist['Contents']]
-		objectsizelist.sort()
 		objectsizelist = [i for i in objectsizelist if i >= MIN_FILE_SIZE_BYTES]
 		if len(objectsizelist)>=int(EXPECTED_NUMBER_FILES):
 		    return 'SUCCESS'
