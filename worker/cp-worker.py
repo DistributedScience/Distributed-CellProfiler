@@ -137,8 +137,7 @@ def runCellProfiler(message):
 		bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut+'/')
 		objectsizelist=[k['Size'] for k in bucketlist['Contents']]
 		objectsizelist.sort()
-		while int(objectsizelist[0]) < MIN_FILE_SIZE_BYTES:
-		    objectsizelist.pop(0)
+		objectsizelist = [i for i in objectsizelist if i >= MIN_FILE_SIZE_BYTES]
 		if len(objectsizelist)>=int(EXPECTED_NUMBER_FILES):
 		    return 'SUCCESS'
 	except KeyError: #Returned if that folder does not exist
