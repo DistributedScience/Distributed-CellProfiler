@@ -1,6 +1,6 @@
 user = cellprofiler
 project = distributed-cellprofiler
-tag = latest
+tag = 1.2.1
 
 .DEFAULT_GOAL: build
 build:
