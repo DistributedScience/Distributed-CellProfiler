@@ -154,6 +154,10 @@ def generate_task_definition():
 	{
 	    "name": "SECONDS_TO_START",
 	    "value": str(SECONDS_TO_START)
+	},
+	{
+	    "name": "MIN_FILE_SIZE_BYTES",
+	    "value": str(MIN_FILE_SIZE_BYTES)
 	}
     ]
     return task_definition
