@@ -5,7 +5,7 @@
 # This wraps the cellprofiler docker registry
 #
 
-FROM cellprofiler/cellprofiler:3.1.5
+FROM cellprofiler/cellprofiler:3.1.9
 
 # Install S3FS 
 

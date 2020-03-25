@@ -305,7 +305,8 @@ def monitor():
 	#This is slooooooow, which is why we don't just do it at the end
         curtime=datetime.datetime.now().strftime('%H%M')
         if curtime[-2:]=='00':
-            killdeadAlarms(fleetId,monitorapp)
+	    if curtime[:2]!='00':
+                killdeadAlarms(fleetId,monitorapp)
 	#Once every 10 minutes, check if all jobs are in process, and if so scale the spot fleet size to match
 	#the number of jobs still in process WITHOUT force terminating them.
 	#This can help keep costs down if, for example, you start up 100+ machines to run a large job, and
