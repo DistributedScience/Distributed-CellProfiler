@@ -27,6 +27,10 @@ if 'MIN_FILE_SIZE_BYTES' not in os.environ:
     MIN_FILE_SIZE_BYTES = 1
 else:
     MIN_FILE_SIZE_BYTES = int(os.environ['MIN_FILE_SIZE_BYTES'])
+if 'USE_PLUGINS' not in os.environ:
+    USE_PLUGINS = 'False'
+else:
+    USE_PLUGINS = os.environ['USE_PLUGINS']
 
 #################################
 # CLASS TO HANDLE THE SQS QUEUE
@@ -160,10 +164,11 @@ def runCellProfiler(message):
     if message['pipeline'][-3:]!='.h5':
         cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
         cmd += ' --data-file=%(DATA)s/%(FL)s '
-	cmd += ' --plugins-directory=%(PLUGINS)s'
 	cmd += '-g %(Metadata)s'
     else:
-        cmd = cmdstem + '-p %(DATA)s/%(PL)s -o %(OUT)s -d ' + cpDone + ' --data-file=%(DATA)s/%(FL)s --plugins-directory=%(PLUGINS)s -g %(Metadata)s'
+        cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone + ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
+    if USE_PLUGINS == 'True':
+	cmd += '--plugins-directory=%(PLUGINS)s'
     cmd = cmd % replaceValues
     print('Running', cmd)
     logger.info(cmd)
