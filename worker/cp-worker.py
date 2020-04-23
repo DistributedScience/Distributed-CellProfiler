@@ -164,11 +164,11 @@ def runCellProfiler(message):
     if message['pipeline'][-3:]!='.h5':
         cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
         cmd += ' --data-file=%(DATA)s/%(FL)s '
-	cmd += '-g %(Metadata)s'
+        cmd += '-g %(Metadata)s'
     else:
         cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone + ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
     if USE_PLUGINS == 'True':
-	cmd += '--plugins-directory=%(PLUGINS)s'
+        cmd += '--plugins-directory=%(PLUGINS)s'
     cmd = cmd % replaceValues
     print('Running', cmd)
     logger.info(cmd)
