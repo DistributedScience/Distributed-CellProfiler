@@ -168,7 +168,7 @@ def runCellProfiler(message):
     else:
         cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone + ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
     if USE_PLUGINS == 'True':
-        cmd += '--plugins-directory=%(PLUGINS)s'
+        cmd += ' --plugins-directory=%(PLUGINS)s'
     cmd = cmd % replaceValues
     print('Running', cmd)
     logger.info(cmd)
