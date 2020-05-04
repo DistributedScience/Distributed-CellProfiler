@@ -221,8 +221,9 @@ def startCluster():
     ecsConfigFile=generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client)
     spotfleetConfig=loadConfig(sys.argv[2])
     userData=generateUserData(ecsConfigFile,DOCKER_BASE_SIZE)
-    spotfleetConfig['LaunchSpecifications'][0]["UserData"]=userData
-    spotfleetConfig['LaunchSpecifications'][0]['BlockDeviceMappings'][1]['Ebs']["VolumeSize"]= EBS_VOL_SIZE
+    for LaunchSpecification in range(0,len(spotfleetConfig['LaunchSpecifications'])): 
+        spotfleetConfig['LaunchSpecifications'][LaunchSpecification]["UserData"]=userData
+        spotfleetConfig['LaunchSpecifications'][LaunchSpecification]['BlockDeviceMappings'][1]['Ebs']["VolumeSize"]= EBS_VOL_SIZE
 
 
 	# Step 2: make the spot fleet request
