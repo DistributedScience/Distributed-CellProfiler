@@ -7,6 +7,8 @@ import subprocess
 import time
 from base64 import b64encode
 from ConfigParser import ConfigParser
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from pprint import pprint
 
 from config import *
@@ -71,27 +73,25 @@ def generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client):
 	return 's3://'+AWS_BUCKET+'/ecsconfigs/'+APP_NAME+'_ecs.config'
 
 def generateUserData(ecsConfigFile,dockerBaseSize):
-	with open('temp_config.txt','w') as tempconfig:
-		tempconfig.write('#!/bin/bash \n')
-		tempconfig.write('sudo yum install -y aws-cli \n')
-		tempconfig.write('sudo yum install -y awslogs \n')
-		tempconfig.write('aws s3 cp '+ecsConfigFile+' /etc/ecs/ecs.config')
-	with open('temp_boothook.txt','w') as tempboot:
-		tempboot.write('#!/bin/bash \n')
-		tempboot.write("echo 'OPTIONS="+'"${OPTIONS} --storage-opt dm.basesize='+str(dockerBaseSize)+'G"'+"' >> /etc/sysconfig/docker")
-	cmd = "write-mime-multipart --output=temp_userdata.txt " + \
-		"temp_boothook.txt:text/cloud-boothook " + \
-   		"temp_config.txt:text/x-shellscript "
-	subprocess.Popen(cmd.split())
-	time.sleep(5)
-	userData=''
-	with open('temp_userdata.txt','rb') as mimefile:
-		for line in mimefile:
-			userData += line
-	os.remove('temp_boothook.txt')
-	os.remove('temp_config.txt')
-	os.remove('temp_userdata.txt')
-	return b64encode(userData)
+    config_str = '#!/bin/bash \n'
+    config_str += 'sudo yum install -y aws-cli \n'
+    config_str += 'sudo yum install -y awslogs \n'
+    config_str += 'aws s3 cp '+ecsConfigFile+' /etc/ecs/ecs.config'
+
+    boothook_str = '#!/bin/bash \n'
+    boothook_str += "echo 'OPTIONS="+'"${OPTIONS} --storage-opt dm.basesize='+str(dockerBaseSize)+'G"'+"' >> /etc/sysconfig/docker"
+
+    config = MIMEText(config_str, _subtype='x-shellscript')
+    config.add_header('Content-Disposition', 'attachment',filename='config_temp.txt')
+
+    boothook = MIMEText(boothook_str, _subtype='cloud-boothook')
+    boothook.add_header('Content-Disposition', 'attachment',filename='boothook_temp.txt')
+
+    pre_user_data = MIMEMultipart()
+    pre_user_data.attach(boothook)
+    pre_user_data.attach(config)
+
+    return b64encode(pre_user_data.as_string())
 	
 def removequeue(queueName):
     cmd='aws sqs list-queues --queue-name-prefix ' + queueName
