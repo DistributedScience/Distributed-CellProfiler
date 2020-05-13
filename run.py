@@ -10,11 +10,164 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 from config import *
+WAIT_TIME = 60
 MONITOR_TIME = 60
+
+
+#################################
+# SETUP TEMPLATES
+#################################
+
+TASK_DEFINITION = {
+    "family": APP_NAME,
+    "containerDefinitions": [
+        {
+            "environment": [
+                {
+                    "name": "AWS_REGION",
+                    "value": AWS_REGION
+                }
+                ],
+            "name": APP_NAME,
+            "image": DOCKERHUB_TAG,
+            "cpu": CPU_SHARES,
+            "memory": MEMORY,
+            "essential": True,
+            "privileged": True,
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": LOG_GROUP_NAME+"_perInstance",
+                    "awslogs-region": AWS_REGION,
+                    "awslogs-stream-prefix": APP_NAME
+                    }
+                }
+        }
+    ]
+}
+
+SQS_DEFINITION = {
+    "DelaySeconds": "0",
+    "MaximumMessageSize": "262144",
+    "MessageRetentionPeriod": "1209600",
+    "ReceiveMessageWaitTimeSeconds": "0",
+    "RedrivePolicy": "{\"deadLetterTargetArn\":\"" + SQS_DEAD_LETTER_QUEUE + "\",\"maxReceiveCount\":\"10\"}",
+    "VisibilityTimeout": str(SQS_MESSAGE_VISIBILITY)
+}
+
 
 #################################
 # AUXILIARY FUNCTIONS
 #################################
+
+def get_aws_credentials():
+    config = ConfigParser()
+    config.read(AWS_CONFIG_FILE_NAME)
+    config.read(AWS_CREDENTIAL_FILE_NAME)
+    return config.get(AWS_PROFILE, 'aws_access_key_id'), config.get(AWS_PROFILE, 'aws_secret_access_key')
+
+def generate_task_definition():
+    task_definition = TASK_DEFINITION.copy()
+    key, secret = get_aws_credentials()
+    sqs = boto3.client('sqs')
+    queue_name = get_queue_url(sqs)
+    task_definition['containerDefinitions'][0]['environment'] += [
+	{
+            'name': 'APP_NAME',
+            'value': APP_NAME
+        },
+        {
+            'name': 'SQS_QUEUE_URL',
+            'value': queue_name
+        },
+	{
+	    "name": "AWS_ACCESS_KEY_ID",
+	    "value": key
+	},
+	{
+	    "name": "AWS_SECRET_ACCESS_KEY",
+	    "value": secret
+	},
+	{
+	    "name": "AWS_BUCKET",
+	    "value": AWS_BUCKET
+	},
+	{
+	    "name": "DOCKER_CORES",
+	    "value": str(DOCKER_CORES)
+	},
+	{
+	    "name": "LOG_GROUP_NAME",
+	    "value": LOG_GROUP_NAME
+	},
+	{
+	    "name": "CHECK_IF_DONE_BOOL",
+	    "value": CHECK_IF_DONE_BOOL
+	},
+	{
+	    "name": "EXPECTED_NUMBER_FILES",
+	    "value": str(EXPECTED_NUMBER_FILES)
+	},
+	{
+	    "name": "ECS_CLUSTER",
+	    "value": ECS_CLUSTER
+	},
+	{
+	    "name": "SECONDS_TO_START",
+	    "value": str(SECONDS_TO_START)
+	},
+	{
+	    "name": "MIN_FILE_SIZE_BYTES",
+	    "value": str(MIN_FILE_SIZE_BYTES)
+	}
+    ]
+    return task_definition
+
+def update_ecs_task_definition(ecs):
+    task_definition = generate_task_definition()
+    ecs.register_task_definition(family=ECS_TASK_NAME,containerDefinitions=task_definition['containerDefinitions'])
+    print('Task definition registered')
+
+def get_or_create_cluster(ecs):
+    data = ecs.list_clusters()
+    cluster = [clu for clu in data['clusterArns'] if clu.endswith(ECS_CLUSTER)]
+    if len(cluster) == 0:
+        ecs.create_cluster(clusterName=ECS_CLUSTER)
+        time.sleep(WAIT_TIME)
+        print('Cluster '+ECS_CLUSTER+' created')
+    else:
+        print('Cluster '+ECS_CLUSTER+' exists')
+
+def create_or_update_ecs_service(ecs):
+    # Create the service with no workers (0 desired count)
+    data = ecs.list_services(cluster=ECS_CLUSTER)
+    service = [srv for srv in data['serviceArns'] if srv.endswith(ECS_SERVICE_NAME)]
+    if len(service) > 0:
+        print('Service exists. Removing')
+        ecs.delete_service(cluster=ECS_CLUSTER, service=ECS_SERVICE_NAME)
+        print('Removed service '+ECS_SERVICE_NAME)
+        time.sleep(WAIT_TIME)
+
+    print('Creating new service')
+    ecs.create_service(cluster=ECS_CLUSTER, serviceName=ECS_SERVICE_NAME, taskDefinition=ECS_TASK_NAME, desiredCount=0)
+    print('Service created')
+
+def get_queue_url(sqs):
+    result = sqs.list_queues()
+    if 'QueueUrls' in result.keys():
+        for u in result['QueueUrls']:
+            if u.split('/')[-1] == SQS_QUEUE_NAME:
+                return u
+    return None
+
+def get_or_create_queue(sqs):
+    u = get_queue_url(sqs)
+    if u is None:
+        print('Creating queue')
+        sqs.create_queue(QueueName=SQS_QUEUE_NAME, Attributes=SQS_DEFINITION)
+        time.sleep(WAIT_TIME)
+    else:
+        print('Queue exists')
 
 def loadConfig(configFile):
     data = None
@@ -155,11 +308,28 @@ class JobQueue():
         self.queue.load()
         visible = int( self.queue.attributes['ApproximateNumberOfMessages'] )
         nonVis = int( self.queue.attributes['ApproximateNumberOfMessagesNotVisible'] )
-	return visible, nonVis
+        return visible, nonVis
 
 
 #################################
-# SERVICE 1: SUBMIT JOB
+# SERVICE 1: SETUP (formerly fab)
+#################################
+
+def setup():
+    ECS_TASK_NAME = APP_NAME + 'Task'
+    ECS_SERVICE_NAME = APP_NAME + 'Service'
+    USER = os.environ['HOME'].split('/')[-1]
+    AWS_CONFIG_FILE_NAME = os.environ['HOME'] + '/.aws/config'
+    AWS_CREDENTIAL_FILE_NAME = os.environ['HOME'] + '/.aws/credentials'
+    sqs = boto3.client('sqs')
+    get_or_create_queue(sqs)
+    ecs = boto3.client('ecs')
+    get_or_create_cluster(ecs)
+    update_ecs_task_definition(ecs)
+    create_or_update_ecs_service(ecs)
+
+#################################
+# SERVICE 2: SUBMIT JOB
 #################################
 
 def submitJob():
@@ -193,7 +363,7 @@ def submitJob():
     print('Job submitted. Check your queue')
 
 #################################
-# SERVICE 2: START CLUSTER 
+# SERVICE 3: START CLUSTER 
 #################################
 
 def startCluster():
@@ -266,7 +436,7 @@ def startCluster():
     print('Spot fleet successfully created. Your job should start in a few minutes.')
 
 #################################
-# SERVICE 3: MONITOR JOB 
+# SERVICE 4: MONITOR JOB 
 #################################
 
 def monitor():
@@ -364,9 +534,12 @@ def monitor():
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print('Use: run.py submitJob | startCluster | monitor')
+        print('Use: run.py setup | submitJob | startCluster | monitor')
         sys.exit()
-    if sys.argv[1] == 'submitJob':
+    
+    if sys.argv[1] == 'setup':
+        setup()
+    elif sys.argv[1] == 'submitJob':
         submitJob()
     elif sys.argv[1] == 'startCluster':
         startCluster()
