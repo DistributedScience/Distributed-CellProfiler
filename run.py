@@ -123,7 +123,7 @@ def generate_task_definition():
     ]
     return task_definition
 
-def update_ecs_task_definition(ecs):
+def update_ecs_task_definition(ecs, ECS_TASK_NAME):
     task_definition = generate_task_definition()
     ecs.register_task_definition(family=ECS_TASK_NAME,containerDefinitions=task_definition['containerDefinitions'])
     print('Task definition registered')
@@ -138,7 +138,7 @@ def get_or_create_cluster(ecs):
     else:
         print('Cluster '+ECS_CLUSTER+' exists')
 
-def create_or_update_ecs_service(ecs):
+def create_or_update_ecs_service(ecs, ECS_SERVICE_NAME, ECS_TASK_NAME):
     # Create the service with no workers (0 desired count)
     data = ecs.list_services(cluster=ECS_CLUSTER)
     service = [srv for srv in data['serviceArns'] if srv.endswith(ECS_SERVICE_NAME)]
@@ -233,7 +233,8 @@ def removequeue(queueName):
         for eachUrl in queueoutput["QueueUrls"]:
             if eachUrl.split('/')[-1] == queueName:
                 queueUrl=eachUrl
-    sqs.delete_queue(QueueURL=queueUrl)
+    
+    sqs.delete_queue(QueueUrl=queueUrl)
 
 def deregistertask(taskName, ecs):
     taskArns = ecs.list_task_definitions(familyPrefix=taskName, status='ACTIVE')
@@ -244,7 +245,7 @@ def deregistertask(taskName, ecs):
 def removeClusterIfUnused(clusterName, ecs):
     if clusterName != 'default':
         #never delete the default cluster
-        ecs.describe_clusters(clusters=[clusterName])
+        result = ecs.describe_clusters(clusters=[clusterName])
         if sum([result['clusters'][0]['pendingTasksCount'],result['clusters'][0]['runningTasksCount'],result['clusters'][0]['activeServicesCount'],result['clusters'][0]['registeredContainerInstancesCount']])==0:
             ecs.delete_cluster(cluster=clusterName)
 
@@ -257,7 +258,7 @@ def downscaleSpotFleet(queue, spotFleetID, ec2):
         if nonvisible < len(status['ActiveInstances']):
             ec2.modify_spot_fleet_request(ExcessCapacityTerminationPolicy='noTermination', SpotFleetRequestId=spotFleetID, TargetCapacity = nonvisible)
 
-def export_logs(logs, loggroupId, starttime, bucketId, loggroupId)
+def export_logs(logs, loggroupId, starttime, bucketId):
     result = logs.create_export_task(taskName = loggroupId, logGroupName = loggroupId, fromTime = starttime, to = time.time()*1000, destination = bucketId, destinationPrefix = 'exportedlogs/'+loggroupId)
     
     logExportId = result['taskId']
@@ -325,8 +326,8 @@ def setup():
     get_or_create_queue(sqs)
     ecs = boto3.client('ecs')
     get_or_create_cluster(ecs)
-    update_ecs_task_definition(ecs)
-    create_or_update_ecs_service(ecs)
+    update_ecs_task_definition(ecs, ECS_TASK_NAME)
+    create_or_update_ecs_service(ecs, ECS_SERVICE_NAME, ECS_TASK_NAME)
 
 #################################
 # SERVICE 2: SUBMIT JOB
@@ -375,6 +376,9 @@ def startCluster():
     s3client = boto3.client('s3')
     ecsConfigFile=generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client)
     spotfleetConfig=loadConfig(sys.argv[2])
+    spotfleetConfig['ValidFrom']=datetime.datetime.now().isoformat()
+    spotfleetConfig['ValidUntil']=(datetime.datetime.now()+datetime.timedelta(days=365)).isoformat()
+    DOCKER_BASE_SIZE = int(EBS_VOL_SIZE) - 2
     userData=generateUserData(ecsConfigFile,DOCKER_BASE_SIZE)
     for LaunchSpecification in range(0,len(spotfleetConfig['LaunchSpecifications'])): 
         spotfleetConfig['LaunchSpecifications'][LaunchSpecification]["UserData"]=userData
@@ -420,12 +424,12 @@ def startCluster():
     status = ec2client.describe_spot_fleet_instances(SpotFleetRequestId=requestInfo['SpotFleetRequestId'])
     while len(status['ActiveInstances']) < CLUSTER_MACHINES:
         # First check to make sure there's not a problem
-        errorcheck = ec2client.describe_spot_fleet_request_history(SpotFleetRequestId=requestInfo['SpotFleetRequestId'], EventType='error', StartTime=datetime.datetime.today)
+        errorcheck = ec2client.describe_spot_fleet_request_history(SpotFleetRequestId=requestInfo['SpotFleetRequestId'], EventType='error', StartTime=datetime.datetime.today().replace(microsecond=0))
         if len(errorcheck['HistoryRecords']) != 0:
             print('Your spot fleet request is causing an error and is now being cancelled.  Please check your configuration and try again')
             for eacherror in errorcheck['HistoryRecords']:
                 print(eacherror['EventInformation']['EventSubType'] + ' : ' + eacherror['EventInformation']['EventDescription'])
-            ec2client.cancel_spot_fleet_requests(SpotFleetRequestIds=requestInfo['SpotFleetRequestId'], TerminateInstances=True)
+            ec2client.cancel_spot_fleet_requests(SpotFleetRequestIds=[requestInfo['SpotFleetRequestId']], TerminateInstances=True)
             return
         
         # If everything seems good, just bide your time until you're ready to go
@@ -496,12 +500,12 @@ def monitor():
             time.sleep(10)
             instancelist = instancelist[100:]
         killdeadAlarms(fleetId,monitorapp)
-	except:
-        continue
+    except:
+        pass
 
     # Step 4: Read spot fleet id and terminate all EC2 instances
     print('Shutting down spot fleet',fleetId)
-    ec2.cancel_spot_fleet_requests(SpotFleetRequestIds=fleetId, TerminateInstances=True)
+    ec2.cancel_spot_fleet_requests(SpotFleetRequestIds=[fleetId], TerminateInstances=True)
     print('Job done.')
 
     # Step 5. Release other resources
