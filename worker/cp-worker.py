@@ -17,6 +17,7 @@ import string
 
 DATA_ROOT = '/home/ubuntu/bucket'
 LOCAL_OUTPUT = '/home/ubuntu/local_output'
+PLUGIN_DIR = '/home/ubuntu/CellProfiler-plugins'
 QUEUE_URL = os.environ['SQS_QUEUE_URL']
 AWS_BUCKET = os.environ['AWS_BUCKET']
 LOG_GROUP_NAME= os.environ['LOG_GROUP_NAME']
@@ -26,6 +27,10 @@ if 'MIN_FILE_SIZE_BYTES' not in os.environ:
     MIN_FILE_SIZE_BYTES = 1
 else:
     MIN_FILE_SIZE_BYTES = int(os.environ['MIN_FILE_SIZE_BYTES'])
+if 'USE_PLUGINS' not in os.environ:
+    USE_PLUGINS = 'False'
+else:
+    USE_PLUGINS = os.environ['USE_PLUGINS']
 
 #################################
 # CLASS TO HANDLE THE SQS QUEUE
@@ -129,7 +134,7 @@ def runCellProfiler(message):
     remoteOut= os.path.join(message['output'],metadataID)
     replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
 			'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
-			'MetadataID':metadataID }
+			'MetadataID':metadataID, 'PLUGINS':PLUGIN_DIR }
     # See if this is a message you've already handled, if you've so chosen
     if CHECK_IF_DONE_BOOL.upper() == 'TRUE':
         try:
@@ -158,9 +163,12 @@ def runCellProfiler(message):
     cpDone = localOut + '/cp.is.done'
     if message['pipeline'][-3:]!='.h5':
         cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
-        cmd += ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
+        cmd += ' --data-file=%(DATA)s/%(FL)s '
+        cmd += '-g %(Metadata)s'
     else:
         cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone + ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
+    if USE_PLUGINS == 'True':
+        cmd += ' --plugins-directory=%(PLUGINS)s'
     cmd = cmd % replaceValues
     print('Running', cmd)
     logger.info(cmd)
