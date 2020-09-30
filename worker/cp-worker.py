@@ -138,6 +138,7 @@ def runCellProfiler(message):
 		objectsizelist=[k['Size'] for k in bucketlist['Contents']]
 		objectsizelist = [i for i in objectsizelist if i >= MIN_FILE_SIZE_BYTES]
 		if len(objectsizelist)>=int(EXPECTED_NUMBER_FILES):
+		    logger.removeHandler(watchtowerlogger)
 		    return 'SUCCESS'
 	except KeyError: #Returned if that folder does not exist
 		pass
