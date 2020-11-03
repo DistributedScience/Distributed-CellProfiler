@@ -119,6 +119,14 @@ def generate_task_definition():
 	{
 	    "name": "MIN_FILE_SIZE_BYTES",
 	    "value": str(MIN_FILE_SIZE_BYTES)
+	},
+	{
+	    "name": "USE_PLUGINS",
+	    "value": str(USE_PLUGINS)
+	},
+    {
+	    "name": "NECESSARY_STRING",
+	    "value": NECESSARY_STRING
 	}
     ]
     return task_definition

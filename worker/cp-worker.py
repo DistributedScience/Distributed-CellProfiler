@@ -31,6 +31,10 @@ if 'USE_PLUGINS' not in os.environ:
     USE_PLUGINS = 'False'
 else:
     USE_PLUGINS = os.environ['USE_PLUGINS']
+if 'NECESSARY_STRING' not in os.environ:
+    NECESSARY_STRING = False
+else:
+    NECESSARY_STRING = os.environ['NECESSARY_STRING']
 
 #################################
 # CLASS TO HANDLE THE SQS QUEUE
@@ -147,6 +151,9 @@ def runCellProfiler(message):
             bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut+'/')
             objectsizelist=[k['Size'] for k in bucketlist['Contents']]
             objectsizelist = [i for i in objectsizelist if i >= MIN_FILE_SIZE_BYTES]
+            if NECESSARY_STRING:
+                if NECESSARY_STRING != '':
+                    objectsizelist = [i for i in objectsizelist if NECESSARY_STRING in i]
         if len(objectsizelist)>=int(EXPECTED_NUMBER_FILES):
             printandlog('File not run due to > expected number of files',logger)
             logger.removeHandler(watchtowerlogger)
@@ -169,7 +176,7 @@ def runCellProfiler(message):
         cmd += '-g %(Metadata)s'
     else:
         cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone + ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
-    if USE_PLUGINS == 'True':
+    if USE_PLUGINS.lower() == 'true':
         cmd += ' --plugins-directory=%(PLUGINS)s'
     cmd = cmd % replaceValues
     print('Running', cmd)
