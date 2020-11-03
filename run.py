@@ -72,7 +72,7 @@ def generate_task_definition():
     sqs = boto3.client('sqs')
     queue_name = get_queue_url(sqs)
     task_definition['containerDefinitions'][0]['environment'] += [
-	{
+        {
             'name': 'APP_NAME',
             'value': APP_NAME
         },
@@ -80,54 +80,54 @@ def generate_task_definition():
             'name': 'SQS_QUEUE_URL',
             'value': queue_name
         },
-	{
-	    "name": "AWS_ACCESS_KEY_ID",
-	    "value": key
-	},
-	{
-	    "name": "AWS_SECRET_ACCESS_KEY",
-	    "value": secret
-	},
-	{
-	    "name": "AWS_BUCKET",
-	    "value": AWS_BUCKET
-	},
-	{
-	    "name": "DOCKER_CORES",
-	    "value": str(DOCKER_CORES)
-	},
-	{
-	    "name": "LOG_GROUP_NAME",
-	    "value": LOG_GROUP_NAME
-	},
-	{
-	    "name": "CHECK_IF_DONE_BOOL",
-	    "value": CHECK_IF_DONE_BOOL
-	},
-	{
-	    "name": "EXPECTED_NUMBER_FILES",
-	    "value": str(EXPECTED_NUMBER_FILES)
-	},
-	{
-	    "name": "ECS_CLUSTER",
-	    "value": ECS_CLUSTER
-	},
-	{
-	    "name": "SECONDS_TO_START",
-	    "value": str(SECONDS_TO_START)
-	},
-	{
-	    "name": "MIN_FILE_SIZE_BYTES",
-	    "value": str(MIN_FILE_SIZE_BYTES)
-	},
-	{
-	    "name": "USE_PLUGINS",
-	    "value": str(USE_PLUGINS)
-	},
-    {
-	    "name": "NECESSARY_STRING",
-	    "value": NECESSARY_STRING
-	}
+        {
+            "name": "AWS_ACCESS_KEY_ID",
+            "value": key
+        },
+        {
+            "name": "AWS_SECRET_ACCESS_KEY",
+            "value": secret
+        },
+        {
+            "name": "AWS_BUCKET",
+            "value": AWS_BUCKET
+        },
+        {
+            "name": "DOCKER_CORES",
+            "value": str(DOCKER_CORES)
+        },
+        {
+            "name": "LOG_GROUP_NAME",
+            "value": LOG_GROUP_NAME
+        },
+        {
+            "name": "CHECK_IF_DONE_BOOL",
+            "value": CHECK_IF_DONE_BOOL
+        },
+        {
+            "name": "EXPECTED_NUMBER_FILES",
+            "value": str(EXPECTED_NUMBER_FILES)
+        },
+        {
+            "name": "ECS_CLUSTER",
+            "value": ECS_CLUSTER
+        },
+        {
+            "name": "SECONDS_TO_START",
+            "value": str(SECONDS_TO_START)
+        },
+        {
+            "name": "MIN_FILE_SIZE_BYTES",
+            "value": str(MIN_FILE_SIZE_BYTES)
+        },
+        {
+            "name": "USE_PLUGINS",
+            "value": str(USE_PLUGINS)
+        },
+        {
+            "name": "NECESSARY_STRING",
+            "value": NECESSARY_STRING
+        }
     ]
     return task_definition
 
