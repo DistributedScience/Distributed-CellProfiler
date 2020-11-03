@@ -100,18 +100,19 @@ def runCellProfiler(message):
             printandlog('You must specify an output structure when passing Metadata as dictionaries',logger)
             logger.removeHandler(watchtowerlogger)
             return 'INPUT_PROBLEM'
-    else:
-        metadataID = message['output_structure']
-        metadataForCall = ''
-        for eachMetadata in message['Metadata'].keys():
-            if eachMetadata not in metadataID:
-                watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=str(message['Metadata'].values()),create_log_group=False)
-                logger.addHandler(watchtowerlogger)
-                printandlog('Your specified output structure does not match the Metadata passed',logger)
-            else:
-                metadataID = string.replace(metadataID,eachMetadata,message['Metadata'][eachMetadata])
-                metadataForCall+=eachMetadata+'='+message['Metadata'][eachMetadata]+','
-        message['Metadata']=metadataForCall[:-1]
+        else:
+            metadataID = message['output_structure']
+            metadataForCall = ''
+            for eachMetadata in message['Metadata'].keys():
+                if eachMetadata not in metadataID:
+                    watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=str(message['Metadata'].values()),create_log_group=False)
+                    logger.addHandler(watchtowerlogger)
+                    printandlog('Your specified output structure does not match the Metadata passed',logger)
+                    logger.removeHandler(watchtowerlogger)
+                else:
+                    metadataID = string.replace(metadataID,eachMetadata,message['Metadata'][eachMetadata])
+                    metadataForCall+=eachMetadata+'='+message['Metadata'][eachMetadata]+','
+            message['Metadata']=metadataForCall[:-1]
     elif 'output_structure' in message.keys():
         if message['output_structure']!='': #support for explicit output structuring
             watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=message['Metadata'],create_log_group=False)
@@ -123,6 +124,7 @@ def runCellProfiler(message):
                 else:
                     metadataID = string.replace(metadataID,eachMetadata.split('=')[0],eachMetadata.split('=')[1])
             printandlog('metadataID ='+metadataID, logger)
+            logger.removeHandler(watchtowerlogger)
         else: #backwards compatability with 1.0.0 and/or no desire to structure output
             metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
     else: #backwards compatability with 1.0.0 and/or no desire to structure output
@@ -133,6 +135,11 @@ def runCellProfiler(message):
     replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
             'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
             'MetadataID':metadataID, 'PLUGINS':PLUGIN_DIR }
+
+    # Start loggging now that we have a job we care about
+    watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
+    logger.addHandler(watchtowerlogger)	
+
     # See if this is a message you've already handled, if you've so chosen
     if CHECK_IF_DONE_BOOL.upper() == 'TRUE':
         try:
@@ -141,14 +148,11 @@ def runCellProfiler(message):
             objectsizelist=[k['Size'] for k in bucketlist['Contents']]
             objectsizelist = [i for i in objectsizelist if i >= MIN_FILE_SIZE_BYTES]
         if len(objectsizelist)>=int(EXPECTED_NUMBER_FILES):
+            printandlog('File not run due to > expected number of files',logger)
             logger.removeHandler(watchtowerlogger)
             return 'SUCCESS'
     except KeyError: #Returned if that folder does not exist
-        pass
-
-    # Start loggging now that we have a job we care about
-    watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
-    logger.addHandler(watchtowerlogger)		
+        pass	
     
     # Build and run CellProfiler command
     cp2 = False
