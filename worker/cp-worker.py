@@ -162,6 +162,7 @@ def runCellProfiler(message):
             pass	
     
     # Build and run CellProfiler command
+    cpDone = localOut + '/cp.is.done'
     cp2 = False
     with open(os.path.join(replaceValues['DATA'],replaceValues['PL']), 'r') as openpipe:
         for line in openpipe:
@@ -184,7 +185,6 @@ def runCellProfiler(message):
     
     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     monitorAndLog(subp,logger)
-    cpDone = localOut + '/cp.is.done'
 
     # Get the outputs and move them to S3
     if os.path.isfile(cpDone):
