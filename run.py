@@ -386,13 +386,16 @@ def startCluster():
     s3client = boto3.client('s3')
     ecsConfigFile=generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client)
     spotfleetConfig=loadConfig(sys.argv[2])
-    spotfleetConfig['ValidFrom']=datetime.datetime.now().isoformat()
-    spotfleetConfig['ValidUntil']=(datetime.datetime.now()+datetime.timedelta(days=365)).isoformat()
-    DOCKER_BASE_SIZE = int(EBS_VOL_SIZE) - 2
+    spotfleetConfig['ValidFrom']=datetime.datetime.now().replace(microsecond=0)
+    spotfleetConfig['ValidUntil']=(datetime.datetime.now()+datetime.timedelta(days=365)).replace(microsecond=0)
+    spotfleetConfig['TargetCapacity']= CLUSTER_MACHINES
+    spotfleetConfig['SpotPrice'] = '%.2f' %MACHINE_PRICE
+    DOCKER_BASE_SIZE = int(round(float(EBS_VOL_SIZE)/int(TASKS_PER_MACHINE))) - 2
     userData=generateUserData(ecsConfigFile,DOCKER_BASE_SIZE)
     for LaunchSpecification in range(0,len(spotfleetConfig['LaunchSpecifications'])): 
         spotfleetConfig['LaunchSpecifications'][LaunchSpecification]["UserData"]=userData
         spotfleetConfig['LaunchSpecifications'][LaunchSpecification]['BlockDeviceMappings'][1]['Ebs']["VolumeSize"]= EBS_VOL_SIZE
+        spotfleetConfig['LaunchSpecifications'][LaunchSpecification]['InstanceType'] = MACHINE_TYPE[LaunchSpecification]
 
 
     # Step 2: make the spot fleet request
