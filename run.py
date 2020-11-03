@@ -257,9 +257,12 @@ def removeClusterIfUnused(clusterName, ecs):
         if sum([result['clusters'][0]['pendingTasksCount'],result['clusters'][0]['runningTasksCount'],result['clusters'][0]['activeServicesCount'],result['clusters'][0]['registeredContainerInstancesCount']])==0:
             ecs.delete_cluster(cluster=clusterName)
 
-def downscaleSpotFleet(queue, spotFleetID, ec2):
+def downscaleSpotFleet(queue, spotFleetID, ec2, manual=False):
     visible, nonvisible = queue.returnLoad()
-    if visible > 0:
+    if manual:
+        ec2.modify_spot_fleet_request(ExcessCapacityTerminationPolicy='noTermination', SpotFleetRequestId=spotFleetID, TargetCapacity = int(manual))
+        return
+    elif visible > 0:
         return
     else:
         status = ec2.describe_spot_fleet_instances(SpotFleetRequestId=spotFleetID)
@@ -458,7 +461,7 @@ def startCluster():
 # SERVICE 4: MONITOR JOB 
 #################################
 
-def monitor():
+def monitor(cheapest=False):
     if len(sys.argv) < 3:
         print('Use: run.py monitor spotFleetIdFile')
         sys.exit()
@@ -471,7 +474,23 @@ def monitor():
 
     ec2 = boto3.client('ec2')
     cloud = boto3.client('cloudwatch') 
+
+    # Optional Step 0 - decide if you're going to be cheap rather than fast. This means that you'll get 15 minutes
+    # from the start of the monitor to get as many machines as you get, and then it will set the requested number to 1.
+    # Benefit: this will always be the cheapest possible way to run, because if machines die they'll die fast, 
+    # Potential downside- if machines are at low availability when you start to run, you'll only ever get a small number 
+    # of machines (as opposed to getting more later when they become available), so it might take VERY long to run if that happens.
+    if cheapest:
+        queue = JobQueue(name=queueId)
+        startcountdown = time.time()
+        while queue.pendingLoad(): 
+            if time.time() - startcountdown > 900:
+                downscaleSpotFleet(queue, fleetId, ec2, manual=1)
+                break
+            time.sleep(MONITOR_TIME)
+
     # Step 1: Create job and count messages periodically
+    print("Starting step 1")
     queue = JobQueue(name=queueId)
     while queue.pendingLoad():
         #Once an hour (except at midnight) check for terminated machines and delete their alarms.  
