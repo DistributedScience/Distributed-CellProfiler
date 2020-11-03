@@ -437,8 +437,16 @@ def startCluster():
             print('Your spot fleet request is causing an error and is now being cancelled.  Please check your configuration and try again')
             for eacherror in errorcheck['HistoryRecords']:
                 print(eacherror['EventInformation']['EventSubType'] + ' : ' + eacherror['EventInformation']['EventDescription'])
-            ec2client.cancel_spot_fleet_requests(SpotFleetRequestIds=[requestInfo['SpotFleetRequestId']], TerminateInstances=True)
-            return
+            shutoff = True
+            #If there's only one error, and it's the type we see for insufficient capacity (but also other types)
+            #AND if there are some machines on, indicating that other than capacity the spec is otherwise good, don't cancel
+            if len(errorcheck['HistoryRecords']) == 1:
+                if errorcheck['HistoryRecords'][0]['EventInformation']['EventSubType'] == 'allLaunchSpecsTemporarilyBlacklisted':
+                    if len(status['ActiveInstances']) >= 1:
+                        shutoff = False
+            if shutoff:
+                ec2client.cancel_spot_fleet_requests(SpotFleetRequestIds=[requestInfo['SpotFleetRequestId']], TerminateInstances=True)
+                return
         
         # If everything seems good, just bide your time until you're ready to go
         print('.')
