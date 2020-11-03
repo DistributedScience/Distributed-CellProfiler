@@ -127,7 +127,7 @@ def MakeAnalysisJobs(mode='repurp'):
                                         'input':inputpath,
                                         'data_file': posixpath.join(datafilepath,toanalyze+'_with_illum.csv')
                                         }
-		    elif mode=='batch':
+                    elif mode=='batch':
                         templateMessage_analysis = {'Metadata': 'Metadata_Plate='+toanalyze+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
                                         'pipeline': posixpath.join(batchpath,batchpipename),
                                         'output': analysisoutpath,
