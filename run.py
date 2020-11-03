@@ -60,15 +60,14 @@ SQS_DEFINITION = {
 # AUXILIARY FUNCTIONS
 #################################
 
-def get_aws_credentials():
-    config = ConfigParser()
-    config.read(AWS_CONFIG_FILE_NAME)
-    config.read(AWS_CREDENTIAL_FILE_NAME)
-    return config.get(AWS_PROFILE, 'aws_access_key_id'), config.get(AWS_PROFILE, 'aws_secret_access_key')
+def get_aws_credentials(AWS_PROFILE):
+    session = boto3.Session(profile_name=AWS_PROFILE)
+    credentials = session.get_credentials()
+    return credentials.access_key, credentials.secret_key
 
-def generate_task_definition():
+def generate_task_definition(AWS_PROFILE):
     task_definition = TASK_DEFINITION.copy()
-    key, secret = get_aws_credentials()
+    key, secret = get_aws_credentials(AWS_PROFILE)
     sqs = boto3.client('sqs')
     queue_name = get_queue_url(sqs)
     task_definition['containerDefinitions'][0]['environment'] += [
@@ -131,8 +130,8 @@ def generate_task_definition():
     ]
     return task_definition
 
-def update_ecs_task_definition(ecs, ECS_TASK_NAME):
-    task_definition = generate_task_definition()
+def update_ecs_task_definition(ecs, ECS_TASK_NAME, AWS_PROFILE):
+    task_definition = generate_task_definition(AWS_PROFILE)
     ecs.register_task_definition(family=ECS_TASK_NAME,containerDefinitions=task_definition['containerDefinitions'])
     print('Task definition registered')
 
@@ -337,7 +336,7 @@ def setup():
     get_or_create_queue(sqs)
     ecs = boto3.client('ecs')
     get_or_create_cluster(ecs)
-    update_ecs_task_definition(ecs, ECS_TASK_NAME)
+    update_ecs_task_definition(ecs, ECS_TASK_NAME, AWS_PROFILE)
     create_or_update_ecs_service(ecs, ECS_SERVICE_NAME, ECS_TASK_NAME)
 
 #################################
