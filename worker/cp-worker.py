@@ -154,12 +154,12 @@ def runCellProfiler(message):
             if NECESSARY_STRING:
                 if NECESSARY_STRING != '':
                     objectsizelist = [i for i in objectsizelist if NECESSARY_STRING in i]
-        if len(objectsizelist)>=int(EXPECTED_NUMBER_FILES):
-            printandlog('File not run due to > expected number of files',logger)
-            logger.removeHandler(watchtowerlogger)
-            return 'SUCCESS'
-    except KeyError: #Returned if that folder does not exist
-        pass	
+            if len(objectsizelist)>=int(EXPECTED_NUMBER_FILES):
+                printandlog('File not run due to > expected number of files',logger)
+                logger.removeHandler(watchtowerlogger)
+                return 'SUCCESS'
+        except KeyError: #Returned if that folder does not exist
+            pass	
     
     # Build and run CellProfiler command
     cp2 = False
