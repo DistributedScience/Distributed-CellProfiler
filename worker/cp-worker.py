@@ -176,7 +176,7 @@ def runCellProfiler(message):
         cmd += ' --data-file=%(DATA)s/%(FL)s '
         cmd += '-g %(Metadata)s'
     else:
-        cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone + ' --data-file=%(DATA)s/%(FL)s -g %(Metadata)s'
+        cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone + ' -g %(Metadata)s'
     if USE_PLUGINS.lower() == 'true':
         cmd += ' --plugins-directory=%(PLUGINS)s'
     cmd = cmd % replaceValues
