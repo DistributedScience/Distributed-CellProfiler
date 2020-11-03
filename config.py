@@ -37,3 +37,6 @@ LOG_GROUP_NAME = APP_NAME
 CHECK_IF_DONE_BOOL = 'True'  #True or False- should it check if there are a certain number of non-empty files and delete the job if yes?
 EXPECTED_NUMBER_FILES = 7    #What is the number of files that trigger skipping a job?
 MIN_FILE_SIZE_BYTES = 1      #What is the minimal number of bytes an object should be to "count"?
+
+# PLUGINS
+USE_PLUGINS = 'True'

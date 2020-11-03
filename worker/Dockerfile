@@ -5,6 +5,7 @@
 # This wraps the cellprofiler docker registry
 #
 
+
 FROM cellprofiler/cellprofiler:3.1.9
 
 # Install S3FS 
@@ -56,6 +57,12 @@ COPY instance-monitor.py .
 COPY run-worker.sh .
 RUN chmod 755 run-worker.sh
 
+RUN git clone https://github.com/CellProfiler/CellProfiler-plugins.git
+WORKDIR /home/ubuntu/CellProfiler-plugins
+RUN \
+    pip install -r requirements.txt
+
+WORKDIR /home/ubuntu
 ENTRYPOINT ["./run-worker.sh"]
 CMD [""]
 

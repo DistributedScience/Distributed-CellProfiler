@@ -17,6 +17,7 @@ import string
 
 DATA_ROOT = '/home/ubuntu/bucket'
 LOCAL_OUTPUT = '/home/ubuntu/local_output'
+PLUGIN_DIR = '/home/ubuntu/CellProfiler-plugins'
 QUEUE_URL = os.environ['SQS_QUEUE_URL']
 AWS_BUCKET = os.environ['AWS_BUCKET']
 LOG_GROUP_NAME= os.environ['LOG_GROUP_NAME']
@@ -26,6 +27,10 @@ if 'MIN_FILE_SIZE_BYTES' not in os.environ:
     MIN_FILE_SIZE_BYTES = 1
 else:
     MIN_FILE_SIZE_BYTES = int(os.environ['MIN_FILE_SIZE_BYTES'])
+if 'USE_PLUGINS' not in os.environ:
+    USE_PLUGINS = 'False'
+else:
+    USE_PLUGINS = os.environ['USE_PLUGINS']
 
 #################################
 # CLASS TO HANDLE THE SQS QUEUE
@@ -127,7 +132,7 @@ def runCellProfiler(message):
     remoteOut= os.path.join(message['output'],metadataID)
     replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
             'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
-            'MetadataID':metadataID }
+            'MetadataID':metadataID, 'PLUGINS':PLUGIN_DIR }
     # See if this is a message you've already handled, if you've so chosen
     if CHECK_IF_DONE_BOOL.upper() == 'TRUE':
         try:
@@ -135,10 +140,11 @@ def runCellProfiler(message):
             bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut+'/')
             objectsizelist=[k['Size'] for k in bucketlist['Contents']]
             objectsizelist = [i for i in objectsizelist if i >= MIN_FILE_SIZE_BYTES]
-            if len(objectsizelist)>=int(EXPECTED_NUMBER_FILES):
-                return 'SUCCESS'
-        except KeyError: #Returned if that folder does not exist
-            pass
+        if len(objectsizelist)>=int(EXPECTED_NUMBER_FILES):
+            logger.removeHandler(watchtowerlogger)
+            return 'SUCCESS'
+    except KeyError: #Returned if that folder does not exist
+        pass
 
     # Start loggging now that we have a job we care about
     watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
