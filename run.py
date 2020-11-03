@@ -468,6 +468,13 @@ def monitor(cheapest=False):
         print('Use: run.py monitor spotFleetIdFile')
         sys.exit()
     
+    if '.json' not in sys.argv[2]:
+        print('Use: run.py monitor spotFleetIdFile')
+        sys.exit()
+
+    if len(sys.argv) == 4:
+        cheapest = sys.argv[3]
+    
     monitorInfo = loadConfig(sys.argv[2])
     monitorcluster=monitorInfo["MONITOR_ECS_CLUSTER"]
     monitorapp=monitorInfo["MONITOR_APP_NAME"]
