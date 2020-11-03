@@ -193,7 +193,7 @@ def runCellProfiler(message):
         while mvtries <3:
             try:
                     printandlog('Move attempt #'+str(mvtries+1),logger)
-                    cmd = 'aws s3 mv ' + localOut + ' s3://' + AWS_BUCKET + '/' + remoteOut + ' --recursive' 
+                    cmd = 'aws s3 mv ' + localOut + ' s3://' + AWS_BUCKET + '/' + remoteOut + ' --recursive --exclude=*/cp.is.done' 
                     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
                     out,err = subp.communicate()
                     printandlog('== OUT \n'+out, logger)
