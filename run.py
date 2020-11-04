@@ -184,7 +184,7 @@ def loadConfig(configFile):
 
 def killdeadAlarms(fleetId,monitorapp,ec2,cloud):
     todel=[]
-    changes = ec2.describe_spot_fleet_request_history(SpotFleetRequestId=fleetId,StartTime=datetime.datetime.now()-datetime.timedelta(hours=2))
+    changes = ec2.describe_spot_fleet_request_history(SpotFleetRequestId=fleetId,StartTime=(datetime.datetime.now()-datetime.timedelta(hours=2)).replace(microsecond=0))
     for eachevent in changes['HistoryRecords']:
         if eachevent['EventType']=='instanceChange':
             if eachevent['EventInformation']['EventSubType']=='terminated':
