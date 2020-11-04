@@ -269,12 +269,12 @@ def downscaleSpotFleet(queue, spotFleetID, ec2, manual=False):
             ec2.modify_spot_fleet_request(ExcessCapacityTerminationPolicy='noTermination', SpotFleetRequestId=spotFleetID, TargetCapacity = nonvisible)
 
 def export_logs(logs, loggroupId, starttime, bucketId):
-    result = logs.create_export_task(taskName = loggroupId, logGroupName = loggroupId, fromTime = starttime, to = time.time()*1000, destination = bucketId, destinationPrefix = 'exportedlogs/'+loggroupId)
+    result = logs.create_export_task(taskName = loggroupId, logGroupName = loggroupId, fromTime = int(starttime), to = int(time.time()*1000), destination = bucketId, destinationPrefix = 'exportedlogs/'+loggroupId)
     
     logExportId = result['taskId']
 
     while True:
-        result = describe_export_tasks(taskId = logExportId)
+        result = logs.describe_export_tasks(taskId = logExportId)
         if result['exportTasks'][0]['status']['code']!='PENDING':
             if result['exportTasks'][0]['status']['code']!='RUNNING':
                 print(result['exportTasks'][0]['status']['code'])
@@ -499,7 +499,6 @@ def monitor(cheapest=False):
             time.sleep(MONITOR_TIME)
 
     # Step 1: Create job and count messages periodically
-    print("Starting step 1")
     queue = JobQueue(name=queueId)
     while queue.pendingLoad():
         #Once an hour (except at midnight) check for terminated machines and delete their alarms.  
@@ -568,10 +567,10 @@ def monitor(cheapest=False):
     logs=boto3.client('logs')
 
     print('Transfer of CellProfiler logs to S3 initiated')
-    export_logs(logs, loggroupId, starttime, bucketId, loggroupId)
+    export_logs(logs, loggroupId, starttime, bucketId)
 
     print('Transfer of per-instance to S3 initiated')
-    export_logs(logs, loggroupId+'_perInstance', starttime, bucketId, loggroupId)
+    export_logs(logs, loggroupId+'_perInstance', starttime, bucketId)
 
     print('All export tasks done')
 
