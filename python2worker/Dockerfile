@@ -46,7 +46,7 @@ RUN \
 # Install watchtower for logging
 
 RUN \
-  pip install watchtower
+  pip install watchtower==0.8.0
 
 # SETUP NEW ENTRYPOINT
 
