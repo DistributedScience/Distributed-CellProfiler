@@ -70,7 +70,7 @@ class JobQueue():
 
 def monitorAndLog(process,logger):
     while True:
-        output= process.stdout.readline()
+        output= process.stdout.readline().decode()
         if output== '' and process.poll() is not None:
             break
         if output:
@@ -114,7 +114,7 @@ def runCellProfiler(message):
                     printandlog('Your specified output structure does not match the Metadata passed',logger)
                     logger.removeHandler(watchtowerlogger)
                 else:
-                    metadataID = string.replace(metadataID,eachMetadata,message['Metadata'][eachMetadata])
+                    metadataID = str.replace(metadataID,eachMetadata,message['Metadata'][eachMetadata])
                     metadataForCall+=eachMetadata+'='+message['Metadata'][eachMetadata]+','
             message['Metadata']=metadataForCall[:-1]
     elif 'output_structure' in message.keys():
@@ -126,7 +126,7 @@ def runCellProfiler(message):
                 if eachMetadata.split('=')[0] not in metadataID:
                     printandlog('Your specified output structure does not match the Metadata passed',logger)
                 else:
-                    metadataID = string.replace(metadataID,eachMetadata.split('=')[0],eachMetadata.split('=')[1])
+                    metadataID = str.replace(metadataID,eachMetadata.split('=')[0],eachMetadata.split('=')[1])
             printandlog('metadataID ='+metadataID, logger)
             logger.removeHandler(watchtowerlogger)
         else: #backwards compatability with 1.0.0 and/or no desire to structure output
@@ -163,14 +163,7 @@ def runCellProfiler(message):
     
     # Build and run CellProfiler command
     cpDone = localOut + '/cp.is.done'
-    cp2 = False
-    with open(os.path.join(replaceValues['DATA'],replaceValues['PL']), 'r') as openpipe:
-        for line in openpipe:
-            if 'DateRevision:2' in line: #comes from a CP2 pipeline
-                cp2 = True
-                cmdstem = 'cellprofiler -c -r -b '
-    if not cp2:
-        cmdstem = 'cellprofiler -c -r '
+    cmdstem = 'cellprofiler -c -r '
     if message['pipeline'][-3:]!='.h5':
         cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
         cmd += ' --data-file=%(DATA)s/%(FL)s '
@@ -196,6 +189,8 @@ def runCellProfiler(message):
                     cmd = 'aws s3 mv ' + localOut + ' s3://' + AWS_BUCKET + '/' + remoteOut + ' --recursive --exclude=cp.is.done' 
                     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
                     out,err = subp.communicate()
+                    out=out.decode()
+                    err=err.decode()
                     printandlog('== OUT \n'+out, logger)
                     if err == '':
                         break

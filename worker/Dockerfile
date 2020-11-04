@@ -6,7 +6,7 @@
 #
 
 
-FROM cellprofiler/cellprofiler:3.1.9
+FROM cellprofiler/cellprofiler:4.0.6
 
 # Install S3FS 
 
@@ -35,18 +35,15 @@ RUN make install
 
 # Install AWS CLI
 
-RUN \
-  pip install awscli 
+RUN python3.8 -m pip install awscli 
 
 # Install boto3
 
-RUN \
-  pip install -U boto3
+RUN python3.8 -m pip install boto3
 
 # Install watchtower for logging
 
-RUN \
-  pip install watchtower
+RUN python3.8 -m pip install watchtower
 
 # SETUP NEW ENTRYPOINT
 
@@ -59,8 +56,7 @@ RUN chmod 755 run-worker.sh
 
 RUN git clone https://github.com/CellProfiler/CellProfiler-plugins.git
 WORKDIR /home/ubuntu/CellProfiler-plugins
-RUN \
-    pip install -r requirements.txt
+#RUN pip install -r requirements.txt
 
 WORKDIR /home/ubuntu
 ENTRYPOINT ["./run-worker.sh"]
