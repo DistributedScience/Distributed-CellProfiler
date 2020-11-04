@@ -22,7 +22,7 @@ job. When the job is completed, the code is also able to stop resources and clea
 Edit the config.py file with all the relevant information for your job. Then, start creating 
 the basic AWS resources by running the following script:
 
- $ fab setup
+ $ python run.py setup
 
 This script intializes the resources in AWS. Notice that the docker registry is built separately,
 and you can modify the worker code to build your own. Anytime you modify the worker code, you need
@@ -48,10 +48,8 @@ with the following command:
 
  $ python run.py startCluster files/exampleFleet.json
 
-The exampleFleet.json file has to be updated to determine the type of EC2 instances that you want
-and how much you are willing to pay for each machine-hour. Make sure to adjust the values in this
-json file according to your application. After the cluster is ready, the code informs you that
-everything is setup, and saves the spot fleet identifier in a file for further references.
+After the cluster is ready, the code informs you that everything is setup, and saves the spot fleet identifier 
+in a file for further reference.
 
 ### Step 4
 When the cluster is up and running, you can monitor progress using the following command:
