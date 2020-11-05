@@ -1,6 +1,6 @@
 user = cellprofiler
 project = distributed-cellprofiler
-tag = 2.0.0_4.0.6
+tag = 2.0.0_3.1.9
 
 .DEFAULT_GOAL: build
 build:
@@ -8,4 +8,3 @@ build:
 	docker login -u $(user)
 	docker push $(user)/$(project):$(tag)
 	echo "Your new docker registry is ready at: $(user)/$(project):$(tag)"
-

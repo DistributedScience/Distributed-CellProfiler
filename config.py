@@ -15,6 +15,8 @@ AWS_BUCKET = 'your-bucket-name'
 ECS_CLUSTER = 'default'
 CLUSTER_MACHINES = 3
 TASKS_PER_MACHINE = 1
+MACHINE_TYPE = ['m4.xlarge']
+MACHINE_PRICE = 0.10
 EBS_VOL_SIZE = 30                       # In GB.  Minimum allowed is 22.
 
 # DOCKER INSTANCE RUNNING ENVIRONMENT:
@@ -37,6 +39,7 @@ LOG_GROUP_NAME = APP_NAME
 CHECK_IF_DONE_BOOL = 'True'  #True or False- should it check if there are a certain number of non-empty files and delete the job if yes?
 EXPECTED_NUMBER_FILES = 7    #What is the number of files that trigger skipping a job?
 MIN_FILE_SIZE_BYTES = 1      #What is the minimal number of bytes an object should be to "count"?
+NECESSARY_STRING = ''        #Is there any string that should be in the file name to "count"?
 
 # PLUGINS
 USE_PLUGINS = 'True'

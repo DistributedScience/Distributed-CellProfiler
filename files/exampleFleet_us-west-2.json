@@ -1,15 +1,10 @@
 {
   "IamFleetRole": "arn:aws:iam::XXXXXXXXXXXXX:role/aws-ec2-spot-fleet-role",
   "AllocationStrategy": "lowestPrice",
-  "TargetCapacity": 3,
-  "SpotPrice": "0.10",
-  "ValidFrom": "2016-07-20T20:28:54Z",
-  "ValidUntil": "2017-07-20T20:28:54Z",
   "TerminateInstancesWithExpiration": true,
   "LaunchSpecifications": [
     {
       "ImageId": "ami-c9c87cb1",
-      "InstanceType": "m4.xlarge",
       "KeyName": "your_key_file_name",
       "IamInstanceProfile": {
         "Arn": "arn:aws:iam::XXXXXXXXXXXX:instance-profile/ecsInstanceRole"

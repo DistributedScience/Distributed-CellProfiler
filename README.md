@@ -22,23 +22,27 @@ job. When the job is completed, the code is also able to stop resources and clea
 Edit the config.py file with all the relevant information for your job. Then, start creating 
 the basic AWS resources by running the following script:
 
- $ fab setup
+ $ python run.py setup
 
 This script intializes the resources in AWS. Notice that the docker registry is built separately,
 and you can modify the worker code to build your own. Anytime you modify the worker code, you need
 to update the docker registry using the Makefile script inside the worker directory.
 
 ### Step 2
-After the first script runs successfully, the job can now be submitted to AWS using the 
-following command:
+After the first script runs successfully, the job can now be submitted to AWS using EITHER of the 
+following commands:
 
  $ python run.py submitJob files/exampleJob.json
+ 
+ OR
+ 
+ $ python run_batch_general.py
 
-This uploads the tasks that are configured in the json file. This assumes that your data is stored
-in S3, and the json file has the paths to find input and output directories. You have to customize
-the exampleJob.json file with paths that make sense for your project. Also, the tasks that compose
-your job are CP groups, and each one will be run in parallel. You need to define each task in this
-json file to guide the parallelization.
+Running either script uploads the tasks that are configured in the json file. This assumes that your 
+data is stored in S3, and the json file has the paths to find input and output directories. You have to 
+customizethe exampleJob.json file or the run_batch_general file with paths that make sense for your project. 
+The tasks that composeyour job are CP groups, and each one will be run in parallel. You need to define each 
+task in your input file to guide the parallelization.
 
 ### Step 3
 After submitting the job to the queue, we can add computing power to process all tasks in AWS. This
@@ -48,10 +52,8 @@ with the following command:
 
  $ python run.py startCluster files/exampleFleet.json
 
-The exampleFleet.json file has to be updated to determine the type of EC2 instances that you want
-and how much you are willing to pay for each machine-hour. Make sure to adjust the values in this
-json file according to your application. After the cluster is ready, the code informs you that
-everything is setup, and saves the spot fleet identifier in a file for further references.
+After the cluster is ready, the code informs you that everything is setup, and saves the spot fleet identifier 
+in a file for further reference.
 
 ### Step 4
 When the cluster is up and running, you can monitor progress using the following command:
