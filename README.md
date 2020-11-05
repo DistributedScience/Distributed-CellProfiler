@@ -29,16 +29,20 @@ and you can modify the worker code to build your own. Anytime you modify the wor
 to update the docker registry using the Makefile script inside the worker directory.
 
 ### Step 2
-After the first script runs successfully, the job can now be submitted to AWS using the 
-following command:
+After the first script runs successfully, the job can now be submitted to AWS using EITHER of the 
+following commands:
 
  $ python run.py submitJob files/exampleJob.json
+ 
+ OR
+ 
+ $ python run_batch_general.py
 
-This uploads the tasks that are configured in the json file. This assumes that your data is stored
-in S3, and the json file has the paths to find input and output directories. You have to customize
-the exampleJob.json file with paths that make sense for your project. Also, the tasks that compose
-your job are CP groups, and each one will be run in parallel. You need to define each task in this
-json file to guide the parallelization.
+Running either script uploads the tasks that are configured in the json file. This assumes that your 
+data is stored in S3, and the json file has the paths to find input and output directories. You have to 
+customizethe exampleJob.json file or the run_batch_general file with paths that make sense for your project. 
+The tasks that composeyour job are CP groups, and each one will be run in parallel. You need to define each 
+task in your input file to guide the parallelization.
 
 ### Step 3
 After submitting the job to the queue, we can add computing power to process all tasks in AWS. This
