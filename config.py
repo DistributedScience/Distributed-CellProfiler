@@ -24,8 +24,6 @@ DOCKER_CORES = 1                        # Number of CellProfiler processes to ru
 CPU_SHARES = DOCKER_CORES * 1024        # ECS computing units assigned to each docker container (1024 units = 1 core)
 MEMORY = 4096                           # Memory assigned to the docker container in MB
 SECONDS_TO_START = 0*60                 # Wait before the next CP process is initiated to avoid memory collisions
-DOCKER_BASE_SIZE = 10                   # In GB; default is 10.  The amount of hard disk space each docker container uses.
-                                        # EBS_VOL_SIZE should be >= DOCKER_BASE_SIZE * TASKS_PER_MACHINE
 
 # SQS QUEUE INFORMATION:
 SQS_QUEUE_NAME = APP_NAME + 'Queue'
