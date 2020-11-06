@@ -386,12 +386,13 @@ def startCluster():
         print('Use: run.py startCluster configFile')
         sys.exit()
 
+    time = datetime.datetime.now().replace(microsecond=0)
     #Step 1: set up the configuration files
     s3client = boto3.client('s3')
     ecsConfigFile=generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client)
     spotfleetConfig=loadConfig(sys.argv[2])
-    spotfleetConfig['ValidFrom']=datetime.datetime.now().replace(microsecond=0)
-    spotfleetConfig['ValidUntil']=(datetime.datetime.now()+datetime.timedelta(days=365)).replace(microsecond=0)
+    spotfleetConfig['ValidFrom']=time
+    spotfleetConfig['ValidUntil']=(time+datetime.timedelta(days=365)).replace(microsecond=0)
     spotfleetConfig['TargetCapacity']= CLUSTER_MACHINES
     spotfleetConfig['SpotPrice'] = '%.2f' %MACHINE_PRICE
     DOCKER_BASE_SIZE = int(round(float(EBS_VOL_SIZE)/int(TASKS_PER_MACHINE))) - 2
@@ -441,7 +442,7 @@ def startCluster():
     status = ec2client.describe_spot_fleet_instances(SpotFleetRequestId=requestInfo['SpotFleetRequestId'])
     while len(status['ActiveInstances']) < CLUSTER_MACHINES:
         # First check to make sure there's not a problem
-        errorcheck = ec2client.describe_spot_fleet_request_history(SpotFleetRequestId=requestInfo['SpotFleetRequestId'], EventType='error', StartTime=datetime.datetime.today().replace(microsecond=0))
+        errorcheck = ec2client.describe_spot_fleet_request_history(SpotFleetRequestId=requestInfo['SpotFleetRequestId'], EventType='error', StartTime=time)
         if len(errorcheck['HistoryRecords']) != 0:
             print('Your spot fleet request is causing an error and is now being cancelled.  Please check your configuration and try again')
             for eacherror in errorcheck['HistoryRecords']:
