@@ -224,7 +224,7 @@ def runCellProfiler(message):
         printandlog('CP PROBLEM: Done file does not exist.',logger)
         logger.removeHandler(watchtowerlogger)
         import shutil
-        shultil.rmtree(localOut, ignore_errors=True)
+        shutil.rmtree(localOut, ignore_errors=True)
         return 'CP_PROBLEM'
     
 
