@@ -45,6 +45,10 @@ RUN python3.8 -m pip install boto3
 
 RUN python3.8 -m pip install watchtower
 
+# Install pandas for optional file downloading
+
+RUN python3.8 -m pip install pandas
+
 # SETUP NEW ENTRYPOINT
 
 RUN mkdir -p /home/ubuntu/
