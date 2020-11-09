@@ -194,7 +194,7 @@ def runCellProfiler(message):
                 csv_in = csv_in[csv_in[eachfilter] == filter_dict[eachfilter]]
                 printandlog(eachfilter,logger)
                 printandlog(filter_dict[eachfilter],logger)
-                printandlog(csv_in.shape)
+                printandlog(csv_in.shape, logger)
             #Figure out the actual file names and get them
             channel_list = [x.split('FileName_')[1] for x in csv_in.columns if 'FileName' in x]
             count = 0
