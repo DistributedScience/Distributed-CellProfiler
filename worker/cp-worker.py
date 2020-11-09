@@ -39,6 +39,7 @@ if 'DOWNLOAD_FILES' not in os.environ:
     DOWNLOAD_FILES = False
 else:
     DOWNLOAD_FILES = os.environ['DOWNLOAD_FILES']
+localIn = '/home/ubuntu/local_input'
 
 
 #################################
@@ -174,10 +175,10 @@ def runCellProfiler(message):
             printandlog('Figuring which files to download', logger)
             import pandas
             s3 = boto3.resource('s3')
-            localIn = '/home/ubuntu/local_input'
             if not os.path.exists(localIn):
                 os.mkdir(localIn)
             csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
+            csv_in=csv_in.astype('str')
             #Figure out what metadata fields we need in this experiment, as a dict
             if type(message['Metadata'])==dict:
                 filter_dict = message['Metadata']
