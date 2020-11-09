@@ -188,20 +188,15 @@ def runCellProfiler(message):
                     filterkey, filterval = eachMetadata.split('=')
                     filter_dict[filterkey] = filterval
             #Filter our CSV to just the rows CellProfiler will process, so that we can download only what we need
-            printandlog(filter_dict,logger)
-            printandlog(csv_in.shape,logger)
             for eachfilter in filter_dict.keys():
                 csv_in = csv_in[csv_in[eachfilter] == filter_dict[eachfilter]]
-                printandlog(eachfilter,logger)
-                printandlog(filter_dict[eachfilter],logger)
-                printandlog(csv_in.shape, logger)
             #Figure out the actual file names and get them
             channel_list = [x.split('FileName_')[1] for x in csv_in.columns if 'FileName' in x]
             count = 0
             printandlog('Downloading files', logger)
             for channel in channel_list:
-                for field in csv_in.shape[0]:
-                    full_old_file_name = os.path.join(csv_in['PathName_'+channel],csv_in['FileName_'+channel])
+                for field in range(csv_in.shape[0]):
+                    full_old_file_name = os.path.join(csv_in['PathName_'+channel][field],csv_in['FileName_'+channel][field])
                     prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1]
                     new_file_name = os.path.join(localIn,prefix_on_bucket)
                     s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
