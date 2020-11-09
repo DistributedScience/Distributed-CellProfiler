@@ -444,6 +444,7 @@ def startCluster():
     
     # Step 6: Monitor the creation of the instances until all are present
     status = ec2client.describe_spot_fleet_instances(SpotFleetRequestId=requestInfo['SpotFleetRequestId'])
+    time.sleep(15) # This is now too fast, so sometimes the spot fleet request history throws an error!
     while len(status['ActiveInstances']) < CLUSTER_MACHINES:
         # First check to make sure there's not a problem
         errorcheck = ec2client.describe_spot_fleet_request_history(SpotFleetRequestId=requestInfo['SpotFleetRequestId'], EventType='error', StartTime=thistime)
