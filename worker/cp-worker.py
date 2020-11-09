@@ -234,6 +234,9 @@ def runCellProfiler(message):
     # Get the outputs and move them to S3
     if os.path.isfile(cpDone):
         time.sleep(30)
+        if os.path.exists(localIn):
+            import shutil
+            shutil.rmtree(localIn, ignore_errors=True)
         mvtries=0
         while mvtries <3:
             try:
