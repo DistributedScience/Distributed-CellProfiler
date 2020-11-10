@@ -206,7 +206,7 @@ def runCellProfiler(message):
                     s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
                     count +=1
             printandlog('Downloaded '+str(count)+' files',logger)
-            local_csv_name = os.path.join(localIn,os.path.split(csv_name)['/'][-1])
+            local_csv_name = os.path.join(localIn,os.path.split(csv_name)[1])
             if not os.path.exists(local_csv_name):
                 csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
                 csv_in = csv_in.replace('DATA_ROOT',localIn,regex=True, inplace=True)
