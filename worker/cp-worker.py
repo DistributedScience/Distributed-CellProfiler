@@ -169,6 +169,7 @@ def runCellProfiler(message):
             pass	
     
     csv_name = os.path.join(DATA_ROOT,message['data_file'])
+    downloaded_files = []
 
     # Optional- download files
     if DOWNLOAD_FILES:
@@ -193,7 +194,6 @@ def runCellProfiler(message):
                 csv_in = csv_in[csv_in[eachfilter] == filter_dict[eachfilter]]
             #Figure out the actual file names and get them
             channel_list = [x.split('FileName_')[1] for x in csv_in.columns if 'FileName' in x]
-            count = 0
             printandlog('Downloading files', logger)
             for channel in channel_list:
                 for field in range(csv_in.shape[0]):
@@ -203,9 +203,10 @@ def runCellProfiler(message):
                     if not os.path.exists(os.path.split(new_file_name)[0]):
                         os.makedirs(os.path.split(new_file_name)[0])
                         printandlog('made directory '+os.path.split(new_file_name)[0],logger)
-                    s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
-                    count +=1
-            printandlog('Downloaded '+str(count)+' files',logger)
+                    if not os.path.exists(new_file_name):
+                        s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
+                        downloaded_files.append(new_file_name)
+            printandlog('Downloaded '+str(len(downloaded_files))+' files',logger)
             local_csv_name = os.path.join(localIn,os.path.split(csv_name)[1])
             if not os.path.exists(local_csv_name):
                 csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
@@ -235,9 +236,10 @@ def runCellProfiler(message):
     # Get the outputs and move them to S3
     if os.path.isfile(cpDone):
         time.sleep(30)
-        if os.path.exists(localIn):
-            import shutil
-            shutil.rmtree(localIn, ignore_errors=True)
+        if len(downloaded_files) > 0:
+            for eachfile in downloaded_files:
+                if os.path.exists(eachfile): #Shared files are possible, and might already be cleaned up
+                    os.remove(eachfile)
         mvtries=0
         while mvtries <3:
             try:
