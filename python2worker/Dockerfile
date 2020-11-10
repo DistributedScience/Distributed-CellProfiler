@@ -48,6 +48,10 @@ RUN \
 RUN \
   pip install watchtower==0.8.0
 
+# Install pandas for optional file downloading
+
+RUN pip install pandas
+
 # SETUP NEW ENTRYPOINT
 
 RUN mkdir -p /home/ubuntu/
