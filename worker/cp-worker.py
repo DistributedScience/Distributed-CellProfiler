@@ -198,7 +198,7 @@ def runCellProfiler(message):
             for channel in channel_list:
                 for field in range(csv_in.shape[0]):
                     full_old_file_name = os.path.join(list(csv_in['PathName_'+channel])[field],list(csv_in['FileName_'+channel])[field])
-                    prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1]
+                    prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1][1:]
                     new_file_name = os.path.join(localIn,prefix_on_bucket)
                     printandlog(full_old_file_name+prefix_on_bucket+new_file_name+localIn+AWS_BUCKET, logger)
                     if not os.path.exists(os.path.split(new_file_name)[0]):
