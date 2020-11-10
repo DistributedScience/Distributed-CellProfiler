@@ -209,7 +209,7 @@ def runCellProfiler(message):
             local_csv_name = os.path.join(localIn,os.path.split(csv_name)[1])
             if not os.path.exists(local_csv_name):
                 csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
-                csv_in = csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
+                csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
                 csv_in.to_csv(local_csv_name,index=False)
                 print('Wrote updated CSV')
             csv_name = local_csv_name
