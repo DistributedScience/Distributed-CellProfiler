@@ -39,6 +39,7 @@ if 'DOWNLOAD_FILES' not in os.environ:
     DOWNLOAD_FILES = False
 else:
     DOWNLOAD_FILES = os.environ['DOWNLOAD_FILES']
+
 localIn = '/home/ubuntu/local_input'
 
 
@@ -200,6 +201,8 @@ def runCellProfiler(message):
                     prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1]
                     new_file_name = os.path.join(localIn,prefix_on_bucket)
                     printandlog(full_old_file_name+prefix_on_bucket+new_file_name, logger)
+                    if not os.path.exists(os.path.split(new_file_name)[0]):
+                        os.path.makedirs(os.path.split(new_file_name)[0])
                     s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
                     count +=1
             printandlog('Downloaded '+str(count)+' files')
