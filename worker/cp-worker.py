@@ -200,15 +200,12 @@ def runCellProfiler(message):
                     full_old_file_name = os.path.join(list(csv_in['PathName_'+channel])[field],list(csv_in['FileName_'+channel])[field])
                     prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1][1:]
                     new_file_name = os.path.join(localIn,prefix_on_bucket)
-                    printandlog(full_old_file_name+prefix_on_bucket+new_file_name+localIn+AWS_BUCKET, logger)
                     if not os.path.exists(os.path.split(new_file_name)[0]):
                         os.makedirs(os.path.split(new_file_name)[0])
                         printandlog('made directory '+os.path.split(new_file_name)[0],logger)
-                        exists = os.path.exists(os.path.split(new_file_name)[0])
-                        printandlog(exists,logger)
                     s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
                     count +=1
-            printandlog('Downloaded '+str(count)+' files')
+            printandlog('Downloaded '+str(count)+' files',logger)
             local_csv_name = os.path.join(localIn,os.path.split(csv_name)['/'][-1])
             if not os.path.exists(local_csv_name):
                 csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
