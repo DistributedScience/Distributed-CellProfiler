@@ -214,9 +214,6 @@ def runCellProfiler(message):
                 print('Wrote updated CSV')
             csv_name = local_csv_name
 
-
-
-
     # Build and run CellProfiler command
     cpDone = localOut + '/cp.is.done'
     cmdstem = 'cellprofiler -c -r '
