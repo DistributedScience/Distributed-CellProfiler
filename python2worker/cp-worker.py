@@ -35,6 +35,13 @@ if 'NECESSARY_STRING' not in os.environ:
     NECESSARY_STRING = False
 else:
     NECESSARY_STRING = os.environ['NECESSARY_STRING']
+if 'DOWNLOAD_FILES' not in os.environ:
+    DOWNLOAD_FILES = False
+else:
+    DOWNLOAD_FILES = os.environ['DOWNLOAD_FILES']
+
+localIn = '/home/ubuntu/local_input'
+
 
 #################################
 # CLASS TO HANDLE THE SQS QUEUE
@@ -159,8 +166,54 @@ def runCellProfiler(message):
                 logger.removeHandler(watchtowerlogger)
                 return 'SUCCESS'
         except KeyError: #Returned if that folder does not exist
-            pass	
-    
+            pass
+
+    csv_name = os.path.join(DATA_ROOT,message['data_file'])
+
+    # Optional- download files
+    if DOWNLOAD_FILES:
+        if DOWNLOAD_FILES.lower() == 'true':
+            printandlog('Figuring which files to download', logger)
+            import pandas
+            s3 = boto3.resource('s3')
+            if not os.path.exists(localIn):
+                os.mkdir(localIn)
+            csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
+            csv_in=csv_in.astype('str')
+            #Figure out what metadata fields we need in this experiment, as a dict
+            if type(message['Metadata'])==dict:
+                filter_dict = message['Metadata']
+            else:
+                filter_dict = {}
+                for eachMetadata in message['Metadata'].split(','):
+                    filterkey, filterval = eachMetadata.split('=')
+                    filter_dict[filterkey] = filterval
+            #Filter our CSV to just the rows CellProfiler will process, so that we can download only what we need
+            for eachfilter in filter_dict.keys():
+                csv_in = csv_in[csv_in[eachfilter] == filter_dict[eachfilter]]
+            #Figure out the actual file names and get them
+            channel_list = [x.split('FileName_')[1] for x in csv_in.columns if 'FileName' in x]
+            count = 0
+            printandlog('Downloading files', logger)
+            for channel in channel_list:
+                for field in range(csv_in.shape[0]):
+                    full_old_file_name = os.path.join(list(csv_in['PathName_'+channel])[field],list(csv_in['FileName_'+channel])[field])
+                    prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1][1:]
+                    new_file_name = os.path.join(localIn,prefix_on_bucket)
+                    if not os.path.exists(os.path.split(new_file_name)[0]):
+                        os.makedirs(os.path.split(new_file_name)[0])
+                        printandlog('made directory '+os.path.split(new_file_name)[0],logger)
+                    s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
+                    count +=1
+            printandlog('Downloaded '+str(count)+' files',logger)
+            local_csv_name = os.path.join(localIn,os.path.split(csv_name)[1])
+            if not os.path.exists(local_csv_name):
+                csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
+                csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
+                csv_in.to_csv(local_csv_name,index=False)
+                print('Wrote updated CSV')
+            csv_name = local_csv_name
+	
     # Build and run CellProfiler command
     cpDone = localOut + '/cp.is.done'
     cp2 = False
@@ -173,7 +226,7 @@ def runCellProfiler(message):
         cmdstem = 'cellprofiler -c -r '
     if message['pipeline'][-3:]!='.h5':
         cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
-        cmd += ' --data-file=%(DATA)s/%(FL)s '
+        cmd += ' --data-file='+csv_name+' '
         cmd += '-g %(Metadata)s'
     else:
         cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone + ' -g %(Metadata)s'
@@ -189,6 +242,9 @@ def runCellProfiler(message):
     # Get the outputs and move them to S3
     if os.path.isfile(cpDone):
         time.sleep(30)
+        if os.path.exists(localIn):
+            import shutil
+            shutil.rmtree(localIn, ignore_errors=True)
         mvtries=0
         while mvtries <3:
             try:
