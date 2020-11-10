@@ -50,7 +50,7 @@ RUN \
 
 # Install pandas for optional file downloading
 
-RUN pip install pandas
+RUN pip install pandas==0.24.2
 
 # SETUP NEW ENTRYPOINT
 
