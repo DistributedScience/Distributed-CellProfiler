@@ -196,7 +196,7 @@ def runCellProfiler(message):
             printandlog('Downloading files', logger)
             for channel in channel_list:
                 for field in range(csv_in.shape[0]):
-                    full_old_file_name = os.path.join(csv_in['PathName_'+channel][field],csv_in['FileName_'+channel][field])
+                    full_old_file_name = os.path.join(list(csv_in['PathName_'+channel])[field],list(csv_in['FileName_'+channel])[field])
                     prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1]
                     new_file_name = os.path.join(localIn,prefix_on_bucket)
                     s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
