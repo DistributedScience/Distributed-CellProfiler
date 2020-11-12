@@ -214,6 +214,8 @@ def runCellProfiler(message):
                 tag = str(random.randint(100000,999999)) #keep files from overwriting one another
                 local_csv_name = os.path.join(localIn,tag,os.path.split(csv_name)[1])
                 if not os.path.exists(local_csv_name):
+                    if not os.path.exists(os.path.split(local_csv_name)[0]):
+                        os.makedirs(os.path.split(local_csv_name)[0])
                     csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
                     csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
                     csv_in.to_csv(local_csv_name,index=False)
