@@ -230,9 +230,12 @@ def runCellProfiler(message):
                     if not os.path.exists(os.path.split(local_csv_name)[0]):
                         os.makedirs(os.path.split(local_csv_name)[0])
                     csv_in = pandas.read_csv(new_csv_name)
+                    csv_in=csv_in.astype('str')
                     csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
                     csv_in.to_csv(local_csv_name,index=False)
-                    print('Wrote updated CSV')
+                    printandlog('Wrote updated CSV',logger)
+                    csvhead = csv_in.head()
+                    printandlog(csvhead,logger)
                     newtag = True
                 else:
                     newtag = False
