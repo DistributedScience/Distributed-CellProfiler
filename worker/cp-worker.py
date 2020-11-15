@@ -184,6 +184,8 @@ def runCellProfiler(message):
             old_pipeline_name = os.path.join(DATA_ROOT,message['pipeline'])
             pipeline_on_bucket_name = old_pipeline_name.split(DATA_ROOT)[1][1:]
             new_pipeline_name = os.path.join(localIn,pipeline_on_bucket_name)
+            if os.path.exists(new_pipeline_name):
+                os.remove(new_pipeline_name)
             s3.meta.client.download_file(AWS_BUCKET,pipeline_on_bucket_name,new_pipeline_name)
             #download CSV
             old_csv_name = os.path.join(DATA_ROOT,message['data_file'])
