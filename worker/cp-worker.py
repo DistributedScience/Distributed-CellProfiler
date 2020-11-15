@@ -164,6 +164,7 @@ def runCellProfiler(message):
     
     csv_name = os.path.join(DATA_ROOT,message['data_file'])
     pipeline_name = os.path.join(DATA_ROOT,message['pipeline'])
+    input_name = os.path.join(DATA_ROOT,message['input'])
     downloaded_files = []
 
     # Optional- download files
@@ -237,16 +238,17 @@ def runCellProfiler(message):
                     newtag = False
             csv_name = local_csv_name
             pipeline_name = new_pipeline_name
+            input_name = localIn
 
     # Build and run CellProfiler command
     cpDone = localOut + '/cp.is.done'
     cmdstem = 'cellprofiler -c -r '
     if message['pipeline'][-3:]!='.h5':
-        cmd = cmdstem + '-p '+pipeline_name+' -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
+        cmd = cmdstem + '-p '+pipeline_name+' -i '+input_name+' -o %(OUT)s -d ' + cpDone
         cmd += ' --data-file='+csv_name+' '
         cmd += '-g %(Metadata)s'
     else:
-        cmd = cmdstem + '-p '+pipeline_name+' -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone + ' -g %(Metadata)s'
+        cmd = cmdstem + '-p '+pipeline_name+' -i '+input_name+' -o %(OUT)s -d ' + cpDone + ' -g %(Metadata)s'
     if USE_PLUGINS.lower() == 'true':
         cmd += ' --plugins-directory=%(PLUGINS)s'
     cmd = cmd % replaceValues
