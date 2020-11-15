@@ -220,6 +220,7 @@ def runCellProfiler(message):
                     if not os.path.exists(new_file_name):
                         s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
                         downloaded_files.append(new_file_name)
+                        printandlog(new_file_name)
             printandlog('Downloaded '+str(len(downloaded_files))+' files',logger)
             import random
             newtag = False
@@ -234,8 +235,6 @@ def runCellProfiler(message):
                     csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
                     csv_in.to_csv(local_csv_name,index=False)
                     printandlog('Wrote updated CSV',logger)
-                    csvhead = csv_in.head()
-                    printandlog(csvhead,logger)
                     newtag = True
                 else:
                     newtag = False
