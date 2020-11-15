@@ -220,7 +220,7 @@ def runCellProfiler(message):
                     if not os.path.exists(new_file_name):
                         s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
                         downloaded_files.append(new_file_name)
-                        printandlog(new_file_name)
+                        printandlog(new_file_name,logger)
             printandlog('Downloaded '+str(len(downloaded_files))+' files',logger)
             import random
             newtag = False
