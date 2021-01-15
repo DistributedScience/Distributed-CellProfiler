@@ -14,7 +14,7 @@ class JobQueue():
     def scheduleBatch(self, data):
         msg = json.dumps(data)
         response = self.queue.send_message(MessageBody=msg)
-        print 'Batch sent. Message ID:',response.get('MessageId')
+        print('Batch sent. Message ID:',response.get('MessageId'))
 
 #project specific stuff
 topdirname='' #PROJECTNAME        
@@ -47,7 +47,7 @@ def MakeIllumJobs(mode='repurp'):
         if mode=='repurp':
             templateMessage_illum = {'Metadata': 'Metadata_Plate='+toillum,
                                      'pipeline': posixpath.join(pipelinepath,illumpipename),'output': illumoutpath,
-                                     'input': inputpath, 'data_file':posixpath.join(datafilepath,toillum+'.csv')}
+                                     'input': inputpath, 'data_file':posixpath.join(datafilepath,toillum,'load_data.csv')}            
         elif mode=='batch':
             templateMessage_illum = {'Metadata': 'Metadata_Plate='+toillum,
                                         'pipeline': posixpath.join(batchpath,batchpipenameillum),
@@ -58,11 +58,11 @@ def MakeIllumJobs(mode='repurp'):
         else:
             templateMessage_illum = {'Metadata': 'Metadata_Plate='+toillum,
                                      'pipeline': posixpath.join(pipelinepath,illumpipename),'output': illumoutpath,
-                                     'input': inputpath, 'data_file':posixpath.join(datafilepath,untruncatedplatedict[toillum],'load_data.csv')}
+                                     'input': inputpath, 'data_file':posixpath.join(datafilepath,toillum+'.csv')}
             
         illumqueue.scheduleBatch(templateMessage_illum)
 
-    print 'Illum job submitted. Check your queue'
+    print('Illum job submitted. Check your queue')
 
 def MakeQCJobs(repurp=False):
     qcqueue = JobQueue(projectname+'_QC')
@@ -81,11 +81,11 @@ def MakeQCJobs(repurp=False):
                                     'pipeline': posixpath.join(pipelinepath,qcpipename),
                                     'output': QCoutpath,
                                     'input': inputpath,
-                                    'data_file': posixpath.join(datafilepath,untruncatedplatedict[toqc],'load_data.csv')
+                                    'data_file': posixpath.join(datafilepath,toqc,'load_data.csv')
                                 }
                 qcqueue.scheduleBatch(templateMessage_qc)
 
-    print 'QC job submitted. Check your queue'
+    print('QC job submitted. Check your queue')
 
 def MakeQCJobs_persite(repurp=False):
     qcqueue = JobQueue(projectname+'_QC')
@@ -105,12 +105,12 @@ def MakeQCJobs_persite(repurp=False):
                                         'pipeline': posixpath.join(pipelinepath,qcpipename),
                                         'output': QCoutpath,
                                         'input': inputpath,
-                                        'data_file': posixpath.join(datafilepath,untruncatedplatedict[toqc],'load_data.csv')
+                                        'data_file': posixpath.join(datafilepath,toqc,'load_data.csv')
                                         }
 
                     qcqueue.scheduleBatch(templateMessage_qc)
 
-    print 'QC job submitted. Check your queue'
+    print('QC job submitted. Check your queue')
 
 
 def MakeAnalysisJobs(mode='repurp'):
@@ -125,8 +125,8 @@ def MakeAnalysisJobs(mode='repurp'):
                                         'output': analysisoutpath,
                                         'output_structure':anlysisoutputstructure,
                                         'input':inputpath,
-                                        'data_file': posixpath.join(datafilepath,toanalyze+'_with_illum.csv')
-                                        }
+                                        'data_file': posixpath.join(datafilepath,toanalyze,'load_data_with_illum.csv')
+                                        }                        
                     elif mode=='batch':
                         templateMessage_analysis = {'Metadata': 'Metadata_Plate='+toanalyze+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
                                         'pipeline': posixpath.join(batchpath,batchpipename),
@@ -141,12 +141,12 @@ def MakeAnalysisJobs(mode='repurp'):
                                         'output': analysisoutpath,
                                         'output_structure':anlysisoutputstructure,
                                         'input':inputpath,
-                                        'data_file': posixpath.join(datafilepath,untruncatedplatedict[toanalyze],'load_data_with_illum.csv')
+                                        'data_file': posixpath.join(datafilepath,toanalyze+'_with_illum.csv')
                                         }
 
                     analysisqueue.scheduleBatch(templateMessage_analysis)
 
-    print 'Analysis job submitted. Check your queue'
+    print('Analysis job submitted. Check your queue')
     
 #MakeIllumJobs(mode='batch')
 #MakeQCJobs(repurp=True)
