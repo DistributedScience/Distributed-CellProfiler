@@ -1,5 +1,5 @@
 {
-  "IamFleetRole": "arn:aws:iam::XXXXXXXXXXXXX:role/aws-ec2-spot-fleet-role",
+  "IamFleetRole": "arn:aws:iam::XXXXXXXXXXXXX:role/aws-ec2-spot-fleet-tagging-role",
   "AllocationStrategy": "lowestPrice",
   "TerminateInstancesWithExpiration": true,
   "LaunchSpecifications": [
