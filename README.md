@@ -13,8 +13,8 @@ distributed jobs:
 
 All of them can be managed through the AWS Management Console. However, this code helps to get
 started quickly and run a job autonomously if all the configuration is correct. The code includes 
-a fabric script that links all these components and prepares the infrastructure to run a distributed 
-job. When the job is completed, the code is also able to stop resources and clean up components. 
+prepares the infrastructure to run a distributed job. When the job is completed, the code is also 
+able to stop resources and clean up components. 
 
 ## Running the code
 
