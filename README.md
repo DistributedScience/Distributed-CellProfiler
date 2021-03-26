@@ -3,8 +3,8 @@ Run encapsulated docker containers with CellProfiler in the Amazon Web Services 
 
 This code is an example of how to use AWS distributed infrastructure for running CellProfiler.
 The configuration of the AWS resources is done using fabric. The worker is written in Python 
-and is encapsulated in a docker container. There are four AWS components that are needed to run 
-distributed jobs:
+and is encapsulated in a docker container. There are four AWS components that are minimally 
+needed to run distributed jobs:
 
 1. An SQS queue
 2. An ECS cluster
@@ -14,7 +14,8 @@ distributed jobs:
 All of them can be managed through the AWS Management Console. However, this code helps to get
 started quickly and run a job autonomously if all the configuration is correct. The code includes 
 prepares the infrastructure to run a distributed job. When the job is completed, the code is also 
-able to stop resources and clean up components. 
+able to stop resources and clean up components. It also adds logging and alarms via CloudWatch, 
+helping the user troubleshoot runs and destroy stuck machines.
 
 ## Running the code
 
@@ -65,5 +66,5 @@ important to keep this monitor running if you want to automatically shutdown com
 when there are no more tasks in the queue (recommended).
 
 See the wiki for more information about each step of the process.
+![DistributedCellProfiler](https://user-images.githubusercontent.com/6721515/112663404-2a58c580-8e2f-11eb-8ff9-68ab2b1a1b70.png)
 
-![DCPArchitecture](https://user-images.githubusercontent.com/6721515/112654759-1ceb0d80-8e26-11eb-914f-1179c0d70027.png)
