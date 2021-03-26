@@ -65,3 +65,5 @@ important to keep this monitor running if you want to automatically shutdown com
 when there are no more tasks in the queue (recommended).
 
 See the wiki for more information about each step of the process.
+
+![DCPArchitecture](https://user-images.githubusercontent.com/6721515/112654759-1ceb0d80-8e26-11eb-914f-1179c0d70027.png)
