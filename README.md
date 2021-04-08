@@ -2,7 +2,7 @@
 Run encapsulated docker containers with CellProfiler in the Amazon Web Services infrastructure.
 
 This code is an example of how to use AWS distributed infrastructure for running CellProfiler.
-The configuration of the AWS resources is done using fabric. The worker is written in Python 
+The configuration of the AWS resources is done using boto3 and the awscli. The worker is written in Python 
 and is encapsulated in a docker container. There are four AWS components that are minimally 
 needed to run distributed jobs:
 
