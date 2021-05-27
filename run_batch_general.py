@@ -17,16 +17,16 @@ class JobQueue():
         print('Batch sent. Message ID:',response.get('MessageId'))
 
 #project specific stuff
-topdirname='' #PROJECTNAME        
-projectname='' #PROJECTNAME
-batchsuffix='' #BATCHNAME
-rows=list(string.ascii_uppercase)[0:8]
-columns=range(1,13)
-sites=range(1,18)
-platelist=[] # PLATEFOLDERNAMES
-illumpipename='illum.cppipe'
+topdirname='2019_07_11_JUMP-CP-pilots' #PROJECTNAME        
+projectname='2019_07_11_JUMP-CP-pilots' #PROJECTNAME
+batchsuffix='2020_11_04_CPJUMP1' #BATCHNAME
+rows=list(string.ascii_uppercase)[0:16]
+columns=range(1,25)
+sites=range(1,10)
+platelist=['BR00117010','BR00117011'] # PLATEFOLDERNAMES
+illumpipename='illum_without_batchfile.cppipe'
 qcpipename='qc.cppipe'
-analysispipename='analysis.cppipe'
+analysispipename='analysis_without_batchfile.cppipe'
 batchpipenameillum='Batch_data_illum.h5'
 batchpipename='Batch_data.h5'
 
@@ -148,8 +148,8 @@ def MakeAnalysisJobs(mode='repurp'):
 
     print('Analysis job submitted. Check your queue')
     
-#MakeIllumJobs(mode='batch')
+#MakeIllumJobs(mode='repurp')
 #MakeQCJobs(repurp=True)
 #MakeQCJobs_persite(repurp=True)
-#MakeAnalysisJobs(mode='batch')
+#MakeAnalysisJobs(mode='repurp')
 
