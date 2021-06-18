@@ -48,6 +48,8 @@ inputpath=posixpath.join(startpath,os.path.join('workspace/qc',os.path.join(batc
 datafilepath=posixpath.join(startpath,os.path.join('workspace/load_data_csv',batchsuffix))
 anlysisoutputstructure="Metadata_Plate/analysis/Metadata_Plate-Metadata_Well-Metadata_Site"
 batchpath=posixpath.join(startpath,os.path.join('workspace/batchfiles',batchsuffix))
+csvname = 'load_data.csv'
+csv_with_illumname = 'load_data_with_illum.csv'
 
 def MakeZprojJobs(batch=False):
     zprojqueue = JobQueue(appname+'_Zproj')
@@ -61,7 +63,7 @@ def MakeZprojJobs(batch=False):
                                         'output': zprojoutpath,
                                         'output_structure': zprojoutputstructure,
                                         'input': inputpath,
-                                        'data_file': posixpath.join(datafilepath,tozproj,'load_data.csv')
+                                        'data_file': posixpath.join(datafilepath,tozproj,csvname)
                                         }
                     else:
                         templateMessage_zproj = {'Metadata': 'Metadata_Plate='+tozproj+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
@@ -84,7 +86,7 @@ def MakeIllumJobs(batch=False):
                                      'pipeline': posixpath.join(pipelinepath,illumpipename),
                                      'output': illumoutpath,
                                      'input': inputpath, 
-                                     'data_file':posixpath.join(datafilepath,toillum,'load_data.csv')}            
+                                     'data_file':posixpath.join(datafilepath,toillum,csvname)}            
         else:
             templateMessage_illum = {'Metadata': 'Metadata_Plate='+toillum,
                                         'pipeline': posixpath.join(batchpath,batchpipenameillum),
@@ -107,7 +109,7 @@ def MakeQCJobs(batch=False):
                                     'pipeline': posixpath.join(pipelinepath,qcpipename),
                                     'output': QCoutpath,
                                     'input': inputpath,
-                                    'data_file': posixpath.join(datafilepath,toqc,'load_data.csv')
+                                    'data_file': posixpath.join(datafilepath,toqc,csvname)
                                     }
                 else:
                     templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+'%02d' %eachcol,
@@ -131,7 +133,7 @@ def MakeQCJobs_persite(batch=False):
                                         'pipeline': posixpath.join(pipelinepath,qcpipename),
                                         'output': QCoutpath,
                                         'input': inputpath,
-                                        'data_file': posixpath.join(datafilepath,toqc,'load_data.csv')
+                                        'data_file': posixpath.join(datafilepath,toqc,csvname)
                                         }
                     else:
                         templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
@@ -155,7 +157,7 @@ def MakeAssayDevJobs(batch=False):
                                     'pipeline': posixpath.join(pipelinepath,assaydevpipename),
                                     'output': assaydevoutpath,
                                     'input': inputpath,
-                                    'data_file': posixpath.join(datafilepath,toad,'load_data.csv')
+                                    'data_file': posixpath.join(datafilepath,toad,csv_with_illumname)
                                     }
                 else:
                     templateMessage_ad = {'Metadata': 'Metadata_Plate='+toad+',Metadata_Well='+eachrow+'%02d' %eachcol,
@@ -180,7 +182,7 @@ def MakeAnalysisJobs(batch=False):
                                         'output': analysisoutpath,
                                         'output_structure':anlysisoutputstructure,
                                         'input':inputpath,
-                                        'data_file': posixpath.join(datafilepath,toanalyze,'load_data_with_illum.csv')
+                                        'data_file': posixpath.join(datafilepath,toanalyze,csv_with_illumname)
                                         }                        
                     else:
                         templateMessage_analysis = {'Metadata': 'Metadata_Plate='+toanalyze+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
