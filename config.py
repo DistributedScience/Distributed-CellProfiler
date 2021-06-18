@@ -21,10 +21,10 @@ EBS_VOL_SIZE = 30                       # In GB.  Minimum allowed is 22.
 DOWNLOAD_FILES = 'False'
 
 # DOCKER INSTANCE RUNNING ENVIRONMENT:
-DOCKER_CORES = 1                        # Number of CellProfiler processes to run inside a docker container
+DOCKER_CORES = 4                        # Number of CellProfiler processes to run inside a docker container
 CPU_SHARES = DOCKER_CORES * 1024        # ECS computing units assigned to each docker container (1024 units = 1 core)
-MEMORY = 4096                           # Memory assigned to the docker container in MB
-SECONDS_TO_START = 0*60                 # Wait before the next CP process is initiated to avoid memory collisions
+MEMORY = 15000                           # Memory assigned to the docker container in MB
+SECONDS_TO_START = 3*60                 # Wait before the next CP process is initiated to avoid memory collisions
 
 # SQS QUEUE INFORMATION:
 SQS_QUEUE_NAME = APP_NAME + 'Queue'
@@ -41,4 +41,4 @@ MIN_FILE_SIZE_BYTES = 1      #What is the minimal number of bytes an object shou
 NECESSARY_STRING = ''        #Is there any string that should be in the file name to "count"?
 
 # PLUGINS
-USE_PLUGINS = 'True'
+USE_PLUGINS = 'False'
