@@ -17,13 +17,13 @@ class JobQueue():
         print('Batch sent. Message ID:',response.get('MessageId'))
 
 #project specific stuff
-topdirname='' #PROJECTNAME        
-projectname='' #PROJECTNAME
-batchsuffix='' #BATCHNAME
+topdirname='' #Project name (should match the folder structure on S3)        
+appname='' #Must match config.py (except for step-specific part)
+batchsuffix='' #Batch name (should match the folder structure on S3)
 rows=list(string.ascii_uppercase)[0:16]
 columns=range(1,25)
 sites=range(1,10)
-platelist=[] # PLATEFOLDERNAMES
+platelist=[] 
 zprojpipename='Zproj.cppipe'
 illumpipename='illum.cppipe'
 qcpipename='qc.cppipe'
@@ -50,7 +50,7 @@ anlysisoutputstructure="Metadata_Plate/analysis/Metadata_Plate-Metadata_Well-Met
 batchpath=posixpath.join(startpath,os.path.join('workspace/batchfiles',batchsuffix))
 
 def MakeZprojJobs(batch=False):
-    zprojqueue = JobQueue(projectname+'_Zproj')
+    zprojqueue = JobQueue(appname+'_Zproj')
     for tozproj in platelist:
         for eachrow in rows:
             for eachcol in columns:
@@ -77,7 +77,7 @@ def MakeZprojJobs(batch=False):
     print('Z projection job submitted. Check your queue')
 
 def MakeIllumJobs(batch=False):    
-    illumqueue = JobQueue(projectname+'_Illum')
+    illumqueue = JobQueue(appname+'_Illum')
     for toillum in platelist:
         if not batch:
             templateMessage_illum = {'Metadata': 'Metadata_Plate='+toillum,
@@ -98,7 +98,7 @@ def MakeIllumJobs(batch=False):
     print('Illum job submitted. Check your queue')
 
 def MakeQCJobs(batch=False):
-    qcqueue = JobQueue(projectname+'_QC')
+    qcqueue = JobQueue(appname+'_QC')
     for toqc in platelist:
         for eachrow in rows:
             for eachcol in columns:
@@ -121,7 +121,7 @@ def MakeQCJobs(batch=False):
     print('QC job submitted. Check your queue')
 
 def MakeQCJobs_persite(batch=False):
-    qcqueue = JobQueue(projectname+'_QC')
+    qcqueue = JobQueue(appname+'_QC')
     for toqc in platelist:
         for eachrow in rows:
             for eachcol in columns:
@@ -146,7 +146,7 @@ def MakeQCJobs_persite(batch=False):
     print('QC job submitted. Check your queue')
 
 def MakeAssayDevJobs(batch=False):
-    assaydevqueue = JobQueue(projectname+'_AssayDev')
+    assaydevqueue = JobQueue(appname+'_AssayDev')
     for toad in platelist:
         for eachrow in rows:
             for eachcol in columns:
@@ -169,7 +169,7 @@ def MakeAssayDevJobs(batch=False):
     print('AssayDev job submitted. Check your queue')
 
 def MakeAnalysisJobs(batch=False):
-    analysisqueue = JobQueue(projectname+'_Analysis')
+    analysisqueue = JobQueue(appname+'_Analysis')
     for toanalyze in platelist:
         for eachrow in rows:
             for eachcol in columns:
