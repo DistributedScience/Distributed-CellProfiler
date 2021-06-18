@@ -76,7 +76,7 @@ def MakeZprojJobs(batch=False):
 
     print('Z projection job submitted. Check your queue')
 
-def MakeIllumJobs(batch='false'):    
+def MakeIllumJobs(batch=False):    
     illumqueue = JobQueue(projectname+'_Illum')
     for toillum in platelist:
         if not batch:
@@ -102,7 +102,7 @@ def MakeQCJobs(batch=False):
     for toqc in platelist:
         for eachrow in rows:
             for eachcol in columns:
-                if batch==False:
+                if not batch:
                     templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+'%02d' %eachcol,
                                     'pipeline': posixpath.join(pipelinepath,qcpipename),
                                     'output': QCoutpath,
@@ -126,7 +126,7 @@ def MakeQCJobs_persite(batch=False):
         for eachrow in rows:
             for eachcol in columns:
                 for eachsite in sites:
-                    if batch==False:
+                    if not batch:
                         templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
                                         'pipeline': posixpath.join(pipelinepath,qcpipename),
                                         'output': QCoutpath,
@@ -150,7 +150,7 @@ def MakeAssayDevJobs(batch=False):
     for toad in platelist:
         for eachrow in rows:
             for eachcol in columns:
-                if batch==False:
+                if not batch:
                     templateMessage_ad = {'Metadata': 'Metadata_Plate='+toad+',Metadata_Well='+eachrow+'%02d' %eachcol,
                                     'pipeline': posixpath.join(pipelinepath,assaydevpipename),
                                     'output': assaydevoutpath,
@@ -174,7 +174,7 @@ def MakeAnalysisJobs(batch=False):
         for eachrow in rows:
             for eachcol in columns:
                 for eachsite in sites:
-                    if batch==False:
+                    if not batch:
                         templateMessage_analysis = {'Metadata': 'Metadata_Plate='+toanalyze+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
                                         'pipeline': posixpath.join(pipelinepath,analysispipename),
                                         'output': analysisoutpath,
@@ -199,6 +199,6 @@ def MakeAnalysisJobs(batch=False):
 #MakeIllumJobs(batch=False)
 #MakeQCJobs(batch=False)
 #MakeQCJobs_persite(batch=False)
-#MakeAssayDevJobs
+#MakeAssayDevJobs(batch=False)
 #MakeAnalysisJobs(batch=False)
 
