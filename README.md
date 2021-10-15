@@ -41,8 +41,8 @@ following commands:
 
 Running either script uploads the tasks that are configured in the json file. This assumes that your 
 data is stored in S3, and the json file has the paths to find input and output directories. You have to 
-customizethe exampleJob.json file or the run_batch_general file with paths that make sense for your project. 
-The tasks that composeyour job are CP groups, and each one will be run in parallel. You need to define each 
+customize the exampleJob.json file or the run_batch_general file with paths that make sense for your project. 
+The tasks that compose your job are CP groups, and each one will be run in parallel. You need to define each 
 task in your input file to guide the parallelization.
 
 ### Step 3
