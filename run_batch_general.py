@@ -39,7 +39,7 @@ batchpipenameanalysis='Batch_data_analysis.h5'
 startpath=posixpath.join('projects',topdirname)
 pipelinepath=posixpath.join(startpath,os.path.join('workspace/pipelines',batchsuffix))
 zprojoutpath=posixpath.join(startpath,os.path.join(batchsuffix,'images'))
-zprojoutputstructure="Metadata_Plate"
+zprojoutputstructure="Metadata_Plate/Images"
 illumoutpath=posixpath.join(startpath,os.path.join(batchsuffix,'illum'))
 QCoutpath=posixpath.join(startpath,os.path.join('workspace/qc',os.path.join(batchsuffix,'results')))
 assaydevoutpath=posixpath.join(startpath,os.path.join('workspace/assaydev',batchsuffix))
@@ -50,6 +50,7 @@ anlysisoutputstructure="Metadata_Plate/analysis/Metadata_Plate-Metadata_Well-Met
 batchpath=posixpath.join(startpath,os.path.join('workspace/batchfiles',batchsuffix))
 csvname = 'load_data.csv'
 csv_with_illumname = 'load_data_with_illum.csv'
+csv_unprojected_name = 'load_data_unprojected.csv'
 
 def MakeZprojJobs(batch=False):
     zprojqueue = JobQueue(appname+'_Zproj')
