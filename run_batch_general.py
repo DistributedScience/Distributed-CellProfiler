@@ -64,7 +64,7 @@ def MakeZprojJobs(batch=False):
                                         'output': zprojoutpath,
                                         'output_structure': zprojoutputstructure,
                                         'input': inputpath,
-                                        'data_file': posixpath.join(datafilepath,tozproj,csvname)
+                                        'data_file': posixpath.join(datafilepath,tozproj,csv_unprojected_name)
                                         }
                     else:
                         templateMessage_zproj = {'Metadata': 'Metadata_Plate='+tozproj+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
