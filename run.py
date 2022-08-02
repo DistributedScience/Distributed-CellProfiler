@@ -112,6 +112,14 @@ def generate_task_definition(AWS_PROFILE):
             'value': queue_name
         },
         {
+            "name": "AWS_BUCKET",
+            "value": AWS_BUCKET
+        },
+        {
+            "name": "DOCKER_CORES",
+            "value": str(DOCKER_CORES)
+        },
+        {
             "name": "LOG_GROUP_NAME",
             "value": LOG_GROUP_NAME
         },
@@ -120,9 +128,33 @@ def generate_task_definition(AWS_PROFILE):
             "value": CHECK_IF_DONE_BOOL
         },
         {
+            "name": "EXPECTED_NUMBER_FILES",
+            "value": str(EXPECTED_NUMBER_FILES)
+        },
+        {
             "name": "ECS_CLUSTER",
             "value": ECS_CLUSTER
         },
+        {
+            "name": "SECONDS_TO_START",
+            "value": str(SECONDS_TO_START)
+        },
+        {
+            "name": "MIN_FILE_SIZE_BYTES",
+            "value": str(MIN_FILE_SIZE_BYTES)
+        },
+        {
+            "name": "USE_PLUGINS",
+            "value": str(USE_PLUGINS)
+        },
+        {
+            "name": "NECESSARY_STRING",
+            "value": NECESSARY_STRING
+        },
+        {
+            "name": "DOWNLOAD_FILES",
+            "value": DOWNLOAD_FILES
+        }
     ]
     return task_definition, taskRoleArn
 
