@@ -9,7 +9,7 @@ DOCKERHUB_TAG = 'cellprofiler/distributed-cellprofiler:2.0.0_4.1.3'
 AWS_REGION = 'us-east-1'
 AWS_PROFILE = 'default'                 # The same profile used by your AWS CLI installation
 SSH_KEY_NAME = 'your-key-file.pem'      # Expected to be in ~/.ssh
-AWS_BUCKET = 'your-bucket-name'
+AWS_BUCKET = 'your-bucket-name'         # Bucket to use for logging
 
 # EC2 AND ECS INFORMATION:
 ECS_CLUSTER = 'default'
@@ -32,7 +32,7 @@ SQS_MESSAGE_VISIBILITY = 1*60           # Timeout (secs) for messages in flight 
 SQS_DEAD_LETTER_QUEUE = 'arn:aws:sqs:some-region:111111100000:DeadMessages'
 
 # LOG GROUP INFORMATION:
-LOG_GROUP_NAME = APP_NAME 
+LOG_GROUP_NAME = APP_NAME
 
 # REDUNDANCY CHECKS
 CHECK_IF_DONE_BOOL = 'False'  #True or False- should it check if there are a certain number of non-empty files and delete the job if yes?

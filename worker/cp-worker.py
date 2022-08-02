@@ -6,7 +6,7 @@ import logging
 import os
 import re
 import subprocess
-import sys 
+import sys
 import time
 import watchtower
 import string
@@ -19,7 +19,8 @@ DATA_ROOT = '/home/ubuntu/bucket'
 LOCAL_OUTPUT = '/home/ubuntu/local_output'
 PLUGIN_DIR = '/home/ubuntu/CellProfiler-plugins'
 QUEUE_URL = os.environ['SQS_QUEUE_URL']
-AWS_BUCKET = os.environ['AWS_BUCKET']
+if 'AWS_BUCKET' in os.environ:
+    AWS_BUCKET = os.environ['AWS_BUCKET']
 LOG_GROUP_NAME= os.environ['LOG_GROUP_NAME']
 CHECK_IF_DONE_BOOL= os.environ['CHECK_IF_DONE_BOOL']
 EXPECTED_NUMBER_FILES= os.environ['EXPECTED_NUMBER_FILES']
@@ -52,7 +53,7 @@ class JobQueue():
     def __init__(self, queueURL):
         self.client = boto3.client('sqs')
         self.queueURL = queueURL
-    
+
     def readMessage(self):
         response = self.client.receive_message(QueueUrl=self.queueURL, WaitTimeSeconds=20)
         if 'Messages' in response.keys():
@@ -82,7 +83,7 @@ def monitorAndLog(process,logger):
             break
         if output:
             print(output.strip())
-            logger.info(output)  
+            logger.info(output)
 
 def printandlog(text,logger):
     print(text)
@@ -144,18 +145,21 @@ def runCellProfiler(message):
     localOut = LOCAL_OUTPUT + '/%(MetadataID)s' % {'MetadataID': metadataID}
     remoteOut= os.path.join(message['output'],metadataID)
     replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
-            'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
+            'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'],
             'MetadataID':metadataID, 'PLUGINS':PLUGIN_DIR }
 
     # Start loggging now that we have a job we care about
     watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
-    logger.addHandler(watchtowerlogger)	
+    logger.addHandler(watchtowerlogger)
 
     # See if this is a message you've already handled, if you've so chosen
     if CHECK_IF_DONE_BOOL.upper() == 'TRUE':
         try:
             s3client=boto3.client('s3')
-            bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut+'/')
+            if AWS_BUCKET:
+                bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut+'/')
+            else:
+                bucketlist=s3client.list_objects(Bucket=message["output_bucket"],Prefix=remoteOut+'/')
             objectsizelist=[k['Size'] for k in bucketlist['Contents']]
             objectsizelist = [i for i in objectsizelist if i >= MIN_FILE_SIZE_BYTES]
             if NECESSARY_STRING:
@@ -166,8 +170,8 @@ def runCellProfiler(message):
                 logger.removeHandler(watchtowerlogger)
                 return 'SUCCESS'
         except KeyError: #Returned if that folder does not exist
-            pass	
-    
+            pass
+
     csv_name = os.path.join(DATA_ROOT,message['data_file'])
     downloaded_files = []
 
@@ -204,7 +208,10 @@ def runCellProfiler(message):
                         os.makedirs(os.path.split(new_file_name)[0])
                         printandlog('made directory '+os.path.split(new_file_name)[0],logger)
                     if not os.path.exists(new_file_name):
-                        s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
+                        if AWS_BUCKET:
+                            s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
+                        else:
+                            s3.meta.client.download_file(message['input_bucket'],prefix_on_bucket,new_file_name)
                         downloaded_files.append(new_file_name)
             printandlog('Downloaded '+str(len(downloaded_files))+' files',logger)
             import random
@@ -238,7 +245,7 @@ def runCellProfiler(message):
     cmd = cmd % replaceValues
     print('Running', cmd)
     logger.info(cmd)
-    
+
     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     monitorAndLog(subp,logger)
 
@@ -253,8 +260,11 @@ def runCellProfiler(message):
         while mvtries <3:
             try:
                     printandlog('Move attempt #'+str(mvtries+1),logger)
-                    cmd = 'aws s3 mv ' + localOut + ' s3://' + AWS_BUCKET + '/' + remoteOut + ' --recursive --exclude=cp.is.done' 
-                    subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
+                    if AWS_BUCKET:
+                        cmd = 'aws s3 mv ' + localOut + ' s3://' + AWS_BUCKET + '/' + remoteOut + ' --recursive --exclude=cp.is.done'
+                    else:
+                        cmd = 'aws s3 mv ' + localOut + ' s3://' + message['output_bucket'] + '/' + remoteOut + ' --recursive --exclude=cp.is.done'
+                    subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     out,err = subp.communicate()
                     out=out.decode()
                     err=err.decode()
@@ -288,7 +298,7 @@ def runCellProfiler(message):
         import shutil
         shutil.rmtree(localOut, ignore_errors=True)
         return 'CP_PROBLEM'
-    
+
 
 #################################
 # MAIN WORKER LOOP
@@ -320,4 +330,3 @@ if __name__ == '__main__':
     print('Worker started')
     main()
     print('Worker finished')
-
