@@ -61,8 +61,44 @@ SQS_DEFINITION = {
 #################################
 
 def generate_task_definition(AWS_PROFILE):
+    taskRoleArn = False
     task_definition = TASK_DEFINITION.copy()
-    key, secret = get_aws_credentials(AWS_PROFILE)
+
+    config = configparser.ConfigParser()
+    config.read(f"{os.environ['HOME']}/.aws/config")
+
+    if config.has_section(AWS_PROFILE):
+        profile_name = AWS_PROFILE
+    elif config.has_section(f'profile {AWS_PROFILE}'):
+        profile_name = f'profile {AWS_PROFILE}'
+    else:
+        print ('Problem handling profile')
+
+    if config.has_option(profile_name, 'role_arn'):
+        print ("Using role for credentials", config[profile_name]['role_arn'])
+        taskRoleArn = config[profile_name]['role_arn']
+    else:
+        if config.has_option(profile_name, 'source_profile'):
+            creds = configparser.ConfigParser()
+            creds.read(f"{os.environ['HOME']}/.aws/credentials")
+            source_profile = config[profile_name]['source_profile']
+            aws_access_key = creds[source_profile]['aws_access_key_id']
+            aws_secret_key = creds[source_profile]['aws_secret_access_key']
+        elif config.has_option(profile_name, 'aws_access_key_id'):
+            aws_access_key = config[profile_name]['aws_access_key_id']
+            aws_secret_key = config[profile_name]['aws_secret_access_key']
+        else:
+            print ("Problem getting credentials")
+        task_definition['containerDefinitions'][0]['environment'] += [
+            {
+                "name": "AWS_ACCESS_KEY_ID",
+                "value": aws_access_key
+            },
+            {
+                "name": "AWS_SECRET_ACCESS_KEY",
+                "value": aws_secret_key
+            }]
+
     sqs = boto3.client('sqs')
     queue_name = get_queue_url(sqs)
     task_definition['containerDefinitions'][0]['environment'] += [
@@ -75,22 +111,6 @@ def generate_task_definition(AWS_PROFILE):
             'value': queue_name
         },
         {
-            "name": "AWS_ACCESS_KEY_ID",
-            "value": key
-        },
-        {
-            "name": "AWS_SECRET_ACCESS_KEY",
-            "value": secret
-        },
-        {
-            "name": "AWS_BUCKET",
-            "value": AWS_BUCKET
-        },
-        {
-            "name": "DOCKER_CORES",
-            "value": str(DOCKER_CORES)
-        },
-        {
             "name": "LOG_GROUP_NAME",
             "value": LOG_GROUP_NAME
         },
@@ -99,35 +119,11 @@ def generate_task_definition(AWS_PROFILE):
             "value": CHECK_IF_DONE_BOOL
         },
         {
-            "name": "EXPECTED_NUMBER_FILES",
-            "value": str(EXPECTED_NUMBER_FILES)
-        },
-        {
             "name": "ECS_CLUSTER",
             "value": ECS_CLUSTER
         },
-        {
-            "name": "SECONDS_TO_START",
-            "value": str(SECONDS_TO_START)
-        },
-        {
-            "name": "MIN_FILE_SIZE_BYTES",
-            "value": str(MIN_FILE_SIZE_BYTES)
-        },
-        {
-            "name": "USE_PLUGINS",
-            "value": str(USE_PLUGINS)
-        },
-        {
-            "name": "NECESSARY_STRING",
-            "value": NECESSARY_STRING
-        },
-        {
-            "name": "DOWNLOAD_FILES",
-            "value": DOWNLOAD_FILES
-        }
     ]
-    return task_definition
+    return task_definition, taskRoleArn
 
 def update_ecs_task_definition(ecs, ECS_TASK_NAME, AWS_PROFILE):
     task_definition, taskRoleArn = generate_task_definition(AWS_PROFILE)
