@@ -2,7 +2,11 @@
 
 echo "Region $AWS_REGION"
 echo "Queue $SQS_QUEUE_URL"
-echo "Bucket $AWS_BUCKET"
+if ! [-v SOURCE_BUCKET]
+then
+  SOURCE_BUCKET=$AWS_BUCKET
+fi
+echo "Source Bucket $SOURCE_BUCKET"
 
 # 1. CONFIGURE AWS CLI
 aws configure set default.region $AWS_REGION
@@ -16,10 +20,20 @@ VOL_1_ID=$(aws ec2 describe-instance-attribute --instance-id $MY_INSTANCE_ID --a
 aws ec2 create-tags --resources $VOL_1_ID --tags Key=Name,Value=${APP_NAME}Worker
 
 # 2. MOUNT S3
-echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /credentials.txt
-chmod 600 /credentials.txt
 mkdir -p /home/ubuntu/bucket
 mkdir -p /home/ubuntu/local_output
+if ! [ -v AWS_ACCESS_KEY_ID ]
+then
+  declare -A CREDS=$(curl 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI)
+  echo "$CREDS"
+  echo "${CREDS[AccessKeyId]}"
+  AWS_ACCESS_KEY_ID=${CREDS[AccessKeyId]}
+  AWS_SECRET_ACCESS_KEY=${CREDS[SecretAccessKey]}
+  echo "$AWS_ACCESS_KEY_ID"declare -A
+  echo "$AWS_SECRET_ACCESS_KEY"
+fi
+echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /credentials.txt
+chmod 600 /credentials.txt
 stdbuf -o0 s3fs $AWS_BUCKET /home/ubuntu/bucket -o passwd_file=/credentials.txt
 
 # 3. SET UP ALARMS
