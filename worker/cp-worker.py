@@ -19,8 +19,7 @@ DATA_ROOT = '/home/ubuntu/bucket'
 LOCAL_OUTPUT = '/home/ubuntu/local_output'
 PLUGIN_DIR = '/home/ubuntu/CellProfiler-plugins'
 QUEUE_URL = os.environ['SQS_QUEUE_URL']
-if 'AWS_BUCKET' in os.environ:
-    AWS_BUCKET = os.environ['AWS_BUCKET']
+AWS_BUCKET = os.environ['AWS_BUCKET']
 LOG_GROUP_NAME= os.environ['LOG_GROUP_NAME']
 CHECK_IF_DONE_BOOL= os.environ['CHECK_IF_DONE_BOOL']
 EXPECTED_NUMBER_FILES= os.environ['EXPECTED_NUMBER_FILES']
@@ -156,10 +155,10 @@ def runCellProfiler(message):
     if CHECK_IF_DONE_BOOL.upper() == 'TRUE':
         try:
             s3client=boto3.client('s3')
-            if AWS_BUCKET:
-                bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut+'/')
-            else:
+            if message["output_bucket"]:
                 bucketlist=s3client.list_objects(Bucket=message["output_bucket"],Prefix=remoteOut+'/')
+            else:
+                bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut+'/')
             objectsizelist=[k['Size'] for k in bucketlist['Contents']]
             objectsizelist = [i for i in objectsizelist if i >= MIN_FILE_SIZE_BYTES]
             if NECESSARY_STRING:
@@ -208,10 +207,10 @@ def runCellProfiler(message):
                         os.makedirs(os.path.split(new_file_name)[0])
                         printandlog('made directory '+os.path.split(new_file_name)[0],logger)
                     if not os.path.exists(new_file_name):
-                        if AWS_BUCKET:
-                            s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
-                        else:
+                        if message['input_bucket']:
                             s3.meta.client.download_file(message['input_bucket'],prefix_on_bucket,new_file_name)
+                        else:
+                            s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
                         downloaded_files.append(new_file_name)
             printandlog('Downloaded '+str(len(downloaded_files))+' files',logger)
             import random
@@ -260,10 +259,10 @@ def runCellProfiler(message):
         while mvtries <3:
             try:
                     printandlog('Move attempt #'+str(mvtries+1),logger)
-                    if AWS_BUCKET:
-                        cmd = 'aws s3 mv ' + localOut + ' s3://' + AWS_BUCKET + '/' + remoteOut + ' --recursive --exclude=cp.is.done'
-                    else:
+                    if message['output_bucket']:
                         cmd = 'aws s3 mv ' + localOut + ' s3://' + message['output_bucket'] + '/' + remoteOut + ' --recursive --exclude=cp.is.done'
+                    else:
+                        cmd = 'aws s3 mv ' + localOut + ' s3://' + AWS_BUCKET + '/' + remoteOut + ' --recursive --exclude=cp.is.done'
                     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     out,err = subp.communicate()
                     out=out.decode()
