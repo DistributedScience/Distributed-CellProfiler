@@ -21,9 +21,9 @@ PLUGIN_DIR = '/home/ubuntu/CellProfiler-plugins'
 QUEUE_URL = os.environ['SQS_QUEUE_URL']
 AWS_BUCKET = os.environ['AWS_BUCKET']
 if 'SOURCE_BUCKET' not in os.environ:
-    SOURCE_BUCKET = os.environ['SOURCE_BUCKET']
-else:
     SOURCE_BUCKET = os.environ['AWS_BUCKET']
+else:
+    SOURCE_BUCKET = os.environ['SOURCE_BUCKET']
 if 'DESTINATION_BUCKET' not in os.environ:
     DESTINATION_BUCKET = os.environ['AWS_BUCKET']
 else:
