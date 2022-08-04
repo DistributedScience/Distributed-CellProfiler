@@ -187,8 +187,15 @@ def runCellProfiler(message):
             s3client = boto3.client('s3')
             if not os.path.exists(localIn):
                 os.mkdir(localIn)
-            s3client.download_file(SOURCE_BUCKET, message['data_file'], os.path.join(localIn,'load_data.csv'))
-            csv_in = pandas.read_csv(os.path.join(localIn,'load_data.csv'))
+            printandlog('Downloading ' + message['data_file'] + ' from ' + SOURCE_BUCKET, logger)
+            csv_insubfolders = message['data_file'].split('/')[-3:]
+            subfolders = '/'.join((csv_insubfolders)[:-1])
+            csv_insubfolders = '/'.join(csv_insubfolders)
+            csv_name = os.path.join(localIn, csv_insubfolders)
+            if not os.path.exists(os.path.join(localIn,subfolders)):
+                os.makedirs(os.path.join(localIn,subfolders), exist_ok=True)
+            s3client.download_file(SOURCE_BUCKET, message['data_file'], csv_name)
+            csv_in = pandas.read_csv(os.path.join(localIn,csv_name))
             csv_in=csv_in.astype('str')
             #Figure out what metadata fields we need in this experiment, as a dict
             if type(message['Metadata'])==dict:
@@ -213,28 +220,13 @@ def runCellProfiler(message):
                         os.makedirs(os.path.split(new_file_name)[0])
                         printandlog('made directory '+os.path.split(new_file_name)[0],logger)
                     if not os.path.exists(new_file_name):
-                        printandlog(prefix_on_bucket, logger)
-                        printandlog(new_file_name, logger)
                         s3client.download_file(SOURCE_BUCKET,prefix_on_bucket,new_file_name)
                         downloaded_files.append(new_file_name)
             printandlog('Downloaded '+str(len(downloaded_files))+' files',logger)
-            import random
-            newtag = False
-            while newtag == False:
-                tag = str(random.randint(100000,999999)) #keep files from overwriting one another
-                local_csv_name = os.path.join(localIn,tag,os.path.split(csv_name)[1])
-                if not os.path.exists(local_csv_name):
-                    if not os.path.exists(os.path.split(local_csv_name)[0]):
-                        os.makedirs(os.path.split(local_csv_name)[0])
-                    csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
-                    csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
-                    csv_in.to_csv(local_csv_name,index=False)
-                    print('Wrote updated CSV')
-                    newtag = True
-                else:
-                    newtag = False
-            csv_name = local_csv_name
-
+            # Update paths in csv to local paths
+            csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
+            csv_in.to_csv(csv_name,index=False)
+            print('Updated load_data_csv to local paths')
     # Build and run CellProfiler command
     cpDone = localOut + '/cp.is.done'
     cmdstem = 'cellprofiler -c -r '
