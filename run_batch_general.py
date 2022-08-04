@@ -17,15 +17,13 @@ class JobQueue():
         print('Batch sent. Message ID:',response.get('MessageId'))
 
 #project specific stuff
-topdirname='' #Project name (should match the folder structure on S3)
+topdirname='' #Project name (should match the folder structure on S3)        
 appname='' #Must match config.py (except for step-specific part)
 batchsuffix='' #Batch name (should match the folder structure on S3)
-input_bucket=''
-output_bucket=''
 rows=list(string.ascii_uppercase)[0:16]
 columns=range(1,25)
 sites=range(1,10)
-platelist=[]
+platelist=[] 
 zprojpipename='Zproj.cppipe'
 illumpipename='illum.cppipe'
 qcpipename='qc.cppipe'
@@ -66,9 +64,7 @@ def MakeZprojJobs(batch=False):
                                         'output': zprojoutpath,
                                         'output_structure': zprojoutputstructure,
                                         'input': inputpath,
-                                        'data_file': posixpath.join(datafilepath,tozproj,csv_unprojected_name),
-                                        'input_bucket': input_bucket,
-                                        'output_bucket': output_bucket,
+                                        'data_file': posixpath.join(datafilepath,tozproj,csv_unprojected_name)
                                         }
                     else:
                         templateMessage_zproj = {'Metadata': 'Metadata_Plate='+tozproj+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
@@ -76,37 +72,30 @@ def MakeZprojJobs(batch=False):
                                         'output': zprojoutpath,
                                         'output_structure': zprojoutputstructure,
                                         'input': inputpath,
-                                        'data_file': posixpath.join(batchpath,batchpipenamezproj),
-                                        'input_bucket': input_bucket,
-                                        'output_bucket': output_bucket,
+                                        'data_file': posixpath.join(batchpath,batchpipenamezproj)
                                         }
 
                     zprojqueue.scheduleBatch(templateMessage_zproj)
 
     print('Z projection job submitted. Check your queue')
 
-def MakeIllumJobs(batch=False):
+def MakeIllumJobs(batch=False):    
     illumqueue = JobQueue(appname+'_Illum')
     for toillum in platelist:
         if not batch:
             templateMessage_illum = {'Metadata': 'Metadata_Plate='+toillum,
                                      'pipeline': posixpath.join(pipelinepath,illumpipename),
                                      'output': illumoutpath,
-                                     'input': inputpath,
-                                     'data_file':posixpath.join(datafilepath,toillum,csvname),
-                                     'input_bucket': input_bucket,
-                                     'output_bucket': output_bucket,
-                                     }
+                                     'input': inputpath, 
+                                     'data_file':posixpath.join(datafilepath,toillum,csvname)}            
         else:
             templateMessage_illum = {'Metadata': 'Metadata_Plate='+toillum,
                                         'pipeline': posixpath.join(batchpath,batchpipenameillum),
                                         'output': illumoutpath,
                                         'input':inputpath,
-                                        'data_file': posixpath.join(batchpath,batchpipenameillum),
-                                        'input_bucket': input_bucket,
-                                        'output_bucket': output_bucket,
+                                        'data_file': posixpath.join(batchpath,batchpipenameillum)
                                         }
-
+            
         illumqueue.scheduleBatch(templateMessage_illum)
 
     print('Illum job submitted. Check your queue')
@@ -121,18 +110,14 @@ def MakeQCJobs(batch=False):
                                     'pipeline': posixpath.join(pipelinepath,qcpipename),
                                     'output': QCoutpath,
                                     'input': inputpath,
-                                    'data_file': posixpath.join(datafilepath,toqc,csvname),
-                                    'input_bucket': input_bucket,
-                                    'output_bucket': output_bucket,
+                                    'data_file': posixpath.join(datafilepath,toqc,csvname)
                                     }
                 else:
                     templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+'%02d' %eachcol,
                                     'pipeline': posixpath.join(batchpath,batchpipenameqc),
                                     'output': QCoutpath,
                                     'input': inputpath,
-                                    'data_file': posixpath.join(batchpath,batchpipenameqc),
-                                    'input_bucket': input_bucket,
-                                    'output_bucket': output_bucket,
+                                    'data_file': posixpath.join(batchpath,batchpipenameqc)
                                 }
                 qcqueue.scheduleBatch(templateMessage_qc)
 
@@ -149,18 +134,14 @@ def MakeQCJobs_persite(batch=False):
                                         'pipeline': posixpath.join(pipelinepath,qcpipename),
                                         'output': QCoutpath,
                                         'input': inputpath,
-                                        'data_file': posixpath.join(datafilepath,toqc,csvname),
-                                        'input_bucket': input_bucket,
-                                        'output_bucket': output_bucket,
+                                        'data_file': posixpath.join(datafilepath,toqc,csvname)
                                         }
                     else:
                         templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
                                         'pipeline': posixpath.join(batchpath,batchpipenameqc),
                                         'output': QCoutpath,
                                         'input': inputpath,
-                                        'data_file': posixpath.join(batchpath,batchpipenameqc),
-                                        'input_bucket': input_bucket,
-                                        'output_bucket': output_bucket,
+                                        'data_file': posixpath.join(batchpath,batchpipenameqc)
                                         }
 
                     qcqueue.scheduleBatch(templateMessage_qc)
@@ -177,18 +158,14 @@ def MakeAssayDevJobs(batch=False):
                                     'pipeline': posixpath.join(pipelinepath,assaydevpipename),
                                     'output': assaydevoutpath,
                                     'input': inputpath,
-                                    'data_file': posixpath.join(datafilepath,toad,csv_with_illumname),
-                                    'input_bucket': input_bucket,
-                                    'output_bucket': output_bucket,
+                                    'data_file': posixpath.join(datafilepath,toad,csv_with_illumname)
                                     }
                 else:
                     templateMessage_ad = {'Metadata': 'Metadata_Plate='+toad+',Metadata_Well='+eachrow+'%02d' %eachcol,
                                     'pipeline': posixpath.join(batchpath,batchpipenameassaydev),
                                     'output': assaydevoutpath,
                                     'input': inputpath,
-                                    'data_file': posixpath.join(batchpath,batchpipenameassaydev),
-                                    'input_bucket': input_bucket,
-                                    'output_bucket': output_bucket,
+                                    'data_file': posixpath.join(batchpath,batchpipenameassaydev)
                                 }
                 assaydevqueue.scheduleBatch(templateMessage_ad)
 
@@ -206,28 +183,25 @@ def MakeAnalysisJobs(batch=False):
                                         'output': analysisoutpath,
                                         'output_structure':anlysisoutputstructure,
                                         'input':inputpath,
-                                        'data_file': posixpath.join(datafilepath,toanalyze,csv_with_illumname),
-                                        'input_bucket': input_bucket,
-                                        'output_bucket': output_bucket,
-                                        }
+                                        'data_file': posixpath.join(datafilepath,toanalyze,csv_with_illumname)
+                                        }                        
                     else:
                         templateMessage_analysis = {'Metadata': 'Metadata_Plate='+toanalyze+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
                                         'pipeline': posixpath.join(batchpath,batchpipenameanalysis),
                                         'output': analysisoutpath,
                                         'output_structure':anlysisoutputstructure,
                                         'input':inputpath,
-                                        'data_file': posixpath.join(batchpath,batchpipenameanalysis),
-                                        'input_bucket': input_bucket,
-                                        'output_bucket': output_bucket,
+                                        'data_file': posixpath.join(batchpath,batchpipenameanalysis)
                                         }
 
                     analysisqueue.scheduleBatch(templateMessage_analysis)
 
     print('Analysis job submitted. Check your queue')
 
-#MakeZprojJobs(batch=False)
+#MakeZprojJobs(batch=False)    
 #MakeIllumJobs(batch=False)
 #MakeQCJobs(batch=False)
 #MakeQCJobs_persite(batch=False)
 #MakeAssayDevJobs(batch=False)
 #MakeAnalysisJobs(batch=False)
+
