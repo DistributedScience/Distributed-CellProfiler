@@ -184,10 +184,11 @@ def runCellProfiler(message):
         if DOWNLOAD_FILES.lower() == 'true':
             printandlog('Figuring which files to download', logger)
             import pandas
-            s3 = boto3.resource('s3')
+            s3client = boto3.client('s3')
             if not os.path.exists(localIn):
                 os.mkdir(localIn)
-            csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
+            s3client.download_file(SOURCE_BUCKET, message['data_file'], os.path.join(localIn,'load_data.csv'))
+            csv_in = pandas.read_csv(os.path.join(localIn,'load_data.csv'))
             csv_in=csv_in.astype('str')
             #Figure out what metadata fields we need in this experiment, as a dict
             if type(message['Metadata'])==dict:
@@ -212,7 +213,9 @@ def runCellProfiler(message):
                         os.makedirs(os.path.split(new_file_name)[0])
                         printandlog('made directory '+os.path.split(new_file_name)[0],logger)
                     if not os.path.exists(new_file_name):
-                        s3.meta.client.download_file(INPUT_BUCKET,prefix_on_bucket,new_file_name)
+                        printandlog(prefix_on_bucket, logger)
+                        printandlog(new_file_name, logger)
+                        s3client.download_file(SOURCE_BUCKET,prefix_on_bucket,new_file_name)
                         downloaded_files.append(new_file_name)
             printandlog('Downloaded '+str(len(downloaded_files))+' files',logger)
             import random
