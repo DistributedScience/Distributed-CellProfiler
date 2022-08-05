@@ -30,6 +30,8 @@ else:
     DESTINATION_BUCKET = os.environ['DESTINATION_BUCKET']
 if 'UPLOAD_FLAGS' in os.environ:
     UPLOAD_FLAGS = os.environ['UPLOAD_FLAGS']
+else:
+    UPLOAD_FLAGS = False
 LOG_GROUP_NAME= os.environ['LOG_GROUP_NAME']
 CHECK_IF_DONE_BOOL= os.environ['CHECK_IF_DONE_BOOL']
 EXPECTED_NUMBER_FILES= os.environ['EXPECTED_NUMBER_FILES']
