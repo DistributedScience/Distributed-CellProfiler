@@ -12,6 +12,7 @@ SSH_KEY_NAME = 'your-key-file.pem'      # Expected to be in ~/.ssh
 AWS_BUCKET = 'your-bucket-name'         # Bucket to use for logging
 SOURCE_BUCKET = 'bucket-name'           # Bucket to download files from
 DESTINATION_BUCKET = 'bucket-name'      # Bucket to upload files to
+UPLOAD_FLAGS = ''                       # Any flags needed for upload to destination bucket
 
 # EC2 AND ECS INFORMATION:
 ECS_CLUSTER = 'default'

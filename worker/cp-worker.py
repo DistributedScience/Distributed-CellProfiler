@@ -28,6 +28,8 @@ if 'DESTINATION_BUCKET' not in os.environ:
     DESTINATION_BUCKET = os.environ['AWS_BUCKET']
 else:
     DESTINATION_BUCKET = os.environ['DESTINATION_BUCKET']
+if 'UPLOAD_FLAGS' in os.environ:
+    UPLOAD_FLAGS = os.environ['UPLOAD_FLAGS']
 LOG_GROUP_NAME= os.environ['LOG_GROUP_NAME']
 CHECK_IF_DONE_BOOL= os.environ['CHECK_IF_DONE_BOOL']
 EXPECTED_NUMBER_FILES= os.environ['EXPECTED_NUMBER_FILES']
@@ -265,6 +267,9 @@ def runCellProfiler(message):
             try:
                     printandlog('Move attempt #'+str(mvtries+1),logger)
                     cmd = 'aws s3 mv ' + localOut + ' s3://' + DESTINATION_BUCKET + '/' + remoteOut + ' --recursive --exclude=cp.is.done'
+                    if UPLOAD_FLAGS:
+                        cmd += ' ' + UPLOAD_FLAGS
+                    printandlog('Uploading with command ' + cmd, logger)
                     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     out,err = subp.communicate()
                     out=out.decode()
