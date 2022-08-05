@@ -156,6 +156,22 @@ def generate_task_definition(AWS_PROFILE):
             "value": DOWNLOAD_FILES
         }
     ]
+    if SOURCE_BUCKET:
+        task_definition['containerDefinitions'][0]['environment'] += [
+            {
+                'name': 'SOURCE_BUCKET',
+                'value': SOURCE_BUCKET
+            },
+            {
+                'name': 'DESTINATION_BUCKET',
+                'value': DESTINATION_BUCKET
+            }]
+    if UPLOAD_FLAGS:
+        task_definition['containerDefinitions'][0]['environment'] += [
+            {
+                'name': 'UPLOAD_FLAGS',
+                'value': UPLOAD_FLAGS
+            }]
     return task_definition, taskRoleArn
 
 def update_ecs_task_definition(ecs, ECS_TASK_NAME, AWS_PROFILE):
