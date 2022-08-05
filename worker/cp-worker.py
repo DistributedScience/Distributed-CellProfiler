@@ -210,23 +210,31 @@ def runCellProfiler(message):
                 csv_in = csv_in[csv_in[eachfilter] == filter_dict[eachfilter]]
             #Figure out the actual file names and get them
             channel_list = [x.split('FileName_')[1] for x in csv_in.columns if 'FileName' in x]
-            printandlog('Downloading files', logger)
+            printandlog(f'Downloading files for channels {channel_list}', logger)
             for channel in channel_list:
                 for field in range(csv_in.shape[0]):
                     full_old_file_name = os.path.join(list(csv_in['PathName_'+channel])[field],list(csv_in['FileName_'+channel])[field])
                     prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1][1:]
                     new_file_name = os.path.join(localIn,prefix_on_bucket)
                     if not os.path.exists(os.path.split(new_file_name)[0]):
-                        os.makedirs(os.path.split(new_file_name)[0])
+                        os.makedirs(os.path.split(new_file_name)[0], exist_ok=True)
                         printandlog('made directory '+os.path.split(new_file_name)[0],logger)
                     if not os.path.exists(new_file_name):
                         s3client.download_file(SOURCE_BUCKET,prefix_on_bucket,new_file_name)
+                        printandlog('Downloading file '+prefix_on_bucket,logger)
                         downloaded_files.append(new_file_name)
             printandlog('Downloaded '+str(len(downloaded_files))+' files',logger)
             # Update paths in csv to local paths
             csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
             csv_in.to_csv(csv_name,index=False)
             print('Updated load_data_csv to local paths')
+            # Download pipeline and update pipeline path in message
+            printandlog('Downloading ' + message['pipeline'] + ' from ' + SOURCE_BUCKET, logger)
+            localpipe = os.path.join(localIn, message['pipeline'].split('/')[-1])
+            s3client.download_file(SOURCE_BUCKET, message['pipeline'], localpipe)
+            # Correct locations in CP run command
+            replaceValues['PL'] = message['pipeline'].split('/')[-1]
+            replaceValues['DATA'] = localIn
     # Build and run CellProfiler command
     cpDone = localOut + '/cp.is.done'
     cmdstem = 'cellprofiler -c -r '
