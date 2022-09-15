@@ -1,8 +1,8 @@
 #!/bin/bash
-
+echo "${BASH_VERSION}"
 echo "Region $AWS_REGION"
 echo "Queue $SQS_QUEUE_URL"
-if ! [-v SOURCE_BUCKET]
+if [-n "$SOURCE_BUCKET"]
 then
   SOURCE_BUCKET=$AWS_BUCKET
 fi
@@ -22,19 +22,17 @@ aws ec2 create-tags --resources $VOL_1_ID --tags Key=Name,Value=${APP_NAME}Worke
 # 2. MOUNT S3
 mkdir -p /home/ubuntu/bucket
 mkdir -p /home/ubuntu/local_output
-if ! [ -v AWS_ACCESS_KEY_ID ]
+if [ -n "$AWS_ACCESS_KEY_ID" ]
 then
-  declare -A CREDS=$(curl 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI)
-  echo "$CREDS"
-  echo "${CREDS[AccessKeyId]}"
-  AWS_ACCESS_KEY_ID=${CREDS[AccessKeyId]}
-  AWS_SECRET_ACCESS_KEY=${CREDS[SecretAccessKey]}
-  echo "$AWS_ACCESS_KEY_ID"declare -A
-  echo "$AWS_SECRET_ACCESS_KEY"
+  AWS_ACCESS_KEY_ID=$(curl 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI | jq '.AccessKeyId')
+  AWS_SECRET_ACCESS_KEY=$(curl 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI | jq '.SecretAccessKey')
+  echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /credentials.txt
+  chmod 600 /credentials.txt
+  stdbuf -o0 s3fs $AWS_BUCKET /home/ubuntu/bucket -o passwd_file=/credentials.txt -o dbglevel=info
+else
+  stdbuf -o0 s3fs $AWS_BUCKET /home/ubuntu/bucket -o ecs -o dbglevel=info
 fi
-echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /credentials.txt
-chmod 600 /credentials.txt
-stdbuf -o0 s3fs $AWS_BUCKET /home/ubuntu/bucket -o passwd_file=/credentials.txt
+
 
 # 3. SET UP ALARMS
 aws cloudwatch put-metric-alarm --alarm-name ${APP_NAME}_${MY_INSTANCE_ID} --alarm-actions arn:aws:swf:${AWS_REGION}:${OWNER_ID}:action/actions/AWS_EC2.InstanceId.Terminate/1.0 --statistic Maximum --period 60 --threshold 1 --comparison-operator LessThanThreshold --metric-name CPUUtilization --namespace AWS/EC2 --evaluation-periods 15 --dimensions "Name=InstanceId,Value=${MY_INSTANCE_ID}"
