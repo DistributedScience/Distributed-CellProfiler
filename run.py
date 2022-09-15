@@ -130,8 +130,10 @@ def generate_task_definition(AWS_PROFILE):
         {
             "name": "DOWNLOAD_FILES",
             "value": DOWNLOAD_FILES
-        },
-                {
+        }]
+    if UPDATE_PLUGINS:
+        task_definition['containerDefinitions'][0]['environment'] += [
+        {
             "name": "UPDATE_PLUGINS",
             "value": str(UPDATE_PLUGINS)
         },
@@ -146,8 +148,17 @@ def generate_task_definition(AWS_PROFILE):
         {
             "name": "REQUIREMENTS_FILE",
             "value": str(REQUIREMENTS_FILE)
-        },          
-    ]
+        }]
+    else:
+        task_definition['containerDefinitions'][0]['environment'] += [
+        {
+            "name": "UPDATE_PLUGINS",
+            "value": "False"
+        },
+        {
+            "name": "INSTALL_REQUIREMENTS",
+            "value": "False"
+        }]
     return task_definition
 
 def update_ecs_task_definition(ecs, ECS_TASK_NAME, AWS_PROFILE):
@@ -211,14 +222,14 @@ def killdeadAlarms(fleetId,monitorapp,ec2,cloud):
                 todel.append(eachevent['EventInformation']['InstanceId'])
 
     existing_alarms = [x['AlarmName'] for x in cloud.describe_alarms(AlarmNamePrefix=monitorapp)['MetricAlarms']]
-    
+
     for eachmachine in todel:
         monitorname = monitorapp+'_'+eachmachine
         if monitorname in existing_alarms:
             cloud.delete_alarms(AlarmNames=[monitorname])
             print('Deleted', monitorname, 'if it existed')
             time.sleep(3)
-    
+
     print('Old alarms deleted')
 
 def generateECSconfig(ECS_CLUSTER,APP_NAME,AWS_BUCKET,s3client):
@@ -264,7 +275,7 @@ def removequeue(queueName):
         for eachUrl in queueoutput["QueueUrls"]:
             if eachUrl.split('/')[-1] == queueName:
                 queueUrl=eachUrl
-    
+
     sqs.delete_queue(QueueUrl=queueUrl)
 
 def deregistertask(taskName, ecs):
@@ -294,7 +305,7 @@ def downscaleSpotFleet(queue, spotFleetID, ec2, manual=False):
 
 def export_logs(logs, loggroupId, starttime, bucketId):
     result = logs.create_export_task(taskName = loggroupId, logGroupName = loggroupId, fromTime = int(starttime), to = int(time.time()*1000), destination = bucketId, destinationPrefix = 'exportedlogs/'+loggroupId)
-    
+
     logExportId = result['taskId']
 
     while True:
@@ -317,7 +328,7 @@ class JobQueue():
             self.queue = self.sqs.get_queue_by_name(QueueName=SQS_QUEUE_NAME)
         else:
             self.queue = self.sqs.get_queue_by_name(QueueName=name)
-        self.inProcess = -1 
+        self.inProcess = -1
         self.pending = -1
 
     def scheduleBatch(self, data):
@@ -376,7 +387,7 @@ def submitJob():
     jobInfo = loadConfig(sys.argv[2])
     if 'output_structure' not in jobInfo.keys(): #backwards compatibility for 1.0.0
         jobInfo["output_structure"]=''
-    templateMessage = {'Metadata': '', 
+    templateMessage = {'Metadata': '',
         'pipeline': jobInfo["pipeline"],
         'output': jobInfo["output"],
         'input': jobInfo["input"],
@@ -398,7 +409,7 @@ def submitJob():
     print('Job submitted. Check your queue')
 
 #################################
-# SERVICE 3: START CLUSTER 
+# SERVICE 3: START CLUSTER
 #################################
 
 def startCluster():
@@ -417,7 +428,7 @@ def startCluster():
     spotfleetConfig['SpotPrice'] = '%.2f' %MACHINE_PRICE
     DOCKER_BASE_SIZE = int(round(float(EBS_VOL_SIZE)/int(TASKS_PER_MACHINE))) - 2
     userData=generateUserData(ecsConfigFile,DOCKER_BASE_SIZE)
-    for LaunchSpecification in range(0,len(spotfleetConfig['LaunchSpecifications'])): 
+    for LaunchSpecification in range(0,len(spotfleetConfig['LaunchSpecifications'])):
         spotfleetConfig['LaunchSpecifications'][LaunchSpecification]["UserData"]=userData
         spotfleetConfig['LaunchSpecifications'][LaunchSpecification]['BlockDeviceMappings'][1]['Ebs']["VolumeSize"]= EBS_VOL_SIZE
         spotfleetConfig['LaunchSpecifications'][LaunchSpecification]['InstanceType'] = MACHINE_TYPE[LaunchSpecification]
@@ -440,7 +451,7 @@ def startCluster():
     createMonitor.write('"MONITOR_LOG_GROUP_NAME" : "'+LOG_GROUP_NAME+'",\n')
     createMonitor.write('"MONITOR_START_TIME" : "'+ starttime+'"}\n')
     createMonitor.close()
-    
+
     # Step 4: Create a log group for this app and date if one does not already exist
     logclient=boto3.client('logs')
     loggroupinfo=logclient.describe_log_groups(logGroupNamePrefix=LOG_GROUP_NAME)
@@ -451,13 +462,13 @@ def startCluster():
     if LOG_GROUP_NAME+'_perInstance' not in groupnames:
         logclient.create_log_group(logGroupName=LOG_GROUP_NAME+'_perInstance')
         logclient.put_retention_policy(logGroupName=LOG_GROUP_NAME+'_perInstance', retentionInDays=60)
-    
+
     # Step 5: update the ECS service to be ready to inject docker containers in EC2 instances
     print('Updating service')
     ecs = boto3.client('ecs')
     ecs.update_service(cluster=ECS_CLUSTER, service=APP_NAME+'Service', desiredCount=CLUSTER_MACHINES*TASKS_PER_MACHINE)
-    print('Service updated.') 
-    
+    print('Service updated.')
+
     # Step 6: Monitor the creation of the instances until all are present
     status = ec2client.describe_spot_fleet_instances(SpotFleetRequestId=requestInfo['SpotFleetRequestId'])
     #time.sleep(15) # This is now too fast, so sometimes the spot fleet request history throws an error!
@@ -477,7 +488,7 @@ def startCluster():
                         return
             ec2client.cancel_spot_fleet_requests(SpotFleetRequestIds=[requestInfo['SpotFleetRequestId']], TerminateInstances=True)
             return
-        
+
         # If everything seems good, just bide your time until you're ready to go
         print('.')
         time.sleep(20)
@@ -486,21 +497,21 @@ def startCluster():
     print('Spot fleet successfully created. Your job should start in a few minutes.')
 
 #################################
-# SERVICE 4: MONITOR JOB 
+# SERVICE 4: MONITOR JOB
 #################################
 
 def monitor(cheapest=False):
     if len(sys.argv) < 3:
         print('Use: run.py monitor spotFleetIdFile')
         sys.exit()
-    
+
     if '.json' not in sys.argv[2]:
         print('Use: run.py monitor spotFleetIdFile')
         sys.exit()
 
     if len(sys.argv) == 4:
         cheapest = sys.argv[3]
-    
+
     monitorInfo = loadConfig(sys.argv[2])
     monitorcluster=monitorInfo["MONITOR_ECS_CLUSTER"]
     monitorapp=monitorInfo["MONITOR_APP_NAME"]
@@ -508,17 +519,17 @@ def monitor(cheapest=False):
     queueId=monitorInfo["MONITOR_QUEUE_NAME"]
 
     ec2 = boto3.client('ec2')
-    cloud = boto3.client('cloudwatch') 
+    cloud = boto3.client('cloudwatch')
 
     # Optional Step 0 - decide if you're going to be cheap rather than fast. This means that you'll get 15 minutes
     # from the start of the monitor to get as many machines as you get, and then it will set the requested number to 1.
-    # Benefit: this will always be the cheapest possible way to run, because if machines die they'll die fast, 
-    # Potential downside- if machines are at low availability when you start to run, you'll only ever get a small number 
+    # Benefit: this will always be the cheapest possible way to run, because if machines die they'll die fast,
+    # Potential downside- if machines are at low availability when you start to run, you'll only ever get a small number
     # of machines (as opposed to getting more later when they become available), so it might take VERY long to run if that happens.
     if cheapest:
         queue = JobQueue(name=queueId)
         startcountdown = time.time()
-        while queue.pendingLoad(): 
+        while queue.pendingLoad():
             if time.time() - startcountdown > 900:
                 downscaleSpotFleet(queue, fleetId, ec2, manual=1)
                 break
@@ -527,7 +538,7 @@ def monitor(cheapest=False):
     # Step 1: Create job and count messages periodically
     queue = JobQueue(name=queueId)
     while queue.pendingLoad():
-        #Once an hour (except at midnight) check for terminated machines and delete their alarms.  
+        #Once an hour (except at midnight) check for terminated machines and delete their alarms.
         #This is slooooooow, which is why we don't just do it at the end
         curtime=datetime.datetime.now().strftime('%H%M')
         if curtime[-2:]=='00':
@@ -540,7 +551,7 @@ def monitor(cheapest=False):
         if curtime[-1:]=='9':
             downscaleSpotFleet(queue, fleetId, ec2)
         time.sleep(MONITOR_TIME)
-    
+
     # Step 2: When no messages are pending, stop service
     # Reload the monitor info, because for long jobs new fleets may have been started, etc
     monitorInfo = loadConfig(sys.argv[2])
@@ -550,7 +561,7 @@ def monitor(cheapest=False):
     queueId=monitorInfo["MONITOR_QUEUE_NAME"]
     bucketId=monitorInfo["MONITOR_BUCKET_NAME"]
     loggroupId=monitorInfo["MONITOR_LOG_GROUP_NAME"]
-    starttime=monitorInfo["MONITOR_START_TIME"]    
+    starttime=monitorInfo["MONITOR_START_TIME"]
 
     ecs = boto3.client('ecs')
     ecs.update_service(cluster=monitorcluster, service=monitorapp+'Service', desiredCount=0)
@@ -601,14 +612,14 @@ def monitor(cheapest=False):
     print('All export tasks done')
 
 #################################
-# MAIN USER INTERACTION 
+# MAIN USER INTERACTION
 #################################
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
         print('Use: run.py setup | submitJob | startCluster | monitor')
         sys.exit()
-    
+
     if sys.argv[1] == 'setup':
         setup()
     elif sys.argv[1] == 'submitJob':
