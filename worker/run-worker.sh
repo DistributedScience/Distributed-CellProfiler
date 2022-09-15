@@ -34,6 +34,7 @@ python3.8 instance-monitor.py &
 # 5. UPDATE AND/OR INSTALL PLUGINS
 if [[ ${UPDATE_PLUGINS} == 'True' ]]; then
     cd CellProfiler-plugins
+    git fetch --all
     git checkout ${PLUGINS_COMMIT}
     cd ..
 fi 
