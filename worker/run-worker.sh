@@ -35,12 +35,12 @@ python3.8 instance-monitor.py &
 if [[ ${UPDATE_PLUGINS} == 'True' ]]; then
     cd CellProfiler-plugins
     git fetch --all
-    git checkout ${PLUGINS_COMMIT}
+    git checkout ${PLUGINS_COMMIT} || echo "No such commit, branch, or version; failing here." & exit 1
     cd ..
 fi 
 if [[ ${INSTALL_REQUIREMENTS} == 'True' ]]; then
     cd CellProfiler-plugins
-    pip install -r ${REQUIREMENTS_FILE}
+    pip install -r ${REQUIREMENTS_FILE} || echo "Requirements file not present or install failed; failing here." & exit 1
     cd ..
 fi 
 
