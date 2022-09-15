@@ -42,3 +42,7 @@ NECESSARY_STRING = ''        #Is there any string that should be in the file nam
 
 # PLUGINS
 USE_PLUGINS = 'False'
+UPDATE_PLUGINS = 'False'
+PLUGINS_COMMIT = '' # What commit or version tag do you want to check out?
+INSTALL_REQUIREMENTS = 'False'
+REQUIREMENTS_FILE = '' # Path within the plugins repo to a requirements file

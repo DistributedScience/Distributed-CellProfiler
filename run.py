@@ -130,7 +130,23 @@ def generate_task_definition(AWS_PROFILE):
         {
             "name": "DOWNLOAD_FILES",
             "value": DOWNLOAD_FILES
-        }        
+        },
+                {
+            "name": "UPDATE_PLUGINS",
+            "value": str(UPDATE_PLUGINS)
+        },
+        {
+            "name": "PLUGINS_COMMIT",
+            "value": str(PLUGINS_COMMIT)
+        },
+        {
+            "name": "INSTALL_REQUIREMENTS",
+            "value": str(INSTALL_REQUIREMENTS)
+        },
+        {
+            "name": "REQUIREMENTS_FILE",
+            "value": str(REQUIREMENTS_FILE)
+        },          
     ]
     return task_definition
 

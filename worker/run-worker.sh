@@ -31,7 +31,22 @@ aws cloudwatch put-metric-alarm --alarm-name ${APP_NAME}_${MY_INSTANCE_ID} --ala
 
 python3.8 instance-monitor.py &
 
-# 5. RUN CP WORKERS
+# 5. UPDATE AND/OR INSTALL PLUGINS
+if [[ ${UPDATE_PLUGINS} == 'True' ]]; then
+    cd CellProfiler-plugins
+    git checkout ${PLUGINS_COMMIT}
+    cd ..
+fi 
+if [[ ${INSTALL_REQUIREMENTS} == 'True' ]]; then
+    cd CellProfiler-plugins
+    pip install -r ${REQUIREMENTS_FILE}
+    cd ..
+fi 
+
+#WORKDIR /home/ubuntu/CellProfiler-plugins
+#WORKDIR /home/ubuntu
+
+# 6. RUN CP WORKERS
 for((k=0; k<$DOCKER_CORES; k++)); do
     python3.8 cp-worker.py |& tee $k.out &
     sleep $SECONDS_TO_START
