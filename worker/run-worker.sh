@@ -44,9 +44,6 @@ if [[ ${INSTALL_REQUIREMENTS} == 'True' ]]; then
     cd ..
 fi 
 
-#WORKDIR /home/ubuntu/CellProfiler-plugins
-#WORKDIR /home/ubuntu
-
 # 6. RUN CP WORKERS
 for((k=0; k<$DOCKER_CORES; k++)); do
     python3.8 cp-worker.py |& tee $k.out &
