@@ -4,10 +4,11 @@ name: deploy-documentation
 on:
   push:
     branches:
-    - main
-    # Only run if edits in DS-documentation
+    - master
+    # Only run if edits in DS-documentation or
     paths:
     - documentation/DCP-documentation/**
+    - .github/workflows/deploy.yml
 
 # This job installs dependencies, builds the book, and pushes it to `gh-pages`
 jobs:
