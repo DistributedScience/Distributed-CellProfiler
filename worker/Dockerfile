@@ -38,7 +38,10 @@ RUN make install
 
 # Install AWS CLI
 
-RUN python3.8 -m pip install awscli
+RUN apt install unzip
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+RUN unzip awscliv2.zip
+RUN ./aws/install
 
 # Install boto3
 
