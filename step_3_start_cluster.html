@@ -1,0 +1,586 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Step 3: Start Cluster &#8212; Documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script async="async" kind="hypothesis" src="https://hypothes.is/embed.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="distributedscience.github.io/step_3_start_cluster.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Step 4: Monitor" href="step_4_monitor.html" />
+    <link rel="prev" title="Step 2: Submit Jobs" href="step_2_submit_jobs.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">Documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="overview.html">
+                    What is Distributed-CellProfiler?
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Running DCP
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_0_prep.html">
+   Step 0: Prep
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="step_1_configuration.html">
+   Step 1: Configuration
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="SQS_QUEUE_information.html">
+     SQS QUEUE Information
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_2_submit_jobs.html">
+   Step 2: Submit Jobs
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Step 3: Start Cluster
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_4_monitor.html">
+   Step 4: Monitor
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="advanced_configuration.html">
+   Advanced Configuration of DCP
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="AWS_hygiene_scripts.html">
+   AWS Hygiene Scripts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="troubleshooting_runs.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="versions.html">
+   Versions
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/issues/new?title=Issue%20on%20page%20%2Fstep_3_start_cluster.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/edit/main/DCP-documentation/step_3_start_cluster.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Edit this page"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="headerbtn__text-container">suggest edit</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/step_3_start_cluster.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#configuring-your-spot-fleet-request">
+   Configuring your spot fleet request
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parameters-that-must-be-configured-in-the-spot-fleet-in-dcp-1-but-not-current-versions">
+   Parameters that must be configured in the spot fleet in DCP 1 (but not current versions)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#to-run-in-a-region-where-a-spot-fleet-config-isn-t-available-or-is-out-of-date">
+   To run in a region where a spot fleet config isn’t available or is out of date:
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Step 3: Start Cluster</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#configuring-your-spot-fleet-request">
+   Configuring your spot fleet request
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#parameters-that-must-be-configured-in-the-spot-fleet-in-dcp-1-but-not-current-versions">
+   Parameters that must be configured in the spot fleet in DCP 1 (but not current versions)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#to-run-in-a-region-where-a-spot-fleet-config-isn-t-available-or-is-out-of-date">
+   To run in a region where a spot fleet config isn’t available or is out of date:
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="step-3-start-cluster">
+<h1>Step 3: Start Cluster<a class="headerlink" href="#step-3-start-cluster" title="Permalink to this headline">#</a></h1>
+<p>After your jobs have been submitted to the queue, it is time to start your cluster.
+Once you have configured your spot fleet request per the instructions below, you may run
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">startCluster</span> <span class="pre">files/{YourFleetFile}.json</span></code></p>
+<p>When you enter this command, the following things will happen (in this order):</p>
+<ul class="simple">
+<li><p>Your spot fleet request will be sent to AWS.
+Depending on their capacity and the price that you bid, it can take anywhere from a couple of minutes to several hours for your machines to be ready.</p></li>
+<li><p>Distributed-CellProfiler will create the APP_NAMESpotFleetRequestId.json file, which will allow you to <a class="reference internal" href="step_4_monitor.html"><span class="doc std std-doc">start your progress monitor</span></a>.
+This will allow you to walk away and just let things run even if your spot fleet won’t be ready for some time.</p></li>
+</ul>
+<p>Once the spot fleet is ready:</p>
+<ul class="simple">
+<li><p>Distributed-CellProfiler will create the log groups (if they don’t already exist) for your log streams to go in.</p></li>
+<li><p>Distributed-CellProfiler will ask AWS to place Docker containers onto the instances in your spot fleet.
+Your job will begin shortly!</p></li>
+</ul>
+<hr class="docutils" />
+<section id="configuring-your-spot-fleet-request">
+<h2>Configuring your spot fleet request<a class="headerlink" href="#configuring-your-spot-fleet-request" title="Permalink to this headline">#</a></h2>
+<p>Definition of many of these terms and explanations of many of the individual configuration parameters of spot fleets are covered in AWS documentation <a class="reference external" href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet.html">here</a> and <a class="reference external" href="http://docs.aws.amazon.com/cli/latest/reference/ec2/request-spot-fleet.html">here</a>.
+You may also configure your spot fleet request through Amazon’s web interface and simply download the JSON file at the “review” page to generate the configuration file you want, though we do not recommend this as Distributed-CellProfiler assumes a certain fleet request structure and has only been tested on certain Amazon AMI’s.
+Looking at the output of this automatically generated spot fleet request can be useful though for obtaining values like your VPC’s subnet and security groups, as well the ARN ID’s of your roles.</p>
+<p>Among the parameters you should/must update:</p>
+<ul class="simple">
+<li><p><strong>The IamFleetRole, IamInstanceProfile, KeyName, SubnetId, and Groups:</strong> These are account specific and you will configure these based on the <a class="reference internal" href="step_0_prep.html"><span class="doc std std-doc">previous setup work that you did</span></a>.
+Once you’ve created your first complete spot fleet request, you can save a copy as a local template so that you don’t have to look these up every time.</p>
+<ul>
+<li><p>The KeyName used here should be the same used in your config file but <strong>without</strong> the <code class="docutils literal notranslate"><span class="pre">.pem</span></code> extension.</p></li>
+</ul>
+</li>
+<li><p><strong>ImageId and SnapshotId</strong> These refer to the OS and pre-installed programming that will be used by your spot fleet instances, and are both AWS region specific.
+We use the Amazon ECS-Optimized Amazon Linux AMI; but the Linux 2 AMI also seems to work in our limited testing.
+If there is no template fleet file for your region, or the one here is too out-of-date, see below for instructions on configuring these options yourselves.
+If you have a good working configuration for a region that isn’t represented or for a more up-to-date version of the AMI than we’ve had time to test, please feel free to create a pull request and we’ll include it in the repo!</p></li>
+</ul>
+</section>
+<section id="parameters-that-must-be-configured-in-the-spot-fleet-in-dcp-1-but-not-current-versions">
+<h2>Parameters that must be configured in the spot fleet in DCP 1 (but not current versions)<a class="headerlink" href="#parameters-that-must-be-configured-in-the-spot-fleet-in-dcp-1-but-not-current-versions" title="Permalink to this headline">#</a></h2>
+<p>These parameters were present in the spot fleet request in first version of DCP but not subsequent versions.
+We provide the information here because we have not officially deprecated DCP 1, however we strongly encourage you to use a more updated version.</p>
+<ul class="simple">
+<li><p><strong>ValidFrom and ValidTo:</strong>  These should be set such that the current date is between them, and no more than 1 year apart.</p></li>
+<li><p><strong>TargetCapacity:</strong>  The number of instances you want.
+You must make sure it aligns with the specifications from your (config file)[step_1_configuration.md.</p></li>
+<li><p><strong>InstanceType:</strong> The type of instances you want.
+You must make sure it aligns with the specifications from your (config file)[step_1_configuration.md.</p></li>
+<li><p><strong>SpotPrice:</strong> The maximum price per hour you’re willing to pay for each instance.<br />
+AWS has a handy <a class="reference external" href="https://console.aws.amazon.com/ec2sp/v1/spot/home">price history tracker</a> you can use to make a reasonable estimate of how much to bid.
+If your jobs complete quickly and/or you don’t need the data immediately you can reduce your bid accordingly.
+Jobs that may take many hours to finish or that you need results from immediately may justify a higher bid.</p></li>
+</ul>
+</section>
+<section id="to-run-in-a-region-where-a-spot-fleet-config-isn-t-available-or-is-out-of-date">
+<h2>To run in a region where a spot fleet config isn’t available or is out of date:<a class="headerlink" href="#to-run-in-a-region-where-a-spot-fleet-config-isn-t-available-or-is-out-of-date" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>Under EC2 -&gt; Instances select “Launch Instance”</p></li>
+</ul>
+<p><img alt="Launch Instance" src="_images/Launch.jpg" /></p>
+<ul class="simple">
+<li><p>Search “ECS”, then choose the “Amazon ECS-Optimized Amazon Linux AMI”</p></li>
+</ul>
+<p><img alt="Select ECS-Optimized" src="_images/ECS.jpg" /></p>
+<ul class="simple">
+<li><p>Select Continue, then select any instance type (we’re going to kill this after a few seconds) and click “Next: Configure Instance Details”</p></li>
+<li><p>Choose a network and subnet in the region you wish to launch instances in, and then click “Next: Add Storage”</p></li>
+</ul>
+<p><img alt="Set Network and Subnet" src="_images/Network.jpg" /></p>
+<ul class="simple">
+<li><p>On the “Add Storage” page, note down the Snapshot column for the Root volume- this is your SnapshotId.
+Click “Review and Launch”</p></li>
+</ul>
+<p><img alt="Get SnapshotId" src="_images/Snapshot.jpg" /></p>
+<ul class="simple">
+<li><p>Click “Launch”, and then select any key pair (again, we’ll be killing this in a few seconds)</p></li>
+<li><p>Once your instance has launched, click its link from the launch page.</p></li>
+</ul>
+<p><img alt="Click InstanceID" src="_images/InstanceID.jpg" /></p>
+<ul class="simple">
+<li><p>In the list of information on the instance, find and note its AMI ID - this is your ImageId</p></li>
+</ul>
+<p><img alt="Get the AMI ID" src="_images/AMIID.jpg" /></p>
+<ul class="simple">
+<li><p>Terminate the instance</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="step_2_submit_jobs.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Step 2: Submit Jobs</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="step_4_monitor.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Step 4: Monitor</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Broad Institute<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

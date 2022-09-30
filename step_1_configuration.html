@@ -1,0 +1,691 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Step 1: Configuration &#8212; Documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script async="async" kind="hypothesis" src="https://hypothes.is/embed.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="distributedscience.github.io/step_1_configuration.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="SQS QUEUE Information" href="SQS_QUEUE_information.html" />
+    <link rel="prev" title="Step 0: Prep" href="step_0_prep.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">Documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="overview.html">
+                    What is Distributed-CellProfiler?
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Running DCP
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_0_prep.html">
+   Step 0: Prep
+  </a>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="current reference internal" href="#">
+   Step 1: Configuration
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="SQS_QUEUE_information.html">
+     SQS QUEUE Information
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_2_submit_jobs.html">
+   Step 2: Submit Jobs
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_3_start_cluster.html">
+   Step 3: Start Cluster
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_4_monitor.html">
+   Step 4: Monitor
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="advanced_configuration.html">
+   Advanced Configuration of DCP
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="AWS_hygiene_scripts.html">
+   AWS Hygiene Scripts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="troubleshooting_runs.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="versions.html">
+   Versions
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/issues/new?title=Issue%20on%20page%20%2Fstep_1_configuration.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/edit/main/DCP-documentation/step_1_configuration.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Edit this page"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="headerbtn__text-container">suggest edit</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/step_1_configuration.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#components-of-the-config-file">
+   Components of the config file
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#aws-general-settings">
+     AWS GENERAL SETTINGS
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ec2-and-ecs-information">
+     EC2 AND ECS INFORMATION
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#docker-instance-running-environment">
+     DOCKER INSTANCE RUNNING ENVIRONMENT
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#sqs-queue-information">
+     SQS QUEUE INFORMATION
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#log-group-information">
+     LOG GROUP INFORMATION
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#redundancy-checks">
+     REDUNDANCY CHECKS
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#plugins">
+     PLUGINS
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-configurations">
+     EXAMPLE CONFIGURATIONS
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Step 1: Configuration</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#components-of-the-config-file">
+   Components of the config file
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#aws-general-settings">
+     AWS GENERAL SETTINGS
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ec2-and-ecs-information">
+     EC2 AND ECS INFORMATION
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#docker-instance-running-environment">
+     DOCKER INSTANCE RUNNING ENVIRONMENT
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#sqs-queue-information">
+     SQS QUEUE INFORMATION
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#log-group-information">
+     LOG GROUP INFORMATION
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#redundancy-checks">
+     REDUNDANCY CHECKS
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#plugins">
+     PLUGINS
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-configurations">
+     EXAMPLE CONFIGURATIONS
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="step-1-configuration">
+<h1>Step 1: Configuration<a class="headerlink" href="#step-1-configuration" title="Permalink to this headline">#</a></h1>
+<p>The first step in setting up any job is editing the values in the config.py file.
+Once the config file is created, simply type <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">setup</span></code> to set up your resources based on the configurations you’ve specified.</p>
+<hr class="docutils" />
+<section id="components-of-the-config-file">
+<h2>Components of the config file<a class="headerlink" href="#components-of-the-config-file" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p><strong>APP_NAME:</strong> This will be used to tie your clusters, tasks, services, logs, and alarms together.
+It need not be unique, but it should be descriptive enough that you can tell jobs apart if you’re running multiple analyses (i.e. “NuclearSegmentation_Drosophila” is better than “CellProfiler”).</p></li>
+</ul>
+<hr class="docutils" />
+<ul class="simple">
+<li><p><strong>DOCKERHUB_TAG:</strong> This is the encapsulated version of your software your analyses will be running.</p></li>
+</ul>
+<hr class="docutils" />
+<section id="aws-general-settings">
+<h3>AWS GENERAL SETTINGS<a class="headerlink" href="#aws-general-settings" title="Permalink to this headline">#</a></h3>
+<p>These are settings that will allow your instances to be configured correctly and access the resources they need- see <a class="reference internal" href="step_0_prep.html"><span class="doc std std-doc">Step 0: Prep</span></a> for more information.</p>
+</section>
+<hr class="docutils" />
+<section id="ec2-and-ecs-information">
+<h3>EC2 AND ECS INFORMATION<a class="headerlink" href="#ec2-and-ecs-information" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p><strong>ECS_CLUSTER:</strong> Which ECS cluster you’d like the jobs to go into.
+All AWS accounts come with a “default” cluster, but you may add more clusters if you like.
+Distinct clusters for each job are not necessary, but if you’re running multiple analyses at once it can help avoid the wrong Docker containers (such as the ones for your “NuclearSegmentation_Drosophila” job) going to the wrong instances (such as the instances that are part of your “NuclearSegmentation_HeLa” spot fleet).</p></li>
+<li><p><strong>CLUSTER_MACHINES:</strong> How many EC2 instances you want to have in your cluster.</p></li>
+<li><p><strong>TASKS_PER_MACHINE:</strong> How many Docker containers to place on each machine.</p></li>
+<li><p><strong>MACHINE_TYPE:</strong> A list of what type(s) of machines your spot fleet should contain.</p></li>
+<li><p><strong>MACHINE_PRICE:</strong> How much you’re willing to pay per hour for each machine launched.
+AWS has a handy <a class="reference external" href="https://console.aws.amazon.com/ec2sp/v1/spot/home">price history tracker</a> you can use to make a reasonable estimate of how much to bid.
+If your jobs complete quickly and/or you don’t need the data immediately you can reduce your bid accordingly; jobs that may take many hours to finish or that you need results from immediately may justify a higher bid.</p></li>
+<li><p><strong>EBS_VOL_SIZE:</strong> The size of the temporary hard drive associated with each EC2 instance in GB.
+The minimum allowed is 22.
+If you have multiple Dockers running per machine, each Docker will have access to (EBS_VOL_SIZE/TASKS_PER_MACHINE)- 2 GB of space.</p></li>
+<li><p><strong>DOWNLOAD_FILES:</strong> Whether or not to download the image files to the EBS volume before processing, as opposed to accessing them all from S3FS.
+This typically requires a larger EBS volume (depending on the size of your image sets, and how many sets are processed per group), but avoids occasional issues with S3FS that can crop up on longer runs.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="docker-instance-running-environment">
+<h3>DOCKER INSTANCE RUNNING ENVIRONMENT<a class="headerlink" href="#docker-instance-running-environment" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p><strong>DOCKER_CORES:</strong> How many copies of your script to run in each Docker container.</p></li>
+<li><p><strong>CPU_SHARES:</strong> How many CPUs each Docker container may have.</p></li>
+<li><p><strong>MEMORY:</strong> How much memory each Docker container may have.</p></li>
+<li><p><strong>SECONDS_TO_START:</strong> The time each Docker core will wait before it starts another copy of your software.
+This can safely be set to 0 for workflows that don’t require much memory or execute quickly; for slower and/or more memory intensive pipelines we advise you to space them out by roughly the length of your most memory intensive step to make sure your software doesn’t crash due to lack of memory.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="sqs-queue-information">
+<h3>SQS QUEUE INFORMATION<a class="headerlink" href="#sqs-queue-information" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p><strong>SQS_QUEUE_NAME:</strong> The name of the queue where all of your jobs will be sent.</p></li>
+<li><p><strong>SQS_MESSAGE_VISIBILITY:</strong> How long each job is hidden from view before being allowed to be tried again.
+We recommend setting this to slightly longer than the average amount of time it takes an individual job to process- if you set it too short, you may waste resources doing the same job multiple times; if you set it too long, your instances may have to wait around a long while to access a job that was sent to an instance that stalled or has since been terminated.</p></li>
+<li><p><strong>SQS_DEAD_LETTER_QUEUE:</strong> The name of the queue to send jobs to if they fail to process correctly multiple times; this keeps a single bad job (such as one where a single file has been corrupted) from keeping your cluster active indefinitely.
+See <span class="xref myst">Step 0: Prep</span> for more information.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="log-group-information">
+<h3>LOG GROUP INFORMATION<a class="headerlink" href="#log-group-information" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p><strong>LOG_GROUP_NAME:</strong> The name to give the log group that will monitor the progress of your jobs and allow you to check performance or look for problems after the fact.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="redundancy-checks">
+<h3>REDUNDANCY CHECKS<a class="headerlink" href="#redundancy-checks" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p><strong>CHECK_IF_DONE_BOOL:</strong> Whether or not to check the output folder before proceeding.
+Case-insensitive.
+If an analysis fails partway through (due to some of the files being in the wrong place, an AWS outage, a machine crash, etc.), setting this to ‘True’ this allows you to resubmit the whole analysis but only reprocess jobs that haven’t already been done.
+This saves you from having to try to parse exactly which jobs succeeded vs failed or from having to pay to rerun the entire analysis.
+If your software determines the correct number of files are already in the output folder it will designate that job as completed and move onto the next one.
+If you actually do want to overwrite files that were previously generated (such as when you have improved a pipeline and no longer want the output of the old version), set this to ‘False’ to process jobs whether or not there are already files in the output folder.</p></li>
+<li><p><strong>EXPECTED_NUMBER_FILES:</strong> How many files need to be in the output folder in order to mark a job as completed.</p></li>
+<li><p><strong>MIN_FILE_SIZE_BYTES:</strong> What is the minimal number of bytes an object should be to “count”?
+Useful when trying to detect jobs that may have exported smaller corrupted files vs larger, full-size files.</p></li>
+<li><p><strong>NECESSARY_STRING:</strong> This allows you to optionally set a string that must be included in your file to count towards the total in EXPECTED_NUMBER_FILES.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="plugins">
+<h3>PLUGINS<a class="headerlink" href="#plugins" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p><strong>USE_PLUGINS:</strong> Whether or not you will be using external plugins from the CellProfiler-plugins repository.</p></li>
+<li><p><strong>UPDATE_PLUGINS:</strong> Whether or not to update the plugins repository before use.
+(i.e. run <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">fetch</span> <span class="pre">--all</span></code> on CellProfiler-plugins)</p></li>
+<li><p><strong>PLUGINS_COMMIT:</strong> What commit or version tag to check out.
+Used in the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">PLUGINS_COMMIT</span></code> command in CellProfiler-plugins.</p></li>
+<li><p><strong>INSTALL_REQUIREMENTS:</strong> Whether or not to install requirements associate with plugins.</p></li>
+<li><p><strong>REQUIREMENTS_FILE:</strong> A path within the CellProfiler-plugins repository to the requirements file you would like to install.
+Used in the <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">REQUIREMENTS_FILE</span></code> command.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="example-configurations">
+<h3>EXAMPLE CONFIGURATIONS<a class="headerlink" href="#example-configurations" title="Permalink to this headline">#</a></h3>
+<p>!(Sample_Distributed-CellProfiler_Configuration_1)[images/sample_DCP_config_1.png]</p>
+<p>This is an example of one possible configuration.
+It’s a fairly large machine that is able to process 64 jobs at the same time.</p>
+<p>The Config settings for this example are:<br />
+<strong>TASKS_PER_MACHINE</strong> = 16  (number of Dockers)<br />
+<strong>EBS_VOL_SIZE</strong> = 165
+<strong>MACHINE_TYPE</strong> = [‘m4.16xlarge’]</p>
+<p><strong>DOCKER_CORES</strong> = 4        (copies of CellProfiler to run inside a docker)<br />
+<strong>CPU_SHARES</strong> = 4096       (number of cores for each Docker * 1024)<br />
+<strong>MEMORY</strong> = 15000          (MB for each Docker)</p>
+<p>!(Sample_Distributed-CellProfiler_Configuration_2)[images/sample_DCP_config_2.png]</p>
+<p>This is an example of another possible configuration.
+When we run Distributed CellProfiler we tend to prefer running a larger number of smaller machine.
+This is an example of a configuration we often use.
+We might use a spot fleet of 100 of these machines (<strong>CLUSTER_MACHINES</strong> = 100).</p>
+<p>The Config settings for this example are:<br />
+<strong>TASKS_PER_MACHINE</strong> = 1   (number of Dockers)<br />
+<strong>EBS_VOL_SIZE</strong> = 22<br />
+<strong>MACHINE_TYPE</strong> = [‘m4.xlarge’]</p>
+<p><strong>DOCKER_CORES</strong> = 4        (copies of CellProfiler to run inside a docker)<br />
+<strong>CPU_SHARES</strong> = 4096       (number of cores for each Docker * 1024)<br />
+<strong>MEMORY</strong> = 15000          (MB for each Docker)</p>
+</section>
+</section>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="step_0_prep.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Step 0: Prep</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="SQS_QUEUE_information.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">SQS QUEUE Information</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Broad Institute<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

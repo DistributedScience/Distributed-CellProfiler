@@ -1,0 +1,557 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Step 2: Submit Jobs &#8212; Documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script async="async" kind="hypothesis" src="https://hypothes.is/embed.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="distributedscience.github.io/step_2_submit_jobs.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Step 3: Start Cluster" href="step_3_start_cluster.html" />
+    <link rel="prev" title="SQS QUEUE Information" href="SQS_QUEUE_information.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">Documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="overview.html">
+                    What is Distributed-CellProfiler?
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Running DCP
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_0_prep.html">
+   Step 0: Prep
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="step_1_configuration.html">
+   Step 1: Configuration
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="SQS_QUEUE_information.html">
+     SQS QUEUE Information
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Step 2: Submit Jobs
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_3_start_cluster.html">
+   Step 3: Start Cluster
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_4_monitor.html">
+   Step 4: Monitor
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="advanced_configuration.html">
+   Advanced Configuration of DCP
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="AWS_hygiene_scripts.html">
+   AWS Hygiene Scripts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="troubleshooting_runs.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="versions.html">
+   Versions
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/issues/new?title=Issue%20on%20page%20%2Fstep_2_submit_jobs.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/edit/main/DCP-documentation/step_2_submit_jobs.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Edit this page"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="headerbtn__text-container">suggest edit</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/step_2_submit_jobs.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#configuring-your-job-file">
+   Configuring your job file
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#alternate-job-submission-run-batch-general-py">
+   Alternate job submission: run_batch_general.py
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Step 2: Submit Jobs</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#configuring-your-job-file">
+   Configuring your job file
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#alternate-job-submission-run-batch-general-py">
+   Alternate job submission: run_batch_general.py
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="step-2-submit-jobs">
+<h1>Step 2: Submit Jobs<a class="headerlink" href="#step-2-submit-jobs" title="Permalink to this headline">#</a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">#</a></h2>
+<p>Distributed-CellProfiler works by breaking your analysis into a series of smaller jobs based on the metadata and groupings you’ve specified in your pipeline.
+The choice of how to group your images is largely dependent on the details of your experiment.
+For example, pipelines to create <a class="reference external" href="http://onlinelibrary.wiley.com/doi/10.1111/jmi.12178/full">illumination correction functions</a> are usually run on a per-plate basis, while pipelines with a large number of memory intensive measurement steps such as <a class="reference external" href="http://www.nature.com/nprot/journal/v11/n9/full/nprot.2016.105.html">CellPainting</a> are grouped based on plate, well, and site so that each node only analyzes one site at a time.</p>
+<p>Once you’ve decided on a grouping, you’re ready to start configuring your job file.
+Once your job file is configured, simply use <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">submitJob</span> <span class="pre">files/{YourJobFile}.json</span></code> to send all the jobs to the SQS queue <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">specified in your config file</span></a>.</p>
+<hr class="docutils" />
+<p><strong>Distributed-CellProfiler only works for pipelines with extracted metadata and specified groupings and which use the LoadData OR on h5 containers created by the CreateBatchFiles module</strong>, though we hope to add support for file-lists in the future.
+See <a class="reference external" href="https://github.com/CellProfiler/CellProfiler/wiki/Adapting-CellProfiler-to-a-LIMS-environment">this page</a> for more information about running CellProfiler headless with file-lists versus LoadData CSVs.</p>
+<p><strong>The grouping specified in your pipeline MUST match what you specify here in order to successfully run jobs.</strong></p>
+<p>Due to CellProfiler’s image-loading mechanisms, experiments with &gt;10,000 image sites can begin to suffer from decreased performance.
+Breaking such experiments down into a number of smaller CSVs may increase your processing throughput.<br />
+If using LoadData, make sure your “Base image location” is set to “None”.</p>
+</section>
+<hr class="docutils" />
+<section id="configuring-your-job-file">
+<h2>Configuring your job file<a class="headerlink" href="#configuring-your-job-file" title="Permalink to this headline">#</a></h2>
+<ul>
+<li><p><strong>pipeline:</strong> The path to your pipeline file.</p></li>
+<li><p><strong>data_file:</strong> The path to your CSV.<br />
+At a minimum, this CSV should contain PathName_{NameOfChannel} and FileName_{NameOfChannel} columns for each of your channels, as well as Metadata_{PieceOfMetadata} for each kind of metadata being used to group your image sets.<br />
+You can create this CSV yourself via your favorite scripting language or by using the Images, Metadata, and NamesAndTypes modules in CellProfiler to generate image sets then using the Export-&gt;Image Set Listing command.<br />
+Some users have reported issues with using relative paths in the PathName columns; using absolute paths beginning with <code class="docutils literal notranslate"><span class="pre">/home/ubuntu/bucket/{relativepath}</span></code> may increase your odds of success.</p></li>
+<li><p><strong>input:</strong> The path to your default input directory.
+This is not necessary for every pipeline but can be helpful when non-image files are needed in the pipeline (such as a text file containing quality control rules for the FlagImage module).
+DO NOT set this to a large directory, or CellProfiler will try to scan the entire thing before running your pipeline.</p></li>
+<li><p><strong>output:</strong> The top output directory you’d like your files placed in.</p></li>
+<li><p><strong>output_structure:</strong> By default, Distributed-CellProfiler will put your output in subfolders created by hyphenating all your Metadata entries (see below) in order (e.g. if the individual group being processed was <code class="docutils literal notranslate"><span class="pre">{&quot;Metadata&quot;:</span> <span class="pre">&quot;Metadata_Plate=Plate1,Metadata_Well=A01&quot;}</span></code>, the output would be placed in <code class="docutils literal notranslate"><span class="pre">output_top_directory/Plate1-A01</span></code>.)
+If you’d like a different folder structure, you may designate one here (e.g. if you set <code class="docutils literal notranslate"><span class="pre">&quot;output_structure&quot;:</span> <span class="pre">&quot;Metadata_Plate/Metadata_Well&quot;</span></code> then the previous example would output to <code class="docutils literal notranslate"><span class="pre">output_top_directory/Plate1/A01</span></code>.
+This setting is optional.
+Job files that don’t include it will use the default structure.</p></li>
+<li><p><strong>groups:</strong> The list of all the groups of images you’d like to process.
+For large numbers of groups, it may be helpful to create this list separately as a .txt file you can then append into the job’s JSON file.
+You may create this yourself in your favorite scripting language.
+Alternatively, you can use the following additional tools to help you create and format this list:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">batches.sh</span></code> allows you to provide a list of all the individual metadata components (plates, columns, rows, etc).
+It then uses <a class="reference external" href="https://www.gnu.org/software/parallel/parallel_tutorial.html">GNU parallel</a> to create a formatted text file with all the possible combinations of the components you provided.
+This approach is best when you have a large number of groups and the group structure is uniform.</p>
+<p>Example: for a 96-well plate experiment where one there are 3 plates and the experiment is grouped by Plate and Well, <code class="docutils literal notranslate"><span class="pre">batches.sh</span></code> would read:
+<code class="docutils literal notranslate"><span class="pre">parallel</span> <span class="pre">echo</span> <span class="pre">'{\&quot;Metadata\&quot;:</span> <span class="pre">\&quot;Metadata_Plate={1},Metadata_Well={2}{3}\&quot;},'</span> <span class="pre">:::</span> <span class="pre">Plate1</span> <span class="pre">Plate2</span> <span class="pre">Plate3</span> <span class="pre">:::</span> <span class="pre">A</span> <span class="pre">B</span> <span class="pre">C</span> <span class="pre">D</span> <span class="pre">E</span> <span class="pre">F</span> <span class="pre">G</span> <span class="pre">H</span> <span class="pre">:::</span> <span class="pre">01</span> <span class="pre">02</span> <span class="pre">03</span> <span class="pre">04</span> <span class="pre">05</span> <span class="pre">06</span> <span class="pre">07</span> <span class="pre">08</span> <span class="pre">09</span> <span class="pre">10</span> <span class="pre">11</span> <span class="pre">12</span> <span class="pre">|</span> <span class="pre">sort</span> <span class="pre">&gt;</span> <span class="pre">batches.txt</span></code></p>
+</li>
+<li><p>You may also use the list of groupings created by calling <code class="docutils literal notranslate"><span class="pre">cellprofiler</span> <span class="pre">--print-groups</span></code> from the command line (see <a class="reference external" href="https://github.com/CellProfiler/CellProfiler/wiki/Adapting-CellProfiler-to-a-LIMS-environment#cmd">here</a> and <a class="reference external" href="https://github.com/CellProfiler/Distributed-CellProfiler/issues/52">here</a> for more information).<br />
+Note that for job files that specify groupings in this way, the <code class="docutils literal notranslate"><span class="pre">output_structure</span></code> variable is NOT optional - it must be specified or an error will be returned.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="alternate-job-submission-run-batch-general-py">
+<h2>Alternate job submission: run_batch_general.py<a class="headerlink" href="#alternate-job-submission-run-batch-general-py" title="Permalink to this headline">#</a></h2>
+<p>We also support an alternate second path besides <code class="docutils literal notranslate"><span class="pre">submitJobs</span></code> to create the list of jobs - the <code class="docutils literal notranslate"><span class="pre">run_batch_general.py</span></code> file.
+This file essentially serves as a “shortcut” to run many common types of stereotyped experiments we run in our lab.
+Essentially, if your data follows a regular structure (such as N rows, N columns, N grouping, a particular structure for output, etc.), you may find it useful to take and modify this file for your own usage.<br />
+We recommend new users use the <code class="docutils literal notranslate"><span class="pre">submitJobs</span></code> pathway, as it will help users understand the kinds of information Distributed-CellProfiler needs in order to run properly, but once they are comfortable with it they may find <code class="docutils literal notranslate"><span class="pre">run_batch_general.py</span></code> helps them create jobs faster in the future.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="SQS_QUEUE_information.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">SQS QUEUE Information</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="step_3_start_cluster.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Step 3: Start Cluster</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Broad Institute<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

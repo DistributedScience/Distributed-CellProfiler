@@ -1,0 +1,623 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>What is Distributed-CellProfiler? &#8212; Documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script async="async" kind="hypothesis" src="https://hypothes.is/embed.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="distributedscience.github.io/overview.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Step 0: Prep" href="step_0_prep.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">Documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1 current active">
+                <a class="reference internal" href="#">
+                    What is Distributed-CellProfiler?
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Running DCP
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_0_prep.html">
+   Step 0: Prep
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="step_1_configuration.html">
+   Step 1: Configuration
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="SQS_QUEUE_information.html">
+     SQS QUEUE Information
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_2_submit_jobs.html">
+   Step 2: Submit Jobs
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_3_start_cluster.html">
+   Step 3: Start Cluster
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_4_monitor.html">
+   Step 4: Monitor
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="advanced_configuration.html">
+   Advanced Configuration of DCP
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="AWS_hygiene_scripts.html">
+   AWS Hygiene Scripts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="troubleshooting_runs.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="versions.html">
+   Versions
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/issues/new?title=Issue%20on%20page%20%2Foverview.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/edit/main/DCP-documentation/overview.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Edit this page"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="headerbtn__text-container">suggest edit</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/overview.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#why-would-i-want-to-use-this">
+   Why would I want to use this?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-do-i-need-to-have-to-run-this">
+   What do I need to have to run this?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-happens-in-aws-when-i-run-distributed-cellprofiler">
+   What happens in AWS when I run Distributed-CellProfiler?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-does-this-look-like">
+   What does this look like?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#how-do-i-determine-my-configuration">
+   How do I determine my configuration?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#can-i-contribute-code-to-distributed-cellprofiler">
+   Can I contribute code to Distributed-CellProfiler?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#who-made-this">
+   Who made this?
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>What is Distributed-CellProfiler?</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#why-would-i-want-to-use-this">
+   Why would I want to use this?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-do-i-need-to-have-to-run-this">
+   What do I need to have to run this?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-happens-in-aws-when-i-run-distributed-cellprofiler">
+   What happens in AWS when I run Distributed-CellProfiler?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-does-this-look-like">
+   What does this look like?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#how-do-i-determine-my-configuration">
+   How do I determine my configuration?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#can-i-contribute-code-to-distributed-cellprofiler">
+   Can I contribute code to Distributed-CellProfiler?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#who-made-this">
+   Who made this?
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="what-is-distributed-cellprofiler">
+<h1>What is Distributed-CellProfiler?<a class="headerlink" href="#what-is-distributed-cellprofiler" title="Permalink to this headline">#</a></h1>
+<p>Distributed-CellProfiler is a series of scripts designed to help you run a Dockerized version of CellProfiler on <a class="reference external" href="https://aws.amazon.com/">Amazon Web Services</a> (AWS) using AWS’s file storage and computing systems.</p>
+<ul class="simple">
+<li><p>Data is stored in S3 buckets.</p></li>
+<li><p>Software is run on “Spot Fleets” of computers (or instances) in the cloud.</p></li>
+</ul>
+<section id="why-would-i-want-to-use-this">
+<h2>Why would I want to use this?<a class="headerlink" href="#why-would-i-want-to-use-this" title="Permalink to this headline">#</a></h2>
+<p>Using AWS allows you to create a flexible, on-demand computing infrastructure where you only have to pay for the resources you use.
+This can give you access to far more computing power than you may have available at your home institution, which is great when you have large datasets to process.</p>
+<p>Each piece of the infrastructure has to be added and configured separately, which can be time-consuming and confusing.</p>
+<p>Distributed-CellProfiler tries to leverage the power of the former, while minimizing the problems of the latter.</p>
+</section>
+<section id="what-do-i-need-to-have-to-run-this">
+<h2>What do I need to have to run this?<a class="headerlink" href="#what-do-i-need-to-have-to-run-this" title="Permalink to this headline">#</a></h2>
+<p>Essentially all you need to run Distributed-CellProfiler is an AWS account and a terminal program; see our <a class="reference internal" href="step_0_prep.html"><span class="doc std std-doc">page on getting set up</span></a> for all the specific steps you’ll need to take.</p>
+</section>
+<section id="what-happens-in-aws-when-i-run-distributed-cellprofiler">
+<h2>What happens in AWS when I run Distributed-CellProfiler?<a class="headerlink" href="#what-happens-in-aws-when-i-run-distributed-cellprofiler" title="Permalink to this headline">#</a></h2>
+<p>The steps for actually running the Distributed-CellProfiler code are outlined in the repository <a class="reference external" href="https://github.com/DistributedScience/Distributed-CellProfiler/blob/master/README.md">README</a>, and details of the parameters you set in each step are on their respective Documentation pages (<a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">Step 1: Config</span></a>, <a class="reference internal" href="step_2_submit_jobs.html"><span class="doc std std-doc">Step 2: Jobs</span></a>, <a class="reference internal" href="step_3_start_cluster.html"><span class="doc std std-doc">Step 3: Fleet</span></a>, and optional <a class="reference internal" href="step_4_monitor.html"><span class="doc std std-doc">Step 4: Monitor</span></a>).
+We’ll give an overview of what happens in AWS at each step here and explain what AWS does automatically once you have it set up.</p>
+<p><strong>Step 1</strong>:
+In the Config file you set quite a number of specifics that are used by EC2, ECS, SQS, and in making Dockers.
+When you run <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python3</span> <span class="pre">run.py</span> <span class="pre">setup</span></code> to execute the Config, it does three major things:</p>
+<ul class="simple">
+<li><p>Creates task definitions.
+These are found in ECS.
+They define the configuration of the Dockers and include the settings you gave for <strong>CHECK_IF_DONE_BOOL</strong>, <strong>DOCKER_CORES</strong>, <strong>EXPECTED_NUMBER_FILES</strong>, and <strong>MEMORY</strong>.</p></li>
+<li><p>Makes a queue in SQS (it is empty at this point) and sets a dead-letter queue.</p></li>
+<li><p>Makes a service in ECS which defines how many Dockers you want.</p></li>
+</ul>
+<p><strong>Step 2</strong>:
+In the Job file you set the location of any inputs (e.g. data and batch-specific scripts) and outputs.
+Additionally, you list all of the individual tasks that you want run.
+When you submit the Job file it adds that list of tasks to the queue in SQS (which you made in the previous step).
+Submit jobs with <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python3</span> <span class="pre">run.py</span> <span class="pre">submitJob</span></code>.</p>
+<p><strong>Step 3</strong>:
+In the Config file you set the number and size of the EC2 instances you want.
+This information, along with account-specific configuration in the Fleet file is used to start the fleet with <code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">python3</span> <span class="pre">run.py</span> <span class="pre">startCluster</span></code>.</p>
+<p><strong>After these steps are complete, a number of things happen automatically</strong>:</p>
+<ul class="simple">
+<li><p>ECS puts Docker containers onto EC2 instances.
+If there is a mismatch within your Config file and the Docker is larger than the instance it will not be placed.
+ECS will keep placing Dockers onto an instance until it is full, so if you accidentally create instances that are too large you may end up with more Dockers placed on it than intended.
+This is also why you may want multiple <strong>ECS_CLUSTER</strong>s so that ECS doesn’t blindly place Dockers you intended for one job onto an instance you intended for another job.</p></li>
+<li><p>When a Docker container gets placed it gives the instance it’s on its own name.</p></li>
+<li><p>Once an instance has a name, the Docker gives it an alarm that tells it to reboot if it is sitting idle for 15 minutes.</p></li>
+<li><p>The Docker hooks the instance up to the _perinstance logs in CloudWatch.</p></li>
+<li><p>The instances look in SQS for a job.
+Any time they don’t have a job they go back to SQS.
+If SQS tells them there are no visible jobs then they shut themselves down.</p></li>
+<li><p>When an instance finishes a job it sends a message to SQS and removes that job from the queue.</p></li>
+</ul>
+</section>
+<section id="what-does-this-look-like">
+<h2>What does this look like?<a class="headerlink" href="#what-does-this-look-like" title="Permalink to this headline">#</a></h2>
+<p><img alt="Example Instance Configuration" src="_images/sample_DCP_config_1.png" /></p>
+<p>This is an example of one possible instance configuration using <a class="reference external" href="http://github.com/cellprofiler/distributed-cellprofiler">Distributed-CellProfiler</a> as an example.
+This is one m4.16xlarge EC2 instance (64 CPUs, 250GB of RAM) with a 165 EBS volume mounted on it.
+A spot fleet could contain many such instances.</p>
+<p>It has 16 tasks (individual Docker containers).</p>
+<p>Each Docker container uses 10GB of hard disk space and is assigned 4 CPUs and 15 GB of RAM (which it does not share with other Docker containers).</p>
+<p>Each container shares its individual resources among 4 copies of CellProfiler.
+Each copy of CellProfiler runs a pipeline on one “job”, which can be anything from a single image to an entire 384 well plate or timelapse movie.</p>
+<p>You can optionally stagger the start time of these 4 copies of CellProfiler, ensuring that the most memory- or disk-intensive steps aren’t happening simultaneously, decreasing the likelihood of a crash.</p>
+<p>Read more about this and other configurations in <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">Step 1: Configuration</span></a>.</p>
+</section>
+<section id="how-do-i-determine-my-configuration">
+<h2>How do I determine my configuration?<a class="headerlink" href="#how-do-i-determine-my-configuration" title="Permalink to this headline">#</a></h2>
+<p>To some degree, you determine the best configuration for your needs through trial and error.</p>
+<ul class="simple">
+<li><p>Looking at the resources your software uses on your local computer when it runs your jobs can give you a sense of roughly how much hard drive and memory space each job requires, which can help you determine your group size and what machines to use.</p></li>
+<li><p>Prices of different machine sizes fluctuate, so the choice of which type of machines to use in your spot fleet is best determined at the time you run it.
+How long a job takes to run and how quickly you need the data may also affect how much you’re willing to bid for any given machine.</p></li>
+<li><p>Running a few large Docker containers (as opposed to many small ones) increases the amount of memory all the copies of your software are sharing, decreasing the likelihood you’ll run out of memory if you stagger your job start times.
+However, you’re also at a greater risk of running out of hard disk space.</p></li>
+</ul>
+<p>Keep an eye on all of the logs the first few times you run any workflow and you’ll get a sense of whether your resources are being utilized well or if you need to do more tweaking.</p>
+</section>
+<section id="can-i-contribute-code-to-distributed-cellprofiler">
+<h2>Can I contribute code to Distributed-CellProfiler?<a class="headerlink" href="#can-i-contribute-code-to-distributed-cellprofiler" title="Permalink to this headline">#</a></h2>
+<p>Feel free!  We’re always looking for ways to improve.</p>
+</section>
+<section id="who-made-this">
+<h2>Who made this?<a class="headerlink" href="#who-made-this" title="Permalink to this headline">#</a></h2>
+<p>Distributed-CellProfiler is a project from the <a class="reference external" href="https://cimini-lab.broadinstitute.org">Cimini Lab</a> in the Imaging Platform at the Broad Institute in Cambridge, MA, USA. It was initially developed in what is now the <a class="reference external" href="https://carpenter-singh-lab.broadinstitute.org">Carpenter-Singh Lab</a>.</p>
+</section>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='right-next' id="next-link" href="step_0_prep.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Step 0: Prep</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Broad Institute<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

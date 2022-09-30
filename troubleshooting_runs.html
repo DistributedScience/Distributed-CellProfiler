@@ -1,0 +1,591 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Troubleshooting &#8212; Documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script async="async" kind="hypothesis" src="https://hypothes.is/embed.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="distributedscience.github.io/troubleshooting_runs.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Versions" href="versions.html" />
+    <link rel="prev" title="AWS Hygiene Scripts" href="AWS_hygiene_scripts.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">Documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="overview.html">
+                    What is Distributed-CellProfiler?
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Running DCP
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_0_prep.html">
+   Step 0: Prep
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="step_1_configuration.html">
+   Step 1: Configuration
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="SQS_QUEUE_information.html">
+     SQS QUEUE Information
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_2_submit_jobs.html">
+   Step 2: Submit Jobs
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_3_start_cluster.html">
+   Step 3: Start Cluster
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_4_monitor.html">
+   Step 4: Monitor
+  </a>
+ </li>
+</ul>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="advanced_configuration.html">
+   Advanced Configuration of DCP
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="AWS_hygiene_scripts.html">
+   AWS Hygiene Scripts
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="versions.html">
+   Versions
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/issues/new?title=Issue%20on%20page%20%2Ftroubleshooting_runs.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/edit/main/DCP-documentation/troubleshooting_runs.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Edit this page"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="headerbtn__text-container">suggest edit</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/troubleshooting_runs.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Troubleshooting</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">#</a></h1>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>SQS</p></th>
+<th class="head"><p>Cloudwatch</p></th>
+<th class="head"><p>S3</p></th>
+<th class="head"><p>EC2/ECS</p></th>
+<th class="head"><p>Problem</p></th>
+<th class="head"><p>Solution</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Messages in flight consistently &lt; number of dockers running</p></td>
+<td><p>CP never progresses beyond a certain module</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>CP is stalling indefinitely on a step without throwing an error. This means there is a bug in CP.</p></td>
+<td><p>The module that is stalling is the one after the last module that got logged. Check the Issues in the CP Github repo for reports of problems with a certain module. If you don’t see a report, make one. Use different settings within the module to avoid the bug or use a different version of DCP with the bug fixed.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Jobs completing (total messages decreasing) much more quickly than expected.</p></td>
+<td><p>“File not run due to &gt; expected number of files”</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>CHECK_IF_DONE_BOOL is being triggered because the output folder for your job already has &gt;= EXPECTED_NUMBER_OF_FILES.</p></td>
+<td><p>If you want to overwrite previous runs, in your config, change CHECK_IF_DONE_BOOL to TRUE. If using the CHECK_IF_DONE_BOOL option to avoid reprocessing old jobs, make sure to account for any files that may already exist in the output folder. i.e. if your pipeline creates 5 files, but there are already 6 files in your output folder, make sure to set the EXPECTED_NUMBER_FILES to 11 (6+5), not 5.</p></td>
+</tr>
+<tr class="row-even"><td><p>Jobs completing (total messages decreasing) much more quickly than expected.</p></td>
+<td><p>“== OUT” without proceeding through CP pipeline</p></td>
+<td><p>Batch_data.h5 files being created instead of expected output.</p></td>
+<td><p></p></td>
+<td><p>Your pipeline has the CreateBatchFiles module included.</p></td>
+<td><p>Uncheck the CreateBatchFiles module in your pipeline.</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>“ValueError: dictionary update sequence element #1 has length 1; 2 is required”</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>The syntax in the groups section of your job file is incorrect.</p></td>
+<td><p>If you are grouping based on multiple variables, make sure there are no spaces between them in your listing in your job file. e.g. “Metadata_Plate=Plate1,Metadata_Well=A01” is correct, “Metadata_Plate=Plate1, Metadata_Well=A01” is incorrect.</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Nothing happens for a long time after “cellprofiler -c -r “</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>1) Your input directory is set to a folder with a large number of files and CP is trying to read the whole directory before running. 2) You are loading very large images.</p></td>
+<td><p>1) In your job file, change the input to a smaller folder. 2) Consider downscaling your images before running them in CP. Or just be more patient.</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Within a single log there are multiple “cellprofiler -c -r”</p></td>
+<td><p>Expected output seen.</p></td>
+<td><p></p></td>
+<td><p>A single job is being processed multiple times.</p></td>
+<td><p>SQS_MESSAGE_VISIBILITY is set too short. See https://github.com/CellProfiler/Distributed-CellProfiler/wiki/SQS-QUEUE-INFORMATION for more information.</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>“ValueError: no name (Invalid arguments to routine: Bad value)” or “Encountered unrecoverable error in LoadData during startup: No name (no name)”</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>There is a problem with your LoadData.csv. This is usually seen when CSVs are created with a script; accidentally having an extra comma somewhere (looks like “,,”) will be invisible in Excel but generate the CP error. If you made your CSVs with pandas to_csv option, you must pass index=False or you will get this error.</p></td>
+<td><p>Find the “,,” in your CSV and remove it. If you made your CSVs with pandas dataframe’s to_csv function, check to make sure you used the index=False parameter.</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>IndexError: index 0 is out of bounds for axis 0 with size 0</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>1) Metadata values of 0 OR that have leading zeros (ie Metadata_Site=04, rather than Metadata_Site=4) are not handled well by CP. 2) The submitted jobs don’t make sense to CP. 3) DCP is looking for your images in the wrong location.</p></td>
+<td><p>1) Change your LoadData.csv so that there are no Metadata values of 0 or with 0 padding. 2) Change your job file so that your jobs match your pipeline’s expected input. 3) If using LoadData, make sure the file paths are correct in your LoadData.csv and the “Base image location” is set correctly in the LoadData module. If using BatchFiles, make sure your BatchFile paths are correct.</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p></p></td>
+<td><p>Pipeline output is not where expected</p></td>
+<td><p></p></td>
+<td><p>1) There is a mistake in your ExportToSpreadsheet in your pipeline. 2) There is a mistake in your job file.</p></td>
+<td><p>1) Check that your Output File Location is as expected. Default Output Folder is typical. Default Output Folder sub-folder can cause outputs to be nested in an unusual manner. 2) Check the output path in your job file.</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>“Empty image set list: no images passed the filtering criteria.”</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>DCP doesn’t know how to load your image set.</p></td>
+<td><p>If you are using a .cppipe and LoadData.csv,  make sure that your pipeline includes the LoadData module.</p></td>
+</tr>
+<tr class="row-even"><td><p>Jobs completing(total messages decreasing)  much more quickly than expected.</p></td>
+<td><p>“==OUT, SUCCESS”</p></td>
+<td><p>No outcome/saved files on s3</p></td>
+<td><p></p></td>
+<td><p>There is a mismatch in your metadata somewhere.</p></td>
+<td><p>Check the Metadata_ columns in your LoadData.csv for typos or a mismatch with your jobs file. The most common sources of mismatch are case and zero padding (e.g. A01 vs a01 vs A1). Check for these mismatches and edit the job file accordingly. If you use pe2loaddata to create your csvs and the plate was imaged multiple times, pay particular attention to the Metadata_Plate column as numbering reflecting this will be automatically passed into the Load_data.csv</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>Your specified output structure does not match the Metadata passed.</p></td>
+<td><p>Expected output is seen.</p></td>
+<td><p></p></td>
+<td><p>This is not necessarily an error. If the input grouping is different than the output grouping (e.g. jobs are run by Plate-Well-Site but are all output to a single Plate folder) then this will print in the Cloudwatch log that matches the input structure but actual job progress will print in the Cloudwatch log that matches the output structure.</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Your perinstance logs have an IOError indicating that an .h5 batchfile does not exist</p></td>
+<td><p>No outcome/saved files on s3</p></td>
+<td><p></p></td>
+<td><p>No batchfiles exist for your project.</p></td>
+<td><p>Either you need to create the batch files and make sure that they are in the appropriate directory OR re-start and use MakeAnalysisJobs() instead of MakeAnalysisJobs(mode=‘batch’) in run_batch_general.py</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>Machines made in EC2 and dockers are made in ECS but the dockers are not placed on the machines</p></td>
+<td><p>There is a mismatch in your DCP config file.</p></td>
+<td><p>Confirm that the MEMORY matches the MACHINE_TYPE  set in your config.</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Your perinstance logs have an IOError indicating that CellProfiler cannot open your pipeline</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>You have a corrupted pipeline.</p></td>
+<td><p>Check if you can open your pipeline locally. It may have been corrupted on upload or it may have an error within the pipeline itself.</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>“== ERR move failed:An error occurred (SlowDown) when calling the PutObject operation (reached max retries: 4): Please reduce your request rate.” Error may not show initially and may become more prevalent with time.</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>Too many jobs are finishing too quickly creating a backlog of jobs waiting to upload to S3.</p></td>
+<td><p>You can 1) check out fewer machines at a time, 2) check out smaller machines and run fewer copies of DCP at the same time, or 3) group jobs in larger groupings (e.g. by Plate instead of Well or Site). If this happens because you have many jobs finishing at the same time (but not finishing very rapidly such that it’s not creating an increasing backlog) you can increase SECONDS_TO_START in config.py so there is more separation between jobs finishing.</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>“/home/ubuntu/bucket: Transport endpoint is not connected”</p></td>
+<td><p>Cannot be accessed by fleet.</p></td>
+<td><p></p></td>
+<td><p>S3FS has stochastically dropped/failed to connect.</p></td>
+<td><p>Perform your run without using S3FS by setting DOWNLOAD_FILES = TRUE in your config.py. Note that, depending upon your job and machine setup,  you may need to increase the size of your EBS volume to account for the files being downloaded.</p></td>
+</tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>“SSL: certificate subject name (*.s3.amazonaws.com) does not match target host name ‘xxx.yyy.s3.amazonaws.com’”</p></td>
+<td><p>Cannot be accessed by fleet.</p></td>
+<td><p></p></td>
+<td><p>S3FS fails to mount if your bucket name has a dot (.) in it.</p></td>
+<td><p>You can bypass S3FS usage by setting DOWNLOAD_FILES = TRUE in your config.py. Note that, depending upon your job and machine setup,  you may need to increase the size of your EBS volume to account for the files being downloaded. Alternatively, you can make your own DCP Docker and edit run-worker.sh to <code class="docutils literal notranslate"><span class="pre">use_path_request_style</span></code>. If your region is not us-east-1 you also need to specify <code class="docutils literal notranslate"><span class="pre">endpoint</span></code>. See S3FS documentation for more information.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Further hints:</p>
+<ul class="simple">
+<li><p>The SSH_KEY_NAME in the config.py file contains the name of the key pair used to access AWS.
+This field is the name of the file with the .pem extension (SSH_KEY_NAME = “MyKeyPair.pem”).
+The same name is used in the fleet configuration file (e.g. exampleFleet.json) but without using the .pem extension (“KeyName”: “MyKeyPair”).</p></li>
+<li><p>Input: With multi-well plate (e.g. 384-well plate), it is often better to use LoadData module in CellProfiler pipeline.
+Pipelines that use LoadData don’t need to worry about setting the input field in exampleJob_PlateID.json UNLESS something in the pipeline (such as FlagImage, FilterObjects, SaveImages, etc) references the “Default Input Folder”.</p></li>
+</ul>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="AWS_hygiene_scripts.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">AWS Hygiene Scripts</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="versions.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Versions</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Broad Institute<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

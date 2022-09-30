@@ -1,0 +1,754 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Step 0: Prep &#8212; Documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script async="async" kind="hypothesis" src="https://hypothes.is/embed.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="distributedscience.github.io/step_0_prep.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Step 1: Configuration" href="step_1_configuration.html" />
+    <link rel="prev" title="What is Distributed-CellProfiler?" href="overview.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">Documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="overview.html">
+                    What is Distributed-CellProfiler?
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Running DCP
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Step 0: Prep
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="step_1_configuration.html">
+   Step 1: Configuration
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="SQS_QUEUE_information.html">
+     SQS QUEUE Information
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_2_submit_jobs.html">
+   Step 2: Submit Jobs
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_3_start_cluster.html">
+   Step 3: Start Cluster
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_4_monitor.html">
+   Step 4: Monitor
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="advanced_configuration.html">
+   Advanced Configuration of DCP
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="AWS_hygiene_scripts.html">
+   AWS Hygiene Scripts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="troubleshooting_runs.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="versions.html">
+   Versions
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/issues/new?title=Issue%20on%20page%20%2Fstep_0_prep.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/edit/main/DCP-documentation/step_0_prep.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Edit this page"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="headerbtn__text-container">suggest edit</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/step_0_prep.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#aws-configuration">
+   1. AWS Configuration
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#access-keys">
+     1.1 Access keys
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#roles-and-permissions">
+     1.2 Roles and permissions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#auxiliary-resources">
+     1.3 Auxiliary Resources
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#primary-resources">
+     1.4 Primary Resources
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spot-limits">
+     1.5 Spot Limits
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-control-node">
+   2. The Control Node
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#make-your-own-control-node">
+     2.1 Make your own control node
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#clone-this-repo">
+       2.1.1 Clone this repo
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#python-3-8-or-higher-and-pip">
+       2.1.2 Python 3.8 or higher and pip
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#aws-cli">
+       2.1.3 AWS CLI
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#s3fs-fuse-optional">
+       2.1.4 s3fs-fuse (optional)
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#parallel-optional">
+       2.1.5 Parallel (optional)
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#create-a-control-node-ami-optional">
+       2.1.6 Create a Control Node AMI (optional)
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#use-a-pre-made-ami">
+     2.2 Use a pre-made AMI
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Step 0: Prep</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#aws-configuration">
+   1. AWS Configuration
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#access-keys">
+     1.1 Access keys
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#roles-and-permissions">
+     1.2 Roles and permissions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#auxiliary-resources">
+     1.3 Auxiliary Resources
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#primary-resources">
+     1.4 Primary Resources
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spot-limits">
+     1.5 Spot Limits
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-control-node">
+   2. The Control Node
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#make-your-own-control-node">
+     2.1 Make your own control node
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#clone-this-repo">
+       2.1.1 Clone this repo
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#python-3-8-or-higher-and-pip">
+       2.1.2 Python 3.8 or higher and pip
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#aws-cli">
+       2.1.3 AWS CLI
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#s3fs-fuse-optional">
+       2.1.4 s3fs-fuse (optional)
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#parallel-optional">
+       2.1.5 Parallel (optional)
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#create-a-control-node-ami-optional">
+       2.1.6 Create a Control Node AMI (optional)
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#use-a-pre-made-ami">
+     2.2 Use a pre-made AMI
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="step-0-prep">
+<h1>Step 0: Prep<a class="headerlink" href="#step-0-prep" title="Permalink to this headline">#</a></h1>
+<p>Distributed-CellProfiler runs many parallel jobs in EC2 instances that are automatically managed by ECS.
+To get jobs started, a control node to submit jobs and monitor progress is needed.
+This section describes what you need in AWS and in the control node to get started.</p>
+<section id="aws-configuration">
+<h2>1. AWS Configuration<a class="headerlink" href="#aws-configuration" title="Permalink to this headline">#</a></h2>
+<p>The AWS resources involved in running Distributed-CellProfiler can be primarily configured using the <a class="reference external" href="https://aws.amazon.com/console/">AWS Web Console</a>.
+The architecture of Distributed-CellProfiler is based in the <a class="reference external" href="https://aws.amazon.com/blogs/compute/better-together-amazon-ecs-and-aws-lambda/">worker pattern</a> for distributed systems.
+We have adapted and simplified that architecture for Distributed-CellProfiler.</p>
+<p>You need an active account configured to proceed. Login into your AWS account, and make sure the following list of resources is created:</p>
+<section id="access-keys">
+<h3>1.1 Access keys<a class="headerlink" href="#access-keys" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Get <a class="reference external" href="http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html">security credentials</a> for your account.
+Store your credentials in a safe place that you can access later.</p></li>
+<li><p>You will probably need an ssh key to login into your EC2 instances (control or worker nodes).
+<a class="reference external" href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html">Generate an SSH key</a> and store it in a safe place for later use.
+If you’d rather, you can generate a new key pair to use for this during creation of the control node; make sure to <code class="docutils literal notranslate"><span class="pre">chmod</span> <span class="pre">600</span></code> the private key when you download it.</p></li>
+</ul>
+</section>
+<section id="roles-and-permissions">
+<h3>1.2 Roles and permissions<a class="headerlink" href="#roles-and-permissions" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>You can use your default VPC, subnet, and security groups; you should add an inbound SSH connection from your IP address to your security group.</p></li>
+<li><p><a class="reference external" href="http://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance_IAM_role.html">Create an ecsInstanceRole</a> with appropriate permissions (An S3 bucket access policy CloudWatchFullAccess, CloudWatchActionEC2Access, AmazonEC2ContainerServiceforEC2Role policies, ec2.amazonaws.com as a Trusted Entity)</p></li>
+<li><p><a class="reference external" href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet-requests.html">Create an aws-ec2-spot-fleet-tagging-role</a> with appropriate permissions (just needs AmazonEC2SpotFleetTaggingRole); ensure that in the “Trust Relationships” tab it says “spotfleet.amazonaws.com” rather than “ec2.amazonaws.com” (edit this if necessary).
+In the current interface, it’s easiest to click “Create role”, select “EC2” from the main service list, then select “EC2- Spot Fleet Tagging”.</p></li>
+</ul>
+</section>
+<section id="auxiliary-resources">
+<h3>1.3 Auxiliary Resources<a class="headerlink" href="#auxiliary-resources" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p><a class="reference external" href="http://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html">Create an S3 bucket</a> and upload your data to it.</p></li>
+<li><p>Add permissions to your bucket so that <a class="reference external" href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/S3ExportTasksConsole.html">logs can be exported to it</a> (Step 3, first code block)</p></li>
+<li><p><a class="reference external" href="http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/CreatingQueue.html">Create an SQS</a> queue for unprocessable-messages to be dumped into (aka a DeadLetterQueue).</p></li>
+</ul>
+</section>
+<section id="primary-resources">
+<h3>1.4 Primary Resources<a class="headerlink" href="#primary-resources" title="Permalink to this headline">#</a></h3>
+<p>The following five are resources you need to interact with constantly while working with Distributed-CellProfiler. Although at this point you don’t need to create anything special there, you can open each console in a separate tab in your browser to keep them handy and monitor DCP’s behavior.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://console.aws.amazon.com/s3">S3 Console</a></p></li>
+<li><p><a class="reference external" href="https://console.aws.amazon.com/ec2/">EC2 Console</a></p></li>
+<li><p><a class="reference external" href="https://console.aws.amazon.com/ecs/">ECS Console</a></p></li>
+<li><p><a class="reference external" href="https://console.aws.amazon.com/sqs/">SQS Console</a></p></li>
+<li><p><a class="reference external" href="https://console.aws.amazon.com/cloudwatch/">CloudWatch Console</a></p></li>
+</ul>
+</section>
+<section id="spot-limits">
+<h3>1.5 Spot Limits<a class="headerlink" href="#spot-limits" title="Permalink to this headline">#</a></h3>
+<p>AWS initially <a class="reference external" href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-limits.html">limits the number of spot instances</a> you can use at one time; you can request more through a process in the linked documentation.
+Depending on your workflow (your scale and how you group your jobs), this may not be necessary.</p>
+</section>
+</section>
+<section id="the-control-node">
+<h2>2. The Control Node<a class="headerlink" href="#the-control-node" title="Permalink to this headline">#</a></h2>
+<p>The control node can be your local machine if it is configured properly, or it can also be a small instance in AWS.
+We prefer to have a small EC2 instance dedicated to controlling our Distributed-CellProfiler workflows for simplicity of access and configuration.
+To login in an EC2 machine you need an ssh key that can be generated in the web console.
+Each time you launch an EC2 instance you have to confirm having this key (which is a .pem file).
+This machine is needed only for submitting jobs, and does not have any special computational requirements, so you can use a micro instance to run basic scripts to proceed.</p>
+<p>The control node needs the following tools to successfully run Distributed-CellProfiler.
+Here we assume you are using the command line in a Linux machine, but you are free to try other operating systems too.</p>
+<section id="make-your-own-control-node">
+<h3>2.1 Make your own control node<a class="headerlink" href="#make-your-own-control-node" title="Permalink to this headline">#</a></h3>
+<section id="clone-this-repo">
+<h4>2.1.1 Clone this repo<a class="headerlink" href="#clone-this-repo" title="Permalink to this headline">#</a></h4>
+<p>You will need the scripts in Distributed-CellProfiler locally available in your control node.</p>
+<pre>
+    sudo apt-get install git
+    git clone https://github.com/DistributedScience/Distributed-CellProfiler.git
+    cd Distributed-CellProfiler/
+    git pull
+</pre>
+</section>
+<section id="python-3-8-or-higher-and-pip">
+<h4>2.1.2 Python 3.8 or higher and pip<a class="headerlink" href="#python-3-8-or-higher-and-pip" title="Permalink to this headline">#</a></h4>
+<p>Most scripts are written in Python and support Python 3.8 and 3.9.
+Follow installation instructions for your platform to install python and, if needed, pip.
+After Python has been installed, you need to install the requirements for Distributed-CellProfiler following this steps:</p>
+<pre>
+    cd Distributed-CellProfiler/files
+    sudo pip install -r requirements.txt
+</pre>
+</section>
+<section id="aws-cli">
+<h4>2.1.3 AWS CLI<a class="headerlink" href="#aws-cli" title="Permalink to this headline">#</a></h4>
+<p>The command line interface is the main mode of interaction between the local node and the resources in AWS.
+Follow AWS instructions to install <a class="reference external" href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">AWS CLI</a>.
+Then set up AWS CLI with:</p>
+<pre>
+    aws configure
+</pre>
+<p>When running the last step, you will need to enter your AWS credentials.<br />
+Make sure to set the region correctly (i.e. us-west-1 or eu-east-1, not eu-west-2a), and set the default file type to json.</p>
+</section>
+<section id="s3fs-fuse-optional">
+<h4>2.1.4 s3fs-fuse (optional)<a class="headerlink" href="#s3fs-fuse-optional" title="Permalink to this headline">#</a></h4>
+<p><a class="reference external" href="https://github.com/s3fs-fuse/s3fs-fuse">s3fs-fuse</a> allows you to mount your s3 bucket as a pseudo-file system.
+It does not have all the performance of a real file system, but allows you to easily access all the files in your s3 bucket.
+Follow the instructions at the link to mount your bucket.</p>
+</section>
+<section id="parallel-optional">
+<h4>2.1.5 Parallel (optional)<a class="headerlink" href="#parallel-optional" title="Permalink to this headline">#</a></h4>
+<p>Parallel is an optional Linux tool that you can install on your control node for generating job files using the <code class="docutils literal notranslate"><span class="pre">batches.sh</span></code> scripting tool.
+If you use other ways of generating job files (e.g. <code class="docutils literal notranslate"><span class="pre">run_batch_general.py</span></code>) you do not need parallel.
+To install parallel, run:</p>
+<pre>
+    sudo apt-get install parallel
+</pre>
+</section>
+<section id="create-a-control-node-ami-optional">
+<h4>2.1.6 Create a Control Node AMI (optional)<a class="headerlink" href="#create-a-control-node-ami-optional" title="Permalink to this headline">#</a></h4>
+<p>Once you’ve set up the other software (and gotten a job running, so you know everything is set up correctly), you can use Amazon’s web console to set this up as an Amazon Machine Instance, or AMI, to replicate the current state of the hard drive.
+Create future control nodes using this AMI so that you don’t need to repeat the above installation.</p>
+</section>
+</section>
+<section id="use-a-pre-made-ami">
+<h3>2.2 Use a pre-made AMI<a class="headerlink" href="#use-a-pre-made-ami" title="Permalink to this headline">#</a></h3>
+<p>You can use our <a class="reference external" href="https://github.com/cytomining/cytominer-vm">Cytominer-VM</a> and add your own security keys; it has extra things you may not need, such as R, but it can be very handy!</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="overview.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">What is Distributed-CellProfiler?</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="step_1_configuration.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Step 1: Configuration</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Broad Institute<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

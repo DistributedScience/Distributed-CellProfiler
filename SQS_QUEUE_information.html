@@ -1,0 +1,576 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>SQS QUEUE Information &#8212; Documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script async="async" kind="hypothesis" src="https://hypothes.is/embed.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="distributedscience.github.io/SQS_QUEUE_information.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Step 2: Submit Jobs" href="step_2_submit_jobs.html" />
+    <link rel="prev" title="Step 1: Configuration" href="step_1_configuration.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">Documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="overview.html">
+                    What is Distributed-CellProfiler?
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Running DCP
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_0_prep.html">
+   Step 0: Prep
+  </a>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="step_1_configuration.html">
+   Step 1: Configuration
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     SQS QUEUE Information
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_2_submit_jobs.html">
+   Step 2: Submit Jobs
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_3_start_cluster.html">
+   Step 3: Start Cluster
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_4_monitor.html">
+   Step 4: Monitor
+  </a>
+ </li>
+</ul>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="advanced_configuration.html">
+   Advanced Configuration of DCP
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="AWS_hygiene_scripts.html">
+   AWS Hygiene Scripts
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="troubleshooting_runs.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="versions.html">
+   Versions
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/issues/new?title=Issue%20on%20page%20%2FSQS_QUEUE_information.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/edit/main/DCP-documentation/SQS_QUEUE_information.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Edit this page"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="headerbtn__text-container">suggest edit</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/SQS_QUEUE_information.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sqs-queue-name">
+   SQS_QUEUE_NAME
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sqs-dead-letter-queue">
+   SQS_DEAD_LETTER_QUEUE
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sqs-message-visibility">
+   SQS_MESSAGE_VISIBILITY
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-sqs-queue">
+   Example SQS Queue
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>SQS QUEUE Information</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sqs-queue-name">
+   SQS_QUEUE_NAME
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sqs-dead-letter-queue">
+   SQS_DEAD_LETTER_QUEUE
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#sqs-message-visibility">
+   SQS_MESSAGE_VISIBILITY
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-sqs-queue">
+   Example SQS Queue
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="sqs-queue-information">
+<h1>SQS QUEUE Information<a class="headerlink" href="#sqs-queue-information" title="Permalink to this headline">#</a></h1>
+<p>This is in-depth information about the configurable components in SQS QUEUE INFORMATION, a section in <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">Step 1: Configuration</span></a> of running Distributed CellProfiler.</p>
+<section id="sqs-queue-name">
+<h2>SQS_QUEUE_NAME<a class="headerlink" href="#sqs-queue-name" title="Permalink to this headline">#</a></h2>
+<p><strong>SQS_QUEUE_NAME</strong> is the name of the queue where all of your jobs are sent.
+(A queue is exactly what it sounds like - a list of things waiting their turn. Jobs represent one complete run through a CellProfiler pipeline (though each job may involve any number of images. e.g. analysis may require thousands of jobs, each with a single image making one complete CellProfiler run, while making an illumination correction may be a single job that iterates through thousands of images to produce a single output file.))
+You want a name that is descriptive enough to distinguish it from other queues.
+We usually name our queues based on the project and the step or pipeline goal.
+An example may be something like Hepatocyte_Differentiation_Illum or Lipid_Droplet_Analysis.</p>
+</section>
+<section id="sqs-dead-letter-queue">
+<h2>SQS_DEAD_LETTER_QUEUE<a class="headerlink" href="#sqs-dead-letter-queue" title="Permalink to this headline">#</a></h2>
+<p><strong>SQS_DEAD_LETTER_QUEUE</strong> is the name of the queue where all the jobs that failed to run are sent.
+If everything goes perfectly, this will always remain empty.
+If jobs that are in the queue fail multiple times (our default is 10) they are moved to the dead-letter queue, which is not used to initiate jobs.
+The dead-letter queue therefore functions effectively as a log so you can see if any of your jobs failed.
+It is different from your other queue as machines do not try and pull jobs from it.
+Protip: Each member of our team maintains their own dead-letter queue so we don’t have to worry about finding messages if multiple people are running jobs at the same time.
+We use names like DeadMessages_Erin.</p>
+<p>If all of your jobs end up in your dead-letter queue there are many different places you could have a problem.
+Hopefully, you’ll keep an eye on the logs in your CloudWatch (the part of AWS used for monitoring what all your other AWS services are doing) after starting a run and catch the issue before all of your jobs fail multiple times.</p>
+<p>If a single job ends up in your dead-letter queue while the rest of your jobs complete successfully, it is likely that that an image is corrupted (a corrupted image is one that has failed to save properly or has been damaged so that it will not open).
+This is true whether your pipeline processes a single image at a time (such as in analysis runs where you’re interested in cellular measurements on a per-image basis) or whether your pipeline processes many images at a time (such as when making an illumination correction image on a per-plate basis).
+This is the major reason why we have the dead-letter queue: you certainly don’t want to pay for your cluster to indefinitely attempt to process a corrupted image.
+Keeping an eye on your CloudWatch logs wouldn’t necessarily help you catch this kind of error because you could have tens or hundreds of successful jobs run before an instance pulls the job for the corrupted image, or the corrupted image could be thousands of images into an illumination correction run, etc.</p>
+</section>
+<section id="sqs-message-visibility">
+<h2>SQS_MESSAGE_VISIBILITY<a class="headerlink" href="#sqs-message-visibility" title="Permalink to this headline">#</a></h2>
+<p><strong>SQS_MESSAGE_VISIBILITY</strong> controls how long jobs are hidden after being pulled by a machine to run.
+Jobs must be visible (i.e. not hidden) in order to be pulled by a Docker and therefore run.
+In other words, the time you enter in SQS_MESSAGE_VISIBILITY is how long a job is allowed a chance to complete before it is unhidden and made available to be started by a different copy of CellProfiler.
+It’s quite important to set this time correctly - we typically say to estimate 1.5X how long the job typically takes to run (or your best guess of that if you’re not sure).
+To understand why, and the consequences of setting an incorrect time, let’s look more carefully at the SQS queue.</p>
+<p>The SQS queue has two categories - “Messages Available” and “Messages In Flight”.
+Each message is a job and regardless of the category it’s in, the jobs all remain in the same queue.
+In effect, “In Flight” means currently hiding and “Available” means not currently hiding.</p>
+<p>When you submit your Config file to AWS it creates your queue in SQS but that queue starts out empty.
+When you submit your Jobs file to AWS it puts all of your jobs into the queue under “Messages Available”.
+When you submit your Fleet file to AWS it 1) creates machines in EC2, 2) ECS puts Docker containers on those instances, and 3) those instances look in “Messages Available” in SQS for jobs to run.</p>
+<p>Once a Docker has pulled a job, that job moves from “Available’ to “In Flight”.
+It remains hidden (“In Flight”) for the duration of time set in SQS_MESSAGE_VISIBILITY and then it becomes visible again (“Available”).
+Jobs are hidden so that multiple machines don’t process the same job at the same time.
+If the job completes successfully, the Docker tells the queue to delete that message.</p>
+<p>If the job completes but it is not successful (e.g. CellProfiler errors), the Docker tells the queue to move the job from “In Flight” to “Available” so another Docker (with a different copy of CellProfiler) can attempt to complete the job.</p>
+<p>If the SQS_MESSAGE_VISIBILITY is too short then a job will become unhidden even though it is still currently being (hopefully successfully) run by the Docker that originally picked it up.
+This means that another Docker may come along and start the same job and you end up paying for unnecessary compute time because both Dockers will continue to run the job until they each finish.</p>
+<p>If the SQS_MESSAGE_VISIBILITY is too long then you can end up wasting time and money waiting for the job to become available again after a crash even when the rest of your analysis is done.
+If anything causes a job to stop mid-run (e.g. CellProfiler crashes, the instance crashes, or the instance is removed by AWS because you are outbid), that job stays hidden until the set time.
+If a Docker instance goes to the queue and doesn’t find any visible jobs, then it does not try to run any more jobs in that copy of CellProfiler, limiting the effective computing power of that Docker.
+Therefore, some or all of your instances may hang around doing nothing (but costing money) until the job is visible again.
+When in doubt, it is better to have your SQS_MESSAGE_VISIBILITY set too long than too short because, while crashes can happen, it is rare that AWS takes small machines from your fleet, though we do notice it happening with larger machines.</p>
+<p>There is not an easy way to see if you have selected the appropriate amount of time for your SQS_MESSAGE_VISIBILITY on your first run through a brand new pipeline.
+To confirm that multiple Dockers didn’t run the same job, after the jobs are complete, you need to manually go through each log in CloudWatch and figure out how many times you got the word “SUCCESS” in each log.
+(This may be reasonable to do on an illumination correction run where you have a single job per plate, but it’s not so reasonable if running an analysis pipeline on thousands of individual images).
+To confirm that multiple Dockers are never processing the same job, you can keep an eye on your queue and make sure that you never have more jobs “In Flight” than the number of copies of CellProfiler that you have running; likewise, if your timeout time is too short, it may seem like too few jobs are “In Flight” even though the CPU usage on all your machines is high.</p>
+<p>Once you have run a pipeline once, you can check the execution time (either by noticing how long after you started your jobs that your first jobs begin to finish, or by checking the logs of individual jobs and noting the start and end time), you will then have an accurate idea of roughly how long that pipeline needs to execute, and can set your message visibility accordingly.<br />
+You can even do this on the fly while jobs are currently processing; the updated visibility time won’t affect the jobs already out for processing (i.e. if the time was set to 3 hours and you change it to 1 hour, the jobs already processing will remain hidden for 3 hours or until finished), but any job that begins processing AFTER the change will use the new visibility timeout setting.</p>
+</section>
+<section id="example-sqs-queue">
+<h2>Example SQS Queue<a class="headerlink" href="#example-sqs-queue" title="Permalink to this headline">#</a></h2>
+<p>[[images/Sample_SQS_Queue.png|alt=”Sample_SQS_Queue”]]</p>
+<p>This is an example of an SQS Queue.
+You can see that there is one active task with 64 jobs in it.
+In this example, we are running a fleet of 32 instances, each with a single Docker, so at this moment (right after starting the fleet), there are 32 tasks “In Flight” and 32 tasks that are still “Available.”
+You can also see that many lab members have their own dead-letter queues which are, fortunately, all currently empty.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="step_1_configuration.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Step 1: Configuration</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="step_2_submit_jobs.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Step 2: Submit Jobs</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Broad Institute<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
