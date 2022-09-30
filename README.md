@@ -17,6 +17,9 @@ The code prepares the infrastructure to run a distributed job.
 When the job is completed, the code is also able to stop resources and clean up components.
 It also adds logging and alarms via CloudWatch, helping the user troubleshoot runs and destroy stuck machines.
 
+## Documentation
+Comprehensive documentation, including troubleshooting, is available at [Distributed CellProfiler Documentation](https://distributedscience.github.io/Distributed-CellProfiler).
+
 ## Running the code
 
 ### Step 1
@@ -63,7 +66,4 @@ When the cluster is up and running, you can monitor progress using the following
 The file APP_NAMESpotFleetRequestId.json is created after the cluster is setup in step 3.
 It is important to keep this monitor running if you want to automatically shutdown computing resources when there are no more tasks in the queue (recommended).
 
-## Documenation
-Comprehensive documentation, including troubleshooting, is available at [Distributed CellProfiler Documentation](https://distributedscience.github.io/Distributed-CellProfiler).
-
-![Distributed-CellProfiler](https://user-images.githubusercontent.com/6721515/112663404-2a58c580-8e2f-11eb-8ff9-68ab2b1a1b70.png)
+![Distributed-CellProfiler-Workflow](https://user-images.githubusercontent.com/54687786/193354229-be6f6de3-1b7e-45ee-a8cf-d18654071070.png)
