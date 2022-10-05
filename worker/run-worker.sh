@@ -2,7 +2,7 @@
 echo "${BASH_VERSION}"
 echo "Region $AWS_REGION"
 echo "Queue $SQS_QUEUE_URL"
-if [-n "$SOURCE_BUCKET"]
+if [[ -z "$AWS_BUCKET" ]]
 then
   SOURCE_BUCKET=$AWS_BUCKET
 fi
@@ -22,7 +22,7 @@ aws ec2 create-tags --resources $VOL_1_ID --tags Key=Name,Value=${APP_NAME}Worke
 # 2. MOUNT S3
 mkdir -p /home/ubuntu/bucket
 mkdir -p /home/ubuntu/local_output
-if [ -n "$AWS_ACCESS_KEY_ID" ]
+if [[ -z "$AWS_ACCESS_KEY_ID" ]]
 then
   AWS_ACCESS_KEY_ID=$(curl 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI | jq '.AccessKeyId')
   AWS_SECRET_ACCESS_KEY=$(curl 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI | jq '.SecretAccessKey')
