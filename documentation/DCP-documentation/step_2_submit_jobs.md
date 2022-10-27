@@ -25,10 +25,7 @@ If using LoadData, make sure your "Base image location" is set to "None".
 ## Configuring your job file
 
 * **pipeline:** The path to your pipeline file.
-* **data_file:** The path to your CSV.  
-At a minimum, this CSV should contain PathName_{NameOfChannel} and FileName_{NameOfChannel} columns for each of your channels, as well as Metadata_{PieceOfMetadata} for each kind of metadata being used to group your image sets.  
-You can create this CSV yourself via your favorite scripting language or by using the Images, Metadata, and NamesAndTypes modules in CellProfiler to generate image sets then using the Export->Image Set Listing command.  
-Some users have reported issues with using relative paths in the PathName columns; using absolute paths beginning with `/home/ubuntu/bucket/{relativepath}` may increase your odds of success.
+* **data_file:** The path to your LoadData.csv or batch file.
 * **input:** The path to your default input directory.
 This is not necessary for every pipeline but can be helpful when non-image files are needed in the pipeline (such as a text file containing quality control rules for the FlagImage module).
 DO NOT set this to a large directory, or CellProfiler will try to scan the entire thing before running your pipeline.
