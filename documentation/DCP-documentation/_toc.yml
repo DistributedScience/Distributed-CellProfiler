@@ -8,6 +8,7 @@ parts:
   - file: step_0_prep
   - file: step_1_configuration
     sections:
+    - file: config_examples
     - file: SQS_QUEUE_information
   - file: step_2_submit_jobs
   - file: step_3_start_cluster
