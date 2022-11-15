@@ -1,6 +1,6 @@
 # Passing Files to DCP
 
-Distributed-CellProfiler can be told what files to use through LoadData.csv or Batch Files
+Distributed-CellProfiler can be told what files to use through LoadData.csv, Batch Files, or file lists.
 
 ## Load Data
 
@@ -35,7 +35,7 @@ Note that if you do not follow our standard file organization, under **#not proj
 ## Batch Files
 
 Batch files are an easy way to transition from running locally to distributed.
-A batch file is an .h5 file created by CellProfiler which captures all the data needed to run your workflow.
+A batch file is an .h5 file created by CellProfiler which captures all the data needed to run your workflow - pipeline and file information are packaged together.
 To use a batch file, your data needs to have the same structure in the cloud as on your local machine.
 
 ### Creating batch files
@@ -49,9 +49,17 @@ More information on the `CreateBatchFiles` module can be found [here](https://ce
 
 ### Using batch files
 
-To use a batch file with submitJobs, put the path to the .h5 file in **data_file:**.
+To use a batch file with submitJobs, put the path to the .h5 file in **data_file:** and **pipeline:**.
 
 To use a batch file with run_batch_general.py, enter the name of the batch file under **#project specific stuff** in `batchpipename{STEP}`.
 At the bottom of the file, set `batch=True` in the command for the step you are running.
 (e.g. `MakeAnalysisJobs(batch=True)`)
 Note that if you do not follow our standard file organization, under **#not project specific, unless you deviate from the structure** you will also need to edit `batchpath`.
+
+## File Lists
+
+
+### Creating File Lists
+
+
+### Using File Lists
