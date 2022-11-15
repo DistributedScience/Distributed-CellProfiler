@@ -395,7 +395,7 @@ We often stitch the output into a pseudo-plate view as described <a class="refer
 A standard pipeline can be found <a class="reference external" href="https://github.com/broadinstitute/imaging-platform-pipelines/blob/master/JUMP_production/JUMP_segment_LoadData_v1.cppipe">here</a>.</p></li>
 <li><p><strong>Analysis</strong> is where illumination correction is applied, actual segmentation occurs, and all of the measurements used for generating image-based profiles are taken.
 Note that large images may require more memory than our default parameters listed below.
-If you don’t have enough memory, reduce the number of copies of CellProfiler runnning at one time by decreasing DOCKER_CORES.
+If you don’t have enough memory, reduce the number of copies of CellProfiler running at one time by decreasing DOCKER_CORES.
 A standard pipeline can be found <a class="reference external" href="https://github.com/broadinstitute/imaging-platform-pipelines/blob/master/JUMP_production/JUMP_analysis_v3.cppipe">here</a>.</p></li>
 </ul>
 <p>Our internal configurations for each pipeline are as follows:</p>
@@ -520,7 +520,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>4</p></td>
 <td><p>4</p></td>
 <td><p>4</p></td>
-<td><p>4</p></td>
+<td><p>3</p></td>
 <td><p>If using c class machines and large images (2k + pixels) then you might need to reduce this number.</p></td>
 </tr>
 <tr class="row-even"><td><p>CPU_SHARES</p></td>
