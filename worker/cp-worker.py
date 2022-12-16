@@ -1,15 +1,10 @@
-from __future__ import print_function
 import boto3
-import glob
 import json
 import logging
 import os
-import re
 import subprocess
-import sys 
 import time
 import watchtower
-import string
 
 #################################
 # CONSTANT PATHS IN THE CONTAINER
@@ -98,7 +93,7 @@ def runCellProfiler(message):
     for eachSubDir in rootlist:
         subDirName=os.path.join(DATA_ROOT,eachSubDir)
         if os.path.isdir(subDirName):
-            trashvar=os.system('ls '+subDirName)
+            trashvar=os.system(f'ls {subDirName}')
 
     # Configure the logs
     logger = logging.getLogger(__name__)
@@ -134,18 +129,15 @@ def runCellProfiler(message):
                     printandlog('Your specified output structure does not match the Metadata passed',logger)
                 else:
                     metadataID = str.replace(metadataID,eachMetadata.split('=')[0],eachMetadata.split('=')[1])
-            printandlog('metadataID ='+metadataID, logger)
+            printandlog(f'metadataID ={metadataID}', logger)
             logger.removeHandler(watchtowerlogger)
         else: #backwards compatability with 1.0.0 and/or no desire to structure output
             metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
     else: #backwards compatability with 1.0.0 and/or no desire to structure output
         metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
 
-    localOut = LOCAL_OUTPUT + '/%(MetadataID)s' % {'MetadataID': metadataID}
+    localOut = f'{LOCAL_OUTPUT}/{metadataID}'
     remoteOut= os.path.join(message['output'],metadataID)
-    replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
-            'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
-            'MetadataID':metadataID, 'PLUGINS':PLUGIN_DIR }
 
     # Start loggging now that we have a job we care about
     watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
@@ -202,11 +194,11 @@ def runCellProfiler(message):
                     new_file_name = os.path.join(localIn,prefix_on_bucket)
                     if not os.path.exists(os.path.split(new_file_name)[0]):
                         os.makedirs(os.path.split(new_file_name)[0])
-                        printandlog('made directory '+os.path.split(new_file_name)[0],logger)
+                        printandlog(f'made directory {os.path.split(new_file_name)[0]}',logger)
                     if not os.path.exists(new_file_name):
                         s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
                         downloaded_files.append(new_file_name)
-            printandlog('Downloaded '+str(len(downloaded_files))+' files',logger)
+            printandlog(f'Downloaded {str(len(downloaded_files))} files',logger)
             import random
             newtag = False
             while newtag == False:
@@ -225,18 +217,14 @@ def runCellProfiler(message):
             csv_name = local_csv_name
 
     # Build and run CellProfiler command
-    cpDone = localOut + '/cp.is.done'
-    cmdstem = 'cellprofiler -c -r '
+    cpDone = f'{localOut}/cp.is.done'
     if message['pipeline'][-3:]!='.h5':
-        cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
-        cmd += ' --data-file='+csv_name+' '
-        cmd += '-g %(Metadata)s'
+        cmd = f'cellprofiler -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} --data-file={csv_name} -g {message["Metadata"]}'
     else:
-        cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone + ' -g %(Metadata)s'
+        cmd = f'cellprofiler -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} -g {message["Metadata"]}'
     if USE_PLUGINS.lower() == 'true':
-        cmd += ' --plugins-directory=%(PLUGINS)s'
-    cmd = cmd % replaceValues
-    print('Running', cmd)
+        cmd += f' --plugins-directory={PLUGIN_DIR}'
+    print(f'Running {cmd}')
     logger.info(cmd)
     
     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -252,21 +240,21 @@ def runCellProfiler(message):
         mvtries=0
         while mvtries <3:
             try:
-                    printandlog('Move attempt #'+str(mvtries+1),logger)
-                    cmd = 'aws s3 mv ' + localOut + ' s3://' + AWS_BUCKET + '/' + remoteOut + ' --recursive --exclude=cp.is.done' 
+                    printandlog(f'Move attempt #{str(mvtries+1)}',logger)
+                    cmd = 'aws s3 mv {localOut} s3://{AWS_BUCKET}/{remoteOut} --recursive --exclude=cp.is.done' 
                     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
                     out,err = subp.communicate()
                     out=out.decode()
                     err=err.decode()
-                    printandlog('== OUT \n'+out, logger)
+                    printandlog(f'== OUT {out}', logger)
                     if err == '':
                         break
                     else:
-                        printandlog('== ERR \n'+err,logger)
+                        printandlog(f'== ERR {err}',logger)
                         mvtries+=1
             except:
                 printandlog('Move failed',logger)
-                printandlog('== ERR \n'+err,logger)
+                printandlog(f'== ERR {err}',logger)
                 time.sleep(30)
                 mvtries+=1
         if next(open(cpDone))=='Complete\n':
@@ -275,7 +263,7 @@ def runCellProfiler(message):
                 logger.removeHandler(watchtowerlogger)
                 return 'SUCCESS'
             else:
-                printandlog('OUTPUT PROBLEM. Giving up on '+metadataID,logger)
+                printandlog(f'OUTPUT PROBLEM. Giving up on {metadataID}',logger)
                 logger.removeHandler(watchtowerlogger)
                 return 'OUTPUT_PROBLEM'
         else:
