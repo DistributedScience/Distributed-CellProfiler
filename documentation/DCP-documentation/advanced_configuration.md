@@ -23,3 +23,20 @@ These values can be modified in run.py .
 * **Frequency or types of information included in the per-instance logs:** These can be adjusted in the instance-monitor script.
 * **[CellProfiler command line flags](https://github.com/CellProfiler/CellProfiler/wiki/Adapting-CellProfiler-to-a-LIMS-environment#cmd):** These can be modified in the cp-worker script.
 * **Log stream names or logging level:** These can be modified in the cp-worker script.
+
+## Changes to CellProfiler pipeline to use Distributed-CellProfiler with RunCellpose plugin
+
+* **Distributed-CellProfiler version:** At least CellProfiler version 4.2.4, and use the DOCKERHUB_TAG in config.py as `bethcimini/distributed-cellprofiler:2.1.0_4.2.4_plugins`.
+* **Custom model: If using a [custom User-trained model](https://cellpose.readthedocs.io/en/latest/models.html) generated using Cellpose, add the model file to S3.
+We use the following structure to organize our files on S3.
+```
+   └── <project_name>
+      └── workspace
+           └── model
+               └── custom_model_filename
+```
+* **RunCellpose module:** 
+    * Inside RunCellpose, select the "custom" Detection mode.
+    In "Location of the pre-trained model file", enter the mounted bucket path to your model. 
+    e.g. **/home/ubuntu/bucket/projects/<project_name>/workspace/model/**
+    * In "Pre-trained model file name", enter your custom_model_filename
