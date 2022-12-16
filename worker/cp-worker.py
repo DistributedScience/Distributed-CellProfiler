@@ -113,7 +113,7 @@ def runCellProfiler(message):
                 if eachMetadata not in metadataID:
                     watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=str(message['Metadata'].values()),create_log_group=False)
                     logger.addHandler(watchtowerlogger)
-                    printandlog('Your specified output structure does not match the Metadata passed',logger)
+                    printandlog('Your specified output structure does not match the Metadata passed. If your job grouping is different than your output grouping, check Cloudwatch logs with output grouping instead.',logger)
                     logger.removeHandler(watchtowerlogger)
                 else:
                     metadataID = str.replace(metadataID,eachMetadata,message['Metadata'][eachMetadata])
@@ -126,7 +126,7 @@ def runCellProfiler(message):
             metadataID = message['output_structure']
             for eachMetadata in message['Metadata'].split(','):
                 if eachMetadata.split('=')[0] not in metadataID:
-                    printandlog('Your specified output structure does not match the Metadata passed',logger)
+                    printandlog('Your specified output structure does not match the Metadata passed. If your job grouping is different than your output grouping, check Cloudwatch logs with output grouping instead.',logger)
                 else:
                     metadataID = str.replace(metadataID,eachMetadata.split('=')[0],eachMetadata.split('=')[1])
             printandlog(f'metadataID ={metadataID}', logger)
