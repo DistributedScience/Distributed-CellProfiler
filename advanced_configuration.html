@@ -384,6 +384,11 @@ title="Print to PDF"
    Changes that will require you to make your own Docker container
   </a>
  </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-to-cellprofiler-pipeline-to-use-distributed-cellprofiler-with-runcellpose-plugin">
+   Changes to CellProfiler pipeline to use Distributed-CellProfiler with RunCellpose plugin
+  </a>
+ </li>
 </ul>
 
     </nav>
@@ -411,6 +416,11 @@ title="Print to PDF"
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#changes-that-will-require-you-to-make-your-own-docker-container">
    Changes that will require you to make your own Docker container
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-to-cellprofiler-pipeline-to-use-distributed-cellprofiler-with-runcellpose-plugin">
+   Changes to CellProfiler pipeline to use Distributed-CellProfiler with RunCellpose plugin
   </a>
  </li>
 </ul>
@@ -449,6 +459,30 @@ These values can be modified in run.py .</p></li>
 <li><p><strong>Frequency or types of information included in the per-instance logs:</strong> These can be adjusted in the instance-monitor script.</p></li>
 <li><p><strong><a class="reference external" href="https://github.com/CellProfiler/CellProfiler/wiki/Adapting-CellProfiler-to-a-LIMS-environment#cmd">CellProfiler command line flags</a>:</strong> These can be modified in the cp-worker script.</p></li>
 <li><p><strong>Log stream names or logging level:</strong> These can be modified in the cp-worker script.</p></li>
+</ul>
+</section>
+<section id="changes-to-cellprofiler-pipeline-to-use-distributed-cellprofiler-with-runcellpose-plugin">
+<h2>Changes to CellProfiler pipeline to use Distributed-CellProfiler with RunCellpose plugin<a class="headerlink" href="#changes-to-cellprofiler-pipeline-to-use-distributed-cellprofiler-with-runcellpose-plugin" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p><strong>Distributed-CellProfiler version:</strong> At least CellProfiler version 4.2.4, and use the DOCKERHUB_TAG in config.py as <code class="docutils literal notranslate"><span class="pre">bethcimini/distributed-cellprofiler:2.1.0_4.2.4_plugins</span></code>.</p></li>
+<li><p>**Custom model: If using a <a class="reference external" href="https://cellpose.readthedocs.io/en/latest/models.html">custom User-trained model</a> generated using Cellpose, add the model file to S3.
+We use the following structure to organize our files on S3.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   └── &lt;project_name&gt;
+      └── workspace
+           └── model
+               └── custom_model_filename
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>RunCellpose module:</strong></p>
+<ul>
+<li><p>Inside RunCellpose, select the “custom” Detection mode.
+In “Location of the pre-trained model file”, enter the mounted bucket path to your model.
+e.g. <strong>/home/ubuntu/bucket/projects/&lt;project_name&gt;/workspace/model/</strong></p></li>
+<li><p>In “Pre-trained model file name”, enter your custom_model_filename</p></li>
+</ul>
+</li>
 </ul>
 </section>
 </section>
