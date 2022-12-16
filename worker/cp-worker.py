@@ -160,68 +160,86 @@ def runCellProfiler(message):
         except KeyError: #Returned if that folder does not exist
             pass	
     
-    csv_name = os.path.join(DATA_ROOT,message['data_file'])
+    data_file_path = os.path.join(DATA_ROOT,message['data_file'])
     downloaded_files = []
 
     # Optional- download files
     if DOWNLOAD_FILES:
         if DOWNLOAD_FILES.lower() == 'true':
-            printandlog('Figuring which files to download', logger)
-            import pandas
-            s3 = boto3.resource('s3')
             if not os.path.exists(localIn):
                 os.mkdir(localIn)
-            csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
-            csv_in=csv_in.astype('str')
-            #Figure out what metadata fields we need in this experiment, as a dict
-            if type(message['Metadata'])==dict:
-                filter_dict = message['Metadata']
-            else:
-                filter_dict = {}
-                for eachMetadata in message['Metadata'].split(','):
-                    filterkey, filterval = eachMetadata.split('=')
-                    filter_dict[filterkey] = filterval
-            #Filter our CSV to just the rows CellProfiler will process, so that we can download only what we need
-            for eachfilter in filter_dict.keys():
-                csv_in = csv_in[csv_in[eachfilter] == filter_dict[eachfilter]]
-            #Figure out the actual file names and get them
-            channel_list = [x.split('FileName_')[1] for x in csv_in.columns if 'FileName' in x]
-            printandlog('Downloading files', logger)
-            for channel in channel_list:
-                for field in range(csv_in.shape[0]):
-                    full_old_file_name = os.path.join(list(csv_in['PathName_'+channel])[field],list(csv_in['FileName_'+channel])[field])
-                    prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1][1:]
-                    new_file_name = os.path.join(localIn,prefix_on_bucket)
-                    if not os.path.exists(os.path.split(new_file_name)[0]):
-                        os.makedirs(os.path.split(new_file_name)[0])
-                        printandlog(f'made directory {os.path.split(new_file_name)[0]}',logger)
-                    if not os.path.exists(new_file_name):
-                        s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
-                        downloaded_files.append(new_file_name)
-            printandlog(f'Downloaded {str(len(downloaded_files))} files',logger)
-            import random
-            newtag = False
-            while newtag == False:
-                tag = str(random.randint(100000,999999)) #keep files from overwriting one another
-                local_csv_name = os.path.join(localIn,tag,os.path.split(csv_name)[1])
-                if not os.path.exists(local_csv_name):
-                    if not os.path.exists(os.path.split(local_csv_name)[0]):
-                        os.makedirs(os.path.split(local_csv_name)[0])
-                    csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
-                    csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
-                    csv_in.to_csv(local_csv_name,index=False)
-                    print('Wrote updated CSV')
-                    newtag = True
+            s3 = boto3.resource('s3')
+            if message['data_file'][-3:]=='.csv':
+                printandlog('Figuring which files to download', logger)
+                import pandas
+                csv_in = pandas.read_csv(data_file_path)
+                csv_in=csv_in.astype('str')
+                #Figure out what metadata fields we need in this experiment, as a dict
+                if type(message['Metadata'])==dict:
+                    filter_dict = message['Metadata']
                 else:
-                    newtag = False
-            csv_name = local_csv_name
+                    filter_dict = {}
+                    for eachMetadata in message['Metadata'].split(','):
+                        filterkey, filterval = eachMetadata.split('=')
+                        filter_dict[filterkey] = filterval
+                #Filter our CSV to just the rows CellProfiler will process, so that we can download only what we need
+                for eachfilter in filter_dict.keys():
+                    csv_in = csv_in[csv_in[eachfilter] == filter_dict[eachfilter]]
+                #Figure out the actual file names and get them
+                channel_list = [x.split('FileName_')[1] for x in csv_in.columns if 'FileName' in x]
+                printandlog('Downloading files', logger)
+                for channel in channel_list:
+                    for field in range(csv_in.shape[0]):
+                        full_old_file_name = os.path.join(list(csv_in['PathName_'+channel])[field],list(csv_in['FileName_'+channel])[field])
+                        prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1][1:]
+                        new_file_name = os.path.join(localIn,prefix_on_bucket)
+                        if not os.path.exists(os.path.split(new_file_name)[0]):
+                            os.makedirs(os.path.split(new_file_name)[0])
+                            printandlog(f'made directory {os.path.split(new_file_name)[0]}',logger)
+                        if not os.path.exists(new_file_name):
+                            s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
+                            downloaded_files.append(new_file_name)
+                printandlog(f'Downloaded {str(len(downloaded_files))} files',logger)
+                import random
+                newtag = False
+                while newtag == False:
+                    tag = str(random.randint(100000,999999)) #keep files from overwriting one another
+                    local_data_file_path = os.path.join(localIn,tag,os.path.split(data_file_path)[1])
+                    if not os.path.exists(local_data_file_path):
+                        if not os.path.exists(os.path.split(local_data_file_path)[0]):
+                            os.makedirs(os.path.split(local_data_file_path)[0])
+                        csv_in = pandas.read_csv(data_file_path)
+                        csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
+                        csv_in.to_csv(local_data_file_path,index=False)
+                        print('Wrote updated CSV')
+                        newtag = True
+                    else:
+                        newtag = False
+                data_file_path = local_data_file_path
+            elif message['data_file'][-3:]=='.txt':
+                printandlog('Downloading files', logger)
+                with open(data_file_path, 'r') as f:
+                    for file_path in f:
+                        prefix_on_bucket = file_path.split(DATA_ROOT)[1][1:]
+                        new_file_name = os.path.join(localIn,prefix_on_bucket)
+                        if not os.path.exists(os.path.split(new_file_name)[0]):
+                            os.makedirs(os.path.split(new_file_name)[0])
+                            printandlog(f'made directory {os.path.split(new_file_name)[0]}',logger)
+                        if not os.path.exists(new_file_name):
+                            s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
+                            downloaded_files.append(new_file_name)
+                printandlog(f'Downloaded {str(len(downloaded_files))} files',logger)
 
     # Build and run CellProfiler command
     cpDone = f'{localOut}/cp.is.done'
-    if message['pipeline'][-3:]!='.h5':
-        cmd = f'cellprofiler -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} --data-file={csv_name} -g {message["Metadata"]}'
-    else:
+    if message['data_file'][-3:]=='.csv':
+        cmd = f'cellprofiler -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} --data-file={data_file_path} -g {message["Metadata"]}'
+    elif message['data_file'][-3:]=='.h5':
         cmd = f'cellprofiler -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} -g {message["Metadata"]}'
+    elif message['data_file'][-3:]=='.txt':
+        cmd = f'cellprofile -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} --file-list={data_file_path} -g {message["Metadata"]}'
+    else:
+        printandlog("Didn't recognize input file",logger)
     if USE_PLUGINS.lower() == 'true':
         cmd += f' --plugins-directory={PLUGIN_DIR}'
     print(f'Running {cmd}')

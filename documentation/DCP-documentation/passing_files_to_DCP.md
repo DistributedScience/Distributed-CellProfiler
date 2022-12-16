@@ -35,7 +35,7 @@ Note that if you do not follow our standard file organization, under **#not proj
 ## Batch Files
 
 Batch files are an easy way to transition from running locally to distributed.
-A batch file is an .h5 file created by CellProfiler which captures all the data needed to run your workflow - pipeline and file information are packaged together.
+A batch file is an `.h5` file created by CellProfiler which captures all the data needed to run your workflow - pipeline and file information are packaged together.
 To use a batch file, your data needs to have the same structure in the cloud as on your local machine.
 
 ### Creating batch files
@@ -49,7 +49,7 @@ More information on the `CreateBatchFiles` module can be found [here](https://ce
 
 ### Using batch files
 
-To use a batch file with submitJobs, put the path to the .h5 file in **data_file:** and **pipeline:**.
+To use a batch file with submitJobs, put the path to the `.h5` file in **data_file:** and **pipeline:**.
 
 To use a batch file with run_batch_general.py, enter the name of the batch file under **#project specific stuff** in `batchpipename{STEP}`.
 At the bottom of the file, set `batch=True` in the command for the step you are running.
@@ -58,8 +58,13 @@ Note that if you do not follow our standard file organization, under **#not proj
 
 ## File Lists
 
+You can also simply pass a list of file paths with one file per row in `.txt` format.
+Note that this does not pass any metadata to CellProfiler.
 
 ### Creating File Lists
 
+Use any text editing software to create a `.txt` file where each line of the file is a path to a single image that you want to process.
 
 ### Using File Lists
+
+To use a file list with submitJobs, put the path to the `.txt` file in **data_file:**.
