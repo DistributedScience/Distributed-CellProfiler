@@ -6,7 +6,7 @@ import logging
 import os
 import re
 import subprocess
-import sys 
+import sys
 import time
 import watchtower
 import string
@@ -20,6 +20,18 @@ LOCAL_OUTPUT = '/home/ubuntu/local_output'
 PLUGIN_DIR = '/home/ubuntu/CellProfiler-plugins'
 QUEUE_URL = os.environ['SQS_QUEUE_URL']
 AWS_BUCKET = os.environ['AWS_BUCKET']
+if 'SOURCE_BUCKET' not in os.environ:
+    SOURCE_BUCKET = os.environ['AWS_BUCKET']
+else:
+    SOURCE_BUCKET = os.environ['SOURCE_BUCKET']
+if 'DESTINATION_BUCKET' not in os.environ:
+    DESTINATION_BUCKET = os.environ['AWS_BUCKET']
+else:
+    DESTINATION_BUCKET = os.environ['DESTINATION_BUCKET']
+if 'UPLOAD_FLAGS' in os.environ:
+    UPLOAD_FLAGS = os.environ['UPLOAD_FLAGS']
+else:
+    UPLOAD_FLAGS = False
 LOG_GROUP_NAME= os.environ['LOG_GROUP_NAME']
 CHECK_IF_DONE_BOOL= os.environ['CHECK_IF_DONE_BOOL']
 EXPECTED_NUMBER_FILES= os.environ['EXPECTED_NUMBER_FILES']
@@ -52,7 +64,7 @@ class JobQueue():
     def __init__(self, queueURL):
         self.client = boto3.client('sqs')
         self.queueURL = queueURL
-    
+
     def readMessage(self):
         response = self.client.receive_message(QueueUrl=self.queueURL, WaitTimeSeconds=20)
         if 'Messages' in response.keys():
@@ -82,7 +94,7 @@ def monitorAndLog(process,logger):
             break
         if output:
             print(output.strip())
-            logger.info(output)  
+            logger.info(output)
 
 def printandlog(text,logger):
     print(text)
@@ -144,18 +156,18 @@ def runCellProfiler(message):
     localOut = LOCAL_OUTPUT + '/%(MetadataID)s' % {'MetadataID': metadataID}
     remoteOut= os.path.join(message['output'],metadataID)
     replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
-            'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'], 
+            'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'],
             'MetadataID':metadataID, 'PLUGINS':PLUGIN_DIR }
 
     # Start loggging now that we have a job we care about
     watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
-    logger.addHandler(watchtowerlogger)	
+    logger.addHandler(watchtowerlogger)
 
     # See if this is a message you've already handled, if you've so chosen
     if CHECK_IF_DONE_BOOL.upper() == 'TRUE':
         try:
             s3client=boto3.client('s3')
-            bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut+'/')
+            bucketlist=s3client.list_objects(Bucket=DESTINATION_BUCKET,Prefix=remoteOut+'/')
             objectsizelist=[k['Size'] for k in bucketlist['Contents']]
             objectsizelist = [i for i in objectsizelist if i >= MIN_FILE_SIZE_BYTES]
             if NECESSARY_STRING:
@@ -166,8 +178,8 @@ def runCellProfiler(message):
                 logger.removeHandler(watchtowerlogger)
                 return 'SUCCESS'
         except KeyError: #Returned if that folder does not exist
-            pass	
-    
+            pass
+
     csv_name = os.path.join(DATA_ROOT,message['data_file'])
     downloaded_files = []
 
@@ -176,10 +188,18 @@ def runCellProfiler(message):
         if DOWNLOAD_FILES.lower() == 'true':
             printandlog('Figuring which files to download', logger)
             import pandas
-            s3 = boto3.resource('s3')
+            s3client = boto3.client('s3')
             if not os.path.exists(localIn):
                 os.mkdir(localIn)
-            csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
+            printandlog('Downloading ' + message['data_file'] + ' from ' + SOURCE_BUCKET, logger)
+            csv_insubfolders = message['data_file'].split('/')[-3:]
+            subfolders = '/'.join((csv_insubfolders)[:-1])
+            csv_insubfolders = '/'.join(csv_insubfolders)
+            csv_name = os.path.join(localIn, csv_insubfolders)
+            if not os.path.exists(os.path.join(localIn,subfolders)):
+                os.makedirs(os.path.join(localIn,subfolders), exist_ok=True)
+            s3client.download_file(SOURCE_BUCKET, message['data_file'], csv_name)
+            csv_in = pandas.read_csv(os.path.join(localIn,csv_name))
             csv_in=csv_in.astype('str')
             #Figure out what metadata fields we need in this experiment, as a dict
             if type(message['Metadata'])==dict:
@@ -194,36 +214,31 @@ def runCellProfiler(message):
                 csv_in = csv_in[csv_in[eachfilter] == filter_dict[eachfilter]]
             #Figure out the actual file names and get them
             channel_list = [x.split('FileName_')[1] for x in csv_in.columns if 'FileName' in x]
-            printandlog('Downloading files', logger)
+            printandlog(f'Downloading files for channels {channel_list}', logger)
             for channel in channel_list:
                 for field in range(csv_in.shape[0]):
                     full_old_file_name = os.path.join(list(csv_in['PathName_'+channel])[field],list(csv_in['FileName_'+channel])[field])
                     prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1][1:]
                     new_file_name = os.path.join(localIn,prefix_on_bucket)
                     if not os.path.exists(os.path.split(new_file_name)[0]):
-                        os.makedirs(os.path.split(new_file_name)[0])
+                        os.makedirs(os.path.split(new_file_name)[0], exist_ok=True)
                         printandlog('made directory '+os.path.split(new_file_name)[0],logger)
                     if not os.path.exists(new_file_name):
-                        s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
+                        s3client.download_file(SOURCE_BUCKET,prefix_on_bucket,new_file_name)
+                        printandlog('Downloading file '+prefix_on_bucket,logger)
                         downloaded_files.append(new_file_name)
             printandlog('Downloaded '+str(len(downloaded_files))+' files',logger)
-            import random
-            newtag = False
-            while newtag == False:
-                tag = str(random.randint(100000,999999)) #keep files from overwriting one another
-                local_csv_name = os.path.join(localIn,tag,os.path.split(csv_name)[1])
-                if not os.path.exists(local_csv_name):
-                    if not os.path.exists(os.path.split(local_csv_name)[0]):
-                        os.makedirs(os.path.split(local_csv_name)[0])
-                    csv_in = pandas.read_csv(os.path.join(DATA_ROOT,message['data_file']))
-                    csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
-                    csv_in.to_csv(local_csv_name,index=False)
-                    print('Wrote updated CSV')
-                    newtag = True
-                else:
-                    newtag = False
-            csv_name = local_csv_name
-
+            # Update paths in csv to local paths
+            csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
+            csv_in.to_csv(csv_name,index=False)
+            print('Updated load_data_csv to local paths')
+            # Download pipeline and update pipeline path in message
+            printandlog('Downloading ' + message['pipeline'] + ' from ' + SOURCE_BUCKET, logger)
+            localpipe = os.path.join(localIn, message['pipeline'].split('/')[-1])
+            s3client.download_file(SOURCE_BUCKET, message['pipeline'], localpipe)
+            # Correct locations in CP run command
+            replaceValues['PL'] = message['pipeline'].split('/')[-1]
+            replaceValues['DATA'] = localIn
     # Build and run CellProfiler command
     cpDone = localOut + '/cp.is.done'
     cmdstem = 'cellprofiler -c -r '
@@ -238,7 +253,7 @@ def runCellProfiler(message):
     cmd = cmd % replaceValues
     print('Running', cmd)
     logger.info(cmd)
-    
+
     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     monitorAndLog(subp,logger)
 
@@ -253,8 +268,11 @@ def runCellProfiler(message):
         while mvtries <3:
             try:
                     printandlog('Move attempt #'+str(mvtries+1),logger)
-                    cmd = 'aws s3 mv ' + localOut + ' s3://' + AWS_BUCKET + '/' + remoteOut + ' --recursive --exclude=cp.is.done' 
-                    subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
+                    cmd = 'aws s3 mv ' + localOut + ' s3://' + DESTINATION_BUCKET + '/' + remoteOut + ' --recursive --exclude=cp.is.done'
+                    if UPLOAD_FLAGS:
+                        cmd += ' ' + UPLOAD_FLAGS
+                    printandlog('Uploading with command ' + cmd, logger)
+                    subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     out,err = subp.communicate()
                     out=out.decode()
                     err=err.decode()
@@ -288,7 +306,7 @@ def runCellProfiler(message):
         import shutil
         shutil.rmtree(localOut, ignore_errors=True)
         return 'CP_PROBLEM'
-    
+
 
 #################################
 # MAIN WORKER LOOP
@@ -320,4 +338,3 @@ if __name__ == '__main__':
     print('Worker started')
     main()
     print('Worker finished')
-

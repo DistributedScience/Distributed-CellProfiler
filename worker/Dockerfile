@@ -8,7 +8,7 @@
 
 FROM cellprofiler/cellprofiler:4.2.4
 
-# Install S3FS 
+# Install S3FS
 
 RUN apt-get -y update           && \
     apt-get -y upgrade          && \
@@ -17,6 +17,7 @@ RUN apt-get -y update           && \
 	autotools-dev 		\
 	g++ 			\
 	git 			\
+  jq 			\
 	libcurl4-gnutls-dev 	\
 	libfuse-dev 		\
 	libssl-dev 		\
@@ -24,6 +25,8 @@ RUN apt-get -y update           && \
 	make pkg-config		\
 	sysstat			\
 	curl
+
+RUN apt-get install --only-upgrade bash
 
 WORKDIR /usr/local/src
 RUN git clone https://github.com/s3fs-fuse/s3fs-fuse.git
@@ -35,7 +38,10 @@ RUN make install
 
 # Install AWS CLI
 
-RUN python3.8 -m pip install awscli 
+RUN apt install unzip
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+RUN unzip awscliv2.zip
+RUN ./aws/install
 
 # Install boto3
 
@@ -65,4 +71,3 @@ WORKDIR /home/ubuntu/CellProfiler-plugins
 WORKDIR /home/ubuntu
 ENTRYPOINT ["./run-worker.sh"]
 CMD [""]
-
