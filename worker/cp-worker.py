@@ -239,7 +239,7 @@ def runCellProfiler(message):
     elif message['data_file'][-3:]=='.h5':
         cmd = f'cellprofiler -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} -g {message["Metadata"]}'
     elif message['data_file'][-3:]=='.txt':
-        cmd = f'cellprofile -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} --file-list={data_file_path} -g {message["Metadata"]}'
+        cmd = f'cellprofiler -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} --file-list={data_file_path}'
     else:
         printandlog("Didn't recognize input file",logger)
     if USE_PLUGINS.lower() == 'true':
