@@ -38,6 +38,8 @@ The monitor can be run by entering `python run.py monitor files/APP_NAMESpotFlee
 
 * Exports all the logs from your analysis onto your S3 bucket.
 
+* Deletes your Cloudwatch Dashboard if you created it and set CLEAN_DASHBOARD to True.
+
 ***
 
 ## Cheapest mode
