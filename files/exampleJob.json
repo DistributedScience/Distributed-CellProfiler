@@ -1,6 +1,6 @@
 {
   "_comment1": "Paths in this file are relative to the root of S3 buckets",
-  "_comment2": "pipeline, data_file, and input are relative to INPUT_BUCKET; output to OUTPUT_BUCKET",
+  "_comment2": "pipeline, data_file, and input are relative to SOURCE_BUCKET; output to DESTINATION_BUCKET",
   "pipeline": "projects/analysis.cppipe",
   "data_file": "projects/list_of_images.csv",
   "input": "projects/input/",
