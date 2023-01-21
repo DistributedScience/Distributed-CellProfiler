@@ -1,4 +1,3 @@
-from __future__ import print_function
 import os, sys
 import boto3
 import datetime
@@ -9,7 +8,14 @@ from base64 import b64encode
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+CREATE_DASHBOARD = False
+CLEAN_DASHBOARD = False
+
 from config import *
+
+# Back compatability with old config requirements
+if ':' in SQS_DEAD_LETTER_QUEUE:
+    SQS_DEAD_LETTER_QUEUE = SQS_DEAD_LETTER_QUEUE.rsplit(':',1)[1]
 
 WAIT_TIME = 60
 MONITOR_TIME = 60
@@ -42,17 +48,6 @@ TASK_DEFINITION = {
     ],
 }
 
-SQS_DEFINITION = {
-    "DelaySeconds": "0",
-    "MaximumMessageSize": "262144",
-    "MessageRetentionPeriod": "1209600",
-    "ReceiveMessageWaitTimeSeconds": "0",
-    "RedrivePolicy": '{"deadLetterTargetArn":"'
-    + SQS_DEAD_LETTER_QUEUE
-    + '","maxReceiveCount":"10"}',
-    "VisibilityTimeout": str(SQS_MESSAGE_VISIBILITY),
-}
-
 
 #################################
 # AUXILIARY FUNCTIONS
@@ -69,10 +64,10 @@ def generate_task_definition(AWS_PROFILE):
     task_definition = TASK_DEFINITION.copy()
     key, secret = get_aws_credentials(AWS_PROFILE)
     sqs = boto3.client("sqs")
-    queue_name = get_queue_url(sqs)
+    queue_url, dead_url = get_queue_url(sqs)
     task_definition["containerDefinitions"][0]["environment"] += [
         {"name": "APP_NAME", "value": APP_NAME},
-        {"name": "SQS_QUEUE_URL", "value": queue_name},
+        {"name": "SQS_QUEUE_URL", "value": queue_url},
         {"name": "AWS_ACCESS_KEY_ID", "value": key},
         {"name": "AWS_SECRET_ACCESS_KEY", "value": secret},
         {"name": "AWS_BUCKET", "value": AWS_BUCKET},
@@ -144,21 +139,45 @@ def create_or_update_ecs_service(ecs, ECS_SERVICE_NAME, ECS_TASK_NAME):
 
 def get_queue_url(sqs):
     result = sqs.list_queues()
-    if "QueueUrls" in result.keys():
-        for u in result["QueueUrls"]:
-            if u.split("/")[-1] == SQS_QUEUE_NAME:
-                return u
-    return None
+    queue_url = None
+    dead_url = None
+    if 'QueueUrls' in result.keys():
+        for u in result['QueueUrls']:
+            if u.split('/')[-1] == SQS_QUEUE_NAME:
+                queue_url = u
+            if u.split('/')[-1] == SQS_DEAD_LETTER_QUEUE:
+                dead_url = u
+    return queue_url, dead_url
 
 
 def get_or_create_queue(sqs):
-    u = get_queue_url(sqs)
-    if u is None:
-        print("Creating queue")
+    queue_url, dead_url = get_queue_url(sqs)
+    if dead_url is None:
+        print("Creating DeadLetter queue")
+        sqs.create_queue(QueueName=SQS_DEAD_LETTER_QUEUE)
+        time.sleep(WAIT_TIME)
+        queue_url, dead_url = get_queue_url(sqs)
+    response = sqs.get_queue_attributes(
+        QueueUrl=dead_url, AttributeNames=["QueueArn"]
+    )
+    dead_arn = response["Attributes"]["QueueArn"]
+
+    SQS_DEFINITION = {
+        "DelaySeconds": "0",
+        "MaximumMessageSize": "262144",
+        "MessageRetentionPeriod": "1209600",
+        "ReceiveMessageWaitTimeSeconds": "0",
+        "RedrivePolicy": '{"deadLetterTargetArn":"'
+        + dead_arn
+        + '","maxReceiveCount":"10"}',
+        "VisibilityTimeout": str(SQS_MESSAGE_VISIBILITY),
+    }
+    if queue_url is None:
+        print('Creating queue')
         sqs.create_queue(QueueName=SQS_QUEUE_NAME, Attributes=SQS_DEFINITION)
         time.sleep(WAIT_TIME)
     else:
-        print("Queue exists")
+        print('Queue exists')
 
 
 def loadConfig(configFile):
@@ -321,6 +340,142 @@ def export_logs(logs, loggroupId, starttime, bucketId):
                 break
         time.sleep(30)
 
+def create_dashboard(requestInfo):
+    cloudwatch = boto3.client("cloudwatch")
+    DashboardMessage = {
+        "widgets": [
+            {
+                "height": 6,
+                "width": 6,
+                "y": 0,
+                "x": 18,
+                "type": "metric",
+                "properties": {
+                    "metrics": [
+                        [ "AWS/SQS", "NumberOfMessagesReceived", "QueueName", f'{APP_NAME}Queue' ],
+                        [ ".", "NumberOfMessagesDeleted", ".", "." ],
+                    ],
+                    "view": "timeSeries",
+                    "stacked": False,
+                    "region": AWS_REGION,
+                    "period": 300,
+                    "stat": "Average"
+                }
+            },
+            {
+                "height": 6,
+                "width": 6,
+                "y": 0,
+                "x": 6,
+                "type": "metric",
+                "properties": {
+                    "view": "timeSeries",
+                    "stacked": False,
+                    "metrics": [
+                        [ "AWS/ECS", "MemoryUtilization", "ClusterName", ECS_CLUSTER ]
+                    ],
+                    "region": AWS_REGION,
+                    "period": 300,
+                    "yAxis": {
+                        "left": {
+                            "min": 0
+                        }
+                    }
+                }
+            },
+            {
+                "height": 6,
+                "width": 6,
+                "y": 0,
+                "x": 12,
+                "type": "metric",
+                "properties": {
+                    "metrics": [
+                        [ "AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", f'{APP_NAME}Queue' ],
+                        [ ".", "ApproximateNumberOfMessagesNotVisible", ".", "."],
+                    ],
+                    "view": "timeSeries",
+                    "stacked": True,
+                    "region": AWS_REGION,
+                    "period": 300,
+                    "stat": "Average"
+                }
+            },
+            {
+                "height": 6,
+                "width": 12,
+                "y": 6,
+                "x": 12,
+                "type": "log",
+                "properties": {
+                    "query": f"SOURCE {APP_NAME} | fields @message| filter @message like 'cellprofiler -c'| stats count_distinct(@message)\n",
+                    "region": AWS_REGION,
+                    "stacked": False,
+                    "title": "Distinct Logs with \"cellprofiler -c\"",
+                    "view": "table"
+                }
+            },
+            {
+                "height": 6,
+                "width": 12,
+                "y": 6,
+                "x": 0,
+                "type": "log",
+                "properties": {
+                    "query": f"SOURCE {APP_NAME} | fields @message| filter @message like 'cellprofiler -c'| stats count(@message)",
+                    "region": AWS_REGION,
+                    "stacked": False,
+                    "title": "All Logs \"cellprofiler -c\"",
+                    "view": "table"
+                }
+            },
+            {
+                "height": 6,
+                "width": 24,
+                "y": 12,
+                "x": 0,
+                "type": "log",
+                "properties": {
+                    "query": f"SOURCE {APP_NAME} | fields @message   | filter @message like \"Error\"   | display @message",
+                    "region": AWS_REGION,
+                    "stacked": False,
+                    "title": "Errors",
+                    "view": "table"
+                }
+            },
+            {
+                "height": 6,
+                "width": 6,
+                "y": 0,
+                "x": 0,
+                "type": "metric",
+                "properties": {
+                    "metrics": [
+                        [ "AWS/EC2Spot", "FulfilledCapacity", "FleetRequestId", requestInfo["SpotFleetRequestId"]],
+                        [ ".", "TargetCapacity", ".", "."],
+                    ],
+                    "view": "timeSeries",
+                    "stacked": False,
+                    "region": AWS_REGION,
+                    "period": 300,
+                    "stat": "Average"
+                }
+            }
+        ]
+    }
+    DashboardMessage_json = json.dumps(DashboardMessage, indent = 4) 
+    response = cloudwatch.put_dashboard(DashboardName=APP_NAME, DashboardBody=DashboardMessage_json)
+    if response['DashboardValidationMessages']:
+        print ('Likely error in Dashboard creation')
+        print (response['DashboardValidationMessages'])
+
+
+def clean_dashboard(monitorapp):
+    cloudwatch = boto3.client("cloudwatch")
+    dashboard_list = cloudwatch.list_dashboards()
+    for entry in dashboard_list["DashboardEntries"]:
+        if monitorapp in entry["DashboardName"]:
+            cloudwatch.delete_dashboards(DashboardNames=[entry["DashboardName"]])
 
 #################################
 # CLASS TO HANDLE SQS QUEUE
@@ -542,8 +697,11 @@ def startCluster():
         status = ec2client.describe_spot_fleet_instances(
             SpotFleetRequestId=requestInfo["SpotFleetRequestId"]
         )
-
     print("Spot fleet successfully created. Your job should start in a few minutes.")
+    
+    if CREATE_DASHBOARD:
+        print ("Creating CloudWatch dashboard for run metrics")
+        create_dashboard(requestInfo)
 
 
 #################################
@@ -654,6 +812,9 @@ def monitor(cheapest=False):
     deregistertask(ECS_TASK_NAME, ecs)
     print("Removing cluster if it's not the default and not otherwise in use")
     removeClusterIfUnused(monitorcluster, ecs)
+    # Remove Cloudwatch dashboard if created and cleanup desired
+    if CREATE_DASHBOARD and CLEAN_DASHBOARD:
+        clean_dashboard(monitorapp)
 
     # Step 6: Export the logs to S3
     logs = boto3.client("logs")
