@@ -3,6 +3,9 @@
 Distributed-CellProfiler runs many parallel jobs in EC2 instances that are automatically managed by ECS.
 To get jobs started, a control node to submit jobs and monitor progress is needed.
 This section describes what you need in AWS and in the control node to get started.
+This guide only needs to be followed once per account. 
+(Though we recommend each user has their own control node, further control nodes can be created from an AMI after this guide has been followed to completion once.)
+
 
 ## 1. AWS Configuration
 
@@ -31,7 +34,9 @@ In the current interface, it's easiest to click "Create role", select "EC2" from
 * [Create an SQS](http://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSGettingStartedGuide/CreatingQueue.html) queue for unprocessable-messages to be dumped into (aka a DeadLetterQueue).
 
 ### 1.4 Primary Resources
-The following five are resources you need to interact with constantly while working with Distributed-CellProfiler. Although at this point you don't need to create anything special there, you can open each console in a separate tab in your browser to keep them handy and monitor DCP's behavior.
+The following five are the primary resources that Distributed-CellProfiler interacts with.
+After you have finished preparing for Distributed-CellProfiler (this guide), you do not need to directly interact with any of these services outside of Distributed-CellProfiler.
+If you would like a granular view of [what Distributed-CellProfiler is doing while it runs](overview_2.md), you can open each console in a separate tab in your browser and watch their individual behaviors, though this is not necessary, especially if you run the [monitor command](step_4_monitor.md) and/or enable auto-Dashboard creation in your [configuration](step_1_configuration.md).
 * [S3 Console](https://console.aws.amazon.com/s3)
 * [EC2 Console](https://console.aws.amazon.com/ec2/)
 * [ECS Console](https://console.aws.amazon.com/ecs/)

@@ -1,8 +1,12 @@
 # Table of contents
 
 format: jb-book
-root: overview
 parts:
+- caption: FAQ
+  chapters:
+  - file: overview
+  - file: overview_2
+  - file: costs
 - caption: Running DCP
   chapters:
   - file: step_0_prep
@@ -15,6 +19,7 @@ parts:
   - file: step_4_monitor
 - caption:
   chapters:
+  - file: dashboard
   - file: advanced_configuration
   - file: AWS_hygiene_scripts
   - file: troubleshooting_runs
