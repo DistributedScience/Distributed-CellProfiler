@@ -129,7 +129,7 @@ def runCellProfiler(message):
                     logger.removeHandler(watchtowerlogger)
                 else:
                     metadataID = str.replace(metadataID,eachMetadata,message['Metadata'][eachMetadata])
-                    metadataForCall+=eachMetadata+'='+message['Metadata'][eachMetadata]+','
+                    metadataForCall+=f"{eachMetadata}={message['Metadata'][eachMetadata]},"
             message['Metadata']=metadataForCall[:-1]
     elif 'output_structure' in message.keys():
         if message['output_structure']!='': #support for explicit output structuring
@@ -159,7 +159,7 @@ def runCellProfiler(message):
     if CHECK_IF_DONE_BOOL.upper() == 'TRUE':
         try:
             s3client=boto3.client('s3')
-            bucketlist=s3client.list_objects(Bucket=DESTINATION_BUCKET,Prefix=remoteOut+'/')
+            bucketlist=s3client.list_objects(Bucket=DESTINATION_BUCKET,Prefix=f'{remoteOut}/')
             objectsizelist=[k['Size'] for k in bucketlist['Contents']]
             objectsizelist = [i for i in objectsizelist if i >= MIN_FILE_SIZE_BYTES]
             if NECESSARY_STRING:
@@ -205,7 +205,7 @@ def runCellProfiler(message):
                 printandlog('Downloading files', logger)
                 for channel in channel_list:
                     for field in range(csv_in.shape[0]):
-                        full_old_file_name = os.path.join(list(csv_in['PathName_'+channel])[field],list(csv_in['FileName_'+channel])[field])
+                        full_old_file_name = os.path.join(list(csv_in[f'PathName_{channel}'])[field],list(csv_in[f'FileName_{channel}'])[field])
                         prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1][1:]
                         new_file_name = os.path.join(localIn,prefix_on_bucket)
                         if not os.path.exists(os.path.split(new_file_name)[0]):
@@ -273,11 +273,11 @@ def runCellProfiler(message):
         mvtries=0
         while mvtries <3:
             try:
-                printandlog('Move attempt #'+str(mvtries+1),logger)
-                cmd = 'aws s3 mv ' + localOut + ' s3://' + DESTINATION_BUCKET + '/' + remoteOut + ' --recursive --exclude=cp.is.done'
+                printandlog(f'Move attempt #{mvtries+1}',logger)
+                cmd = f'aws s3 mv {localOut} s3://{DESTINATION_BUCKET}/{remoteOut} --recursive --exclude=cp.is.done'
                 if UPLOAD_FLAGS:
-                    cmd += ' ' + UPLOAD_FLAGS
-                printandlog('Uploading with command ' + cmd, logger)
+                    cmd += f' {UPLOAD_FLAGS}'
+                printandlog(f'Uploading with command {cmd}', logger)
                 subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out,err = subp.communicate()
                 out=out.decode()
