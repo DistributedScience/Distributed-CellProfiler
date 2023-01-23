@@ -1,7 +1,8 @@
 {
-  "_comment1": "Paths in this file are relative to the root of your S3 bucket",
-  "pipeline": "projects/analysis.cppipe", 
-  "data_file": "projects/list_of_images.csv", 
+  "_comment1": "Paths in this file are relative to the root of S3 buckets",
+  "_comment2": "pipeline, data_file, and input are relative to SOURCE_BUCKET; output to DESTINATION_BUCKET",
+  "pipeline": "projects/analysis.cppipe",
+  "data_file": "projects/list_of_images.csv",
   "input": "projects/input/",
   "output": "projects/output/",
   "output_structure": "Metadata_Plate-Metadata_Well-Metadata_Site",
@@ -11,4 +12,3 @@
     {"Metadata": "Metadata_Plate=Plate1,Metadata_Well=A01,Metadata_Site=2"}
   ]
 }
-

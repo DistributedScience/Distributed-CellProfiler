@@ -15,6 +15,18 @@ LOCAL_OUTPUT = '/home/ubuntu/local_output'
 PLUGIN_DIR = '/home/ubuntu/CellProfiler-plugins'
 QUEUE_URL = os.environ['SQS_QUEUE_URL']
 AWS_BUCKET = os.environ['AWS_BUCKET']
+if 'SOURCE_BUCKET' not in os.environ:
+    SOURCE_BUCKET = os.environ['AWS_BUCKET']
+else:
+    SOURCE_BUCKET = os.environ['SOURCE_BUCKET']
+if 'DESTINATION_BUCKET' not in os.environ:
+    DESTINATION_BUCKET = os.environ['AWS_BUCKET']
+else:
+    DESTINATION_BUCKET = os.environ['DESTINATION_BUCKET']
+if 'UPLOAD_FLAGS' in os.environ:
+    UPLOAD_FLAGS = os.environ['UPLOAD_FLAGS']
+else:
+    UPLOAD_FLAGS = False
 LOG_GROUP_NAME= os.environ['LOG_GROUP_NAME']
 CHECK_IF_DONE_BOOL= os.environ['CHECK_IF_DONE_BOOL']
 EXPECTED_NUMBER_FILES= os.environ['EXPECTED_NUMBER_FILES']
@@ -47,7 +59,7 @@ class JobQueue():
     def __init__(self, queueURL):
         self.client = boto3.client('sqs')
         self.queueURL = queueURL
-    
+
     def readMessage(self):
         response = self.client.receive_message(QueueUrl=self.queueURL, WaitTimeSeconds=20)
         if 'Messages' in response.keys():
@@ -77,7 +89,7 @@ def monitorAndLog(process,logger):
             break
         if output:
             print(output.strip())
-            logger.info(output)  
+            logger.info(output)
 
 def printandlog(text,logger):
     print(text)
@@ -141,13 +153,13 @@ def runCellProfiler(message):
 
     # Start loggging now that we have a job we care about
     watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
-    logger.addHandler(watchtowerlogger)	
+    logger.addHandler(watchtowerlogger)
 
     # See if this is a message you've already handled, if you've so chosen
     if CHECK_IF_DONE_BOOL.upper() == 'TRUE':
         try:
             s3client=boto3.client('s3')
-            bucketlist=s3client.list_objects(Bucket=AWS_BUCKET,Prefix=remoteOut+'/')
+            bucketlist=s3client.list_objects(Bucket=DESTINATION_BUCKET,Prefix=remoteOut+'/')
             objectsizelist=[k['Size'] for k in bucketlist['Contents']]
             objectsizelist = [i for i in objectsizelist if i >= MIN_FILE_SIZE_BYTES]
             if NECESSARY_STRING:
@@ -161,6 +173,7 @@ def runCellProfiler(message):
             pass	
     
     data_file_path = os.path.join(DATA_ROOT,message['data_file'])
+
     downloaded_files = []
 
     # Optional- download files
@@ -246,7 +259,7 @@ def runCellProfiler(message):
         cmd += f' --plugins-directory={PLUGIN_DIR}'
     print(f'Running {cmd}')
     logger.info(cmd)
-    
+
     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     monitorAndLog(subp,logger)
 
@@ -260,18 +273,21 @@ def runCellProfiler(message):
         mvtries=0
         while mvtries <3:
             try:
-                    printandlog(f'Move attempt #{str(mvtries+1)}',logger)
-                    cmd = 'aws s3 mv {localOut} s3://{AWS_BUCKET}/{remoteOut} --recursive --exclude=cp.is.done' 
-                    subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE) 
-                    out,err = subp.communicate()
-                    out=out.decode()
-                    err=err.decode()
-                    printandlog(f'== OUT {out}', logger)
-                    if err == '':
-                        break
-                    else:
-                        printandlog(f'== ERR {err}',logger)
-                        mvtries+=1
+                printandlog('Move attempt #'+str(mvtries+1),logger)
+                cmd = 'aws s3 mv ' + localOut + ' s3://' + DESTINATION_BUCKET + '/' + remoteOut + ' --recursive --exclude=cp.is.done'
+                if UPLOAD_FLAGS:
+                    cmd += ' ' + UPLOAD_FLAGS
+                printandlog('Uploading with command ' + cmd, logger)
+                subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                out,err = subp.communicate()
+                out=out.decode()
+                err=err.decode()
+                printandlog(f'== OUT {out}', logger)
+                if err == '':
+                    break
+                else:
+                    printandlog(f'== ERR {err}',logger)
+                    mvtries+=1
             except:
                 printandlog('Move failed',logger)
                 printandlog(f'== ERR {err}',logger)
@@ -296,7 +312,7 @@ def runCellProfiler(message):
         import shutil
         shutil.rmtree(localOut, ignore_errors=True)
         return 'CP_PROBLEM'
-    
+
 
 #################################
 # MAIN WORKER LOOP
@@ -328,4 +344,3 @@ if __name__ == '__main__':
     print('Worker started')
     main()
     print('Worker finished')
-

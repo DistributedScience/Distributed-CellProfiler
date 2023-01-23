@@ -4,7 +4,7 @@ We have a handful of standard workflows we follow in a stereotyped fashion when 
 We have listed below the standard way that we configure `config.py` for each workflow.
 You can read more information about the pipelines in the context of the Cell Painting Assay [here](https://www.biorxiv.org/content/10.1101/2022.07.13.499171v1.full).
 
-- **Z-projection** creates a new image with each pixel containing the maximum value from any of the z-planes, effectively condensing the contents of multiple focal planes into one. 
+- **Z-projection** creates a new image with each pixel containing the maximum value from any of the z-planes, effectively condensing the contents of multiple focal planes into one.
 Generally, we perform projection on all images with multiple z-planes and downstream processing and analysis is performed on the projected images.
 
 - **Illumination Correction** is batched by plate and generates a function that corrects for light path irregularities as described [here](https://onlinelibrary.wiley.com/doi/abs/10.1111/jmi.12178).
@@ -15,13 +15,13 @@ A standard pipeline can be found [here](https://github.com/broadinstitute/imagin
 It is not a necessary step but can provide helpful information, particularly for improving wetlab workflows and for comparing across datasets.
 A standard pipeline can be found [here](https://github.com/broadinstitute/imaging-platform-pipelines/blob/master/JUMP_production/JUMP_QC_Drag-and-Drop_v1.cppipe).
 
-- **Assay Dev/Segmentation** is a quick pipeline that outputs segmentation outlines overlaid on a multichannel image rescaled for visual inspection. 
+- **Assay Dev/Segmentation** is a quick pipeline that outputs segmentation outlines overlaid on a multichannel image rescaled for visual inspection.
 We often stitch the output into a pseudo-plate view as described [here](https://currentprotocols.onlinelibrary.wiley.com/doi/10.1002/cpz1.89) to confirm we have chosen segmentation parameters that work across our dataset.
 A standard pipeline can be found [here](https://github.com/broadinstitute/imaging-platform-pipelines/blob/master/JUMP_production/JUMP_segment_LoadData_v1.cppipe).
 
 - **Analysis** is where illumination correction is applied, actual segmentation occurs, and all of the measurements used for generating image-based profiles are taken.
 Note that large images may require more memory than our default parameters listed below.
-If you don't have enough memory, reduce the number of copies of CellProfiler runnning at one time by decreasing DOCKER_CORES.
+If you don't have enough memory, reduce the number of copies of CellProfiler running at one time by decreasing DOCKER_CORES.
 A standard pipeline can be found [here](https://github.com/broadinstitute/imaging-platform-pipelines/blob/master/JUMP_production/JUMP_analysis_v3.cppipe).
 
 Our internal configurations for each pipeline are as follows:
@@ -41,7 +41,7 @@ Our internal configurations for each pipeline are as follows:
 | MACHINE_PRICE | .10 | .10 | .10 | .10 | .10 | Will be different for different size/classes of machines. |
 | EBS_VOL_SIZE | 22 | 22 | 22 | 22 | 22 | You might need to make this larger if you set DOWNLOAD_FILES = True  |
 | DOWNLOAD_FILES | 'False' | 'False' | 'False' | 'False' | 'False' |   |
-| DOCKER_CORES | 4 | 4 | 4 | 4  | 4 | If using c class machines and large images (2k + pixels) then you might need to reduce this number. |
+| DOCKER_CORES | 4 | 4 | 4 | 4  | 3 | If using c class machines and large images (2k + pixels) then you might need to reduce this number. |
 | CPU_SHARES | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | We never change this. |
 | MEMORY | 7500 | 7500 | 7500 | 7500 | 7500 | This must match your machine type. m class use 15000, c class use 7500. |
 | SECONDS_TO_START | 60  | 3*60 | 60 | 3*60 | 3*60 |  |

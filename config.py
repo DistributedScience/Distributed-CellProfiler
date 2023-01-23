@@ -9,7 +9,10 @@ DOCKERHUB_TAG = 'cellprofiler/distributed-cellprofiler:2.0.0_4.1.3'
 AWS_REGION = 'us-east-1'
 AWS_PROFILE = 'default'                 # The same profile used by your AWS CLI installation
 SSH_KEY_NAME = 'your-key-file.pem'      # Expected to be in ~/.ssh
-AWS_BUCKET = 'your-bucket-name'
+AWS_BUCKET = 'your-bucket-name'         # Bucket to use for logging
+SOURCE_BUCKET = 'bucket-name'           # Bucket to download files from
+DESTINATION_BUCKET = 'bucket-name'      # Bucket to upload files to
+UPLOAD_FLAGS = ''                       # Any flags needed for upload to destination bucket
 
 # EC2 AND ECS INFORMATION:
 ECS_CLUSTER = 'default'
@@ -32,7 +35,7 @@ SQS_MESSAGE_VISIBILITY = 1*60           # Timeout (secs) for messages in flight 
 SQS_DEAD_LETTER_QUEUE = 'arn:aws:sqs:some-region:111111100000:DeadMessages'
 
 # LOG GROUP INFORMATION:
-LOG_GROUP_NAME = APP_NAME 
+LOG_GROUP_NAME = APP_NAME
 
 # REDUNDANCY CHECKS
 CHECK_IF_DONE_BOOL = 'False'  #True or False- should it check if there are a certain number of non-empty files and delete the job if yes?
@@ -41,8 +44,8 @@ MIN_FILE_SIZE_BYTES = 1      #What is the minimal number of bytes an object shou
 NECESSARY_STRING = ''        #Is there any string that should be in the file name to "count"?
 
 # PLUGINS
-USE_PLUGINS = 'False'
-UPDATE_PLUGINS = 'False'
-PLUGINS_COMMIT = '' # What commit or version tag do you want to check out?
-INSTALL_REQUIREMENTS = 'False'
-REQUIREMENTS_FILE = '' # Path within the plugins repo to a requirements file
+USE_PLUGINS = 'False'        # True to use any plugin from CellProfiler-plugins repo
+UPDATE_PLUGINS = 'False'     # True to download updates from CellProfiler-plugins repo
+PLUGINS_COMMIT = ''          # What commit or version tag do you want to check out?
+INSTALL_REQUIREMENTS = 'False' # True to install REQUIREMENTS_FILE defined below. Requirements should have all plugin dependencies.
+REQUIREMENTS_FILE = ''       # Path within the CellProfiler-plugins repo to a requirements file
