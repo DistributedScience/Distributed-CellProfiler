@@ -198,6 +198,7 @@ def get_or_create_queue(sqs):
         print("Creating DeadLetter queue")
         sqs.create_queue(QueueName=SQS_DEAD_LETTER_QUEUE)
         time.sleep(WAIT_TIME)
+        dead_url = get_queue_url(sqs, SQS_DEAD_LETTER_QUEUE)
     else:
         print (f'DeadLetter queue {SQS_DEAD_LETTER_QUEUE} already exists.')
     if queue_url is None:
@@ -646,8 +647,6 @@ def startCluster():
     if CREATE_DASHBOARD:
         print ("Creating CloudWatch dashboard for run metrics")
         create_dashboard(requestInfo)
-
-    print('Spot fleet successfully created. Your job should start in a few minutes.')
 
 #################################
 # SERVICE 4: MONITOR JOB
