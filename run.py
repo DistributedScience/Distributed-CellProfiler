@@ -9,6 +9,10 @@ import configparser
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+# Back compatability with old config versions
+SOURCE_BUCKET = False
+UPLOAD_FLAGS = False
+UPDATE_PLUGINS = False
 CREATE_DASHBOARD = False
 CLEAN_DASHBOARD = False
 
@@ -60,7 +64,6 @@ TASK_DEFINITION = {
 #################################
 
 def generate_task_definition(AWS_PROFILE):
-    taskRoleArn = False
     task_definition = TASK_DEFINITION.copy()
 
     config = configparser.ConfigParser()
@@ -73,16 +76,41 @@ def generate_task_definition(AWS_PROFILE):
     else:
         print ('Problem handling profile')
 
-def generate_task_definition(AWS_PROFILE):
-    task_definition = TASK_DEFINITION.copy()
-    key, secret = get_aws_credentials(AWS_PROFILE)
+    if config.has_option(profile_name, 'role_arn'):
+        print ("Using role for credentials", config[profile_name]['role_arn'])
+        taskRoleArn = config[profile_name]['role_arn']
+    else:
+        taskRoleArn = False
+        if config.has_option(profile_name, 'source_profile'):
+            creds = configparser.ConfigParser()
+            creds.read(f"{os.environ['HOME']}/.aws/credentials")
+            source_profile = config[profile_name]['source_profile']
+            aws_access_key = creds[source_profile]['aws_access_key_id']
+            aws_secret_key = creds[source_profile]['aws_secret_access_key']
+        elif config.has_option(profile_name, 'aws_access_key_id'):
+            aws_access_key = config[profile_name]['aws_access_key_id']
+            aws_secret_key = config[profile_name]['aws_secret_access_key']
+        elif profile_name == 'default':
+            creds = configparser.ConfigParser()
+            creds.read(f"{os.environ['HOME']}/.aws/credentials")
+            aws_access_key = creds['default']['aws_access_key_id']
+            aws_secret_key = creds['default']['aws_secret_access_key']    
+        else:
+            print (f"Problem getting credentials.")
+        task_definition['containerDefinitions'][0]['environment'] += [
+            {
+                "name": "AWS_ACCESS_KEY_ID",
+                "value": aws_access_key
+            },
+            {
+                "name": "AWS_SECRET_ACCESS_KEY",
+                "value": aws_secret_key
+            }]
     sqs = boto3.client("sqs")
     queue_url = get_queue_url(sqs, SQS_QUEUE_NAME)
     task_definition["containerDefinitions"][0]["environment"] += [
         {"name": "APP_NAME", "value": APP_NAME},
         {"name": "SQS_QUEUE_URL", "value": queue_url},
-        {"name": "AWS_ACCESS_KEY_ID", "value": key},
-        {"name": "AWS_SECRET_ACCESS_KEY", "value": secret},
         {"name": "AWS_BUCKET", "value": AWS_BUCKET},
         {"name": "DOCKER_CORES", "value": str(DOCKER_CORES)},
         {"name": "LOG_GROUP_NAME", "value": LOG_GROUP_NAME},
@@ -95,40 +123,6 @@ def generate_task_definition(AWS_PROFILE):
         {"name": "NECESSARY_STRING", "value": NECESSARY_STRING},
         {"name": "DOWNLOAD_FILES", "value": DOWNLOAD_FILES},
     ]
-    if UPDATE_PLUGINS:
-        task_definition["containerDefinitions"][0]["environment"] += [
-            {"name": "UPDATE_PLUGINS", "value": str(UPDATE_PLUGINS)},
-            {"name": "PLUGINS_COMMIT", "value": str(PLUGINS_COMMIT)},
-            {"name": "INSTALL_REQUIREMENTS", "value": str(INSTALL_REQUIREMENTS)},
-            {"name": "REQUIREMENTS_FILE", "value": str(REQUIREMENTS_FILE)},
-        ]
-    if config.has_option(profile_name, 'role_arn'):
-        print ("Using role for credentials", config[profile_name]['role_arn'])
-        taskRoleArn = config[profile_name]['role_arn']
-    else:
-        #Beth added this becaues it looks like we need to return it, remove it if I'm wrong
-        taskRoleArn = False
-        if config.has_option(profile_name, 'source_profile'):
-            creds = configparser.ConfigParser()
-            creds.read(f"{os.environ['HOME']}/.aws/credentials")
-            source_profile = config[profile_name]['source_profile']
-            aws_access_key = creds[source_profile]['aws_access_key_id']
-            aws_secret_key = creds[source_profile]['aws_secret_access_key']
-        elif config.has_option(profile_name, 'aws_access_key_id'):
-            aws_access_key = config[profile_name]['aws_access_key_id']
-            aws_secret_key = config[profile_name]['aws_secret_access_key']
-        else:
-            print ("Problem getting credentials")
-        task_definition['containerDefinitions'][0]['environment'] += [
-            {
-                "name": "AWS_ACCESS_KEY_ID",
-                "value": aws_access_key
-            },
-            {
-                "name": "AWS_SECRET_ACCESS_KEY",
-                "value": aws_secret_key
-            }]
-
     if SOURCE_BUCKET:
         task_definition['containerDefinitions'][0]['environment'] += [
             {
@@ -145,6 +139,13 @@ def generate_task_definition(AWS_PROFILE):
                 'name': 'UPLOAD_FLAGS',
                 'value': UPLOAD_FLAGS
             }]
+    if UPDATE_PLUGINS:
+        task_definition["containerDefinitions"][0]["environment"] += [
+            {"name": "UPDATE_PLUGINS", "value": str(UPDATE_PLUGINS)},
+            {"name": "PLUGINS_COMMIT", "value": str(PLUGINS_COMMIT)},
+            {"name": "INSTALL_REQUIREMENTS", "value": str(INSTALL_REQUIREMENTS)},
+            {"name": "REQUIREMENTS_FILE", "value": str(REQUIREMENTS_FILE)},
+        ]
     return task_definition, taskRoleArn
 
 def update_ecs_task_definition(ecs, ECS_TASK_NAME, AWS_PROFILE):
@@ -512,9 +513,6 @@ class JobQueue():
 def setup():
     ECS_TASK_NAME = APP_NAME + 'Task'
     ECS_SERVICE_NAME = APP_NAME + 'Service'
-    USER = os.environ['HOME'].split('/')[-1]
-    AWS_CONFIG_FILE_NAME = os.environ['HOME'] + '/.aws/config'
-    AWS_CREDENTIAL_FILE_NAME = os.environ['HOME'] + '/.aws/credentials'
     sqs = boto3.client('sqs')
     get_or_create_queue(sqs)
     ecs = boto3.client('ecs')
