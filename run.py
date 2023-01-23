@@ -77,7 +77,7 @@ def generate_task_definition(AWS_PROFILE):
     task_definition = TASK_DEFINITION.copy()
     key, secret = get_aws_credentials(AWS_PROFILE)
     sqs = boto3.client("sqs")
-    queue_url, dead_url = get_queue_url(sqs)
+    queue_url = get_queue_url(sqs, SQS_QUEUE_NAME)
     task_definition["containerDefinitions"][0]["environment"] += [
         {"name": "APP_NAME", "value": APP_NAME},
         {"name": "SQS_QUEUE_URL", "value": queue_url},
