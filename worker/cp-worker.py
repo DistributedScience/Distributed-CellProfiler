@@ -125,7 +125,7 @@ def runCellProfiler(message):
                 if eachMetadata not in metadataID:
                     watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=str(message['Metadata'].values()),create_log_group=False)
                     logger.addHandler(watchtowerlogger)
-                    printandlog('Your specified output structure does not match the Metadata passed. If your job grouping is different than your output grouping, check Cloudwatch logs with output grouping instead.',logger)
+                    printandlog('Your specified output structure does not match the Metadata passed. If your CellProfiler-pipeline-grouping is different than your output-file-location-grouping (typically because you are using the output_structure job parameter), then this is expected and NOT an error. Cloudwatch logs will be stored under the output-file-location-grouping, rather than the CellProfiler-pipeline-grouping.',logger)
                     logger.removeHandler(watchtowerlogger)
                 else:
                     metadataID = str.replace(metadataID,eachMetadata,message['Metadata'][eachMetadata])
