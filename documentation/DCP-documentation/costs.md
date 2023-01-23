@@ -10,11 +10,12 @@ SQS queues are free to create and use up to 1 million requests/month.
 
 [`startCluster`](step_3_start_cluster.md) is the only command that incurs costs with initiation of your spot fleet request, creating machine alarms, and optionally creating a run dashboard. 
 
-The spot fleet isthe major cost of running Distributed-CellProfiler, exact pricing of which depends on the number of machines, type of machines, and duration of use. 
+The spot fleet is the major cost of running Distributed-CellProfiler, exact pricing of which depends on the number of machines, type of machines, and duration of use. 
 Your bid is configured in the [config file](step_1_configuration.md).
 
 Spot fleet costs can be minimized/stopped in multiple ways:
 1) We encourage the use of [`monitor`](step_4_monitor.md) during your job to help minimize the spot fleet cost as it automatically scales down your spot fleet request as your job queue empties and cancels your spot fleet request when you have no more jobs in the queue.
+Note that you can also perform a more aggressive downscaling of your fleet by monitor by engaging Cheapest mode (see [`more information here`](step_4_monitor.md)).
 2) If your job is finished, you can still initiate [`monitor`](step_4_monitor.md) to perform the same cleanup (without the automatic scaling).
 3) If you want to abort and clean up a run, you can purge your SQS queue in the [AWS SQS console](https://console.aws.amazon.com/sqs/) (by selecting your queue and pressing Actions => Purge) and then initiate [`monitor`](step_4_monitor.md) to perform the same cleanup.
 4) You can stop the spot fleet request directly in the [AWS EC2 console](https://console.aws.amazon.com/ec2/) by going to Instances => Spot Requests, selecting your spot request, and pressing Actions => Cancel Spot Request.
