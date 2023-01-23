@@ -56,10 +56,12 @@ At the bottom of the file, set `batch=True` in the command for the step you are 
 (e.g. `MakeAnalysisJobs(batch=True)`)
 Note that if you do not follow our standard file organization, under **#not project specific, unless you deviate from the structure** you will also need to edit `batchpath`.
 
-## File Lists
+## File lists
 
-You can also simply pass a list of file paths with one file per row in `.txt` format.
-Note that this does not pass any metadata to CellProfiler.
+You can also simply pass a list of absolute file paths (not relative paths) with one file per row in `.txt` format.
+Note that file lists themselves do not associate metadata with file paths (in contrast to LoadData.csv files where you can enter any metadata columns you desire.)
+Therefore, you need to extract metadata for Distributed-CellProfiler to use for grouping by extracting metadata from file and folder names in the Metadata module in your CellProfiler pipeline. 
+You can pass additional metadata to CellProfiler by `Add another extraction method`, setting the method to `Import from file` and setting Metadata file location to `Default Input Folder`.
 
 ### Creating File Lists
 

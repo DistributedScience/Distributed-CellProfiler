@@ -25,9 +25,9 @@ If using LoadData, make sure your "Base image location" is set to "None".
 ## Configuring your job file
 
 * **pipeline:** The path to your pipeline file.
-* **data_file:** The path to your LoadData.csv or batch file.
+* **data_file:** The path to your LoadData.csv, batch file, or file list file.
 * **input:** The path to your default input directory.
-This is not necessary for every pipeline but can be helpful when non-image files are needed in the pipeline (such as a text file containing quality control rules for the FlagImage module).
+This is not necessary for every pipeline but can be helpful when non-image files are needed in the pipeline (such as a text file containing quality control rules for the FlagImage module or a metadata file for use with file lists).
 DO NOT set this to a large directory, or CellProfiler will try to scan the entire thing before running your pipeline.
 * **output:** The top output directory you'd like your files placed in.
 * **output_structure:** By default, Distributed-CellProfiler will put your output in subfolders created by hyphenating all your Metadata entries (see below) in order (e.g. if the individual group being processed was `{"Metadata": "Metadata_Plate=Plate1,Metadata_Well=A01"}`, the output would be placed in `output_top_directory/Plate1-A01`.)
