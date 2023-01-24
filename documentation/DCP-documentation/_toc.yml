@@ -1,10 +1,10 @@
 # Table of contents
 
 format: jb-book
+root: overview
 parts:
 - caption: FAQ
   chapters:
-  - file: overview
   - file: overview_2
   - file: costs
 - caption: Running DCP
