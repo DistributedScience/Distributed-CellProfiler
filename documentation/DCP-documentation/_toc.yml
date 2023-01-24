@@ -15,6 +15,8 @@ parts:
     - file: config_examples
     - file: SQS_QUEUE_information
   - file: step_2_submit_jobs
+    sections:
+    - file: passing_files_to_DCP
   - file: step_3_start_cluster
   - file: step_4_monitor
 - caption:

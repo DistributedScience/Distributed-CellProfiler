@@ -1,0 +1,286 @@
+CellProfiler Pipeline: http://www.cellprofiler.org
+Version:5
+DateRevision:500
+GitHash:
+ModuleCount:14
+HasImagePlaneDetails:False
+
+LoadData:[module_num:1|svn_version:'Unknown'|variable_revision_number:6|show_window:True|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Input data file location:Default Input Folder|workspace
+    Name of the file:load_data.csv
+    Load images based on this data?:Yes
+    Base image location:Default Input Folder|
+    Process just a range of rows?:No
+    Rows to process:1,100000
+    Group images by metadata?:Yes
+    Select metadata tags for grouping:Position
+    Rescale intensities?:Yes
+
+IdentifyPrimaryObjects:[module_num:2|svn_version:'Unknown'|variable_revision_number:15|show_window:True|notes:['Identify the nuclei from the DAPI image. Three-class thresholding performs better than the default two-class thresholding in this case.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:OrigBlue
+    Name the primary objects to be identified:Nuclei
+    Typical diameter of objects, in pixel units (Min,Max):10,40
+    Discard objects outside the diameter range?:Yes
+    Discard objects touching the border of the image?:Yes
+    Method to distinguish clumped objects:Shape
+    Method to draw dividing lines between clumped objects:Shape
+    Size of smoothing filter:10
+    Suppress local maxima that are closer than this minimum allowed distance:5
+    Speed up by using lower-resolution image to find local maxima?:Yes
+    Fill holes in identified objects?:After both thresholding and declumping
+    Automatically calculate size of smoothing filter for declumping?:Yes
+    Automatically calculate minimum allowed distance between local maxima?:Yes
+    Handling of objects if excessive number of objects identified:Continue
+    Maximum number of objects:500
+    Use advanced settings?:Yes
+    Threshold setting version:12
+    Threshold strategy:Global
+    Thresholding method:Minimum Cross-Entropy
+    Threshold smoothing scale:1.3488
+    Threshold correction factor:1.0
+    Lower and upper bounds on threshold:0,1
+    Manual threshold:0.0
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Three classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Background
+    Size of adaptive window:10
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2
+    Thresholding method:Otsu
+
+IdentifySecondaryObjects:[module_num:3|svn_version:'Unknown'|variable_revision_number:10|show_window:True|notes:['Identify the cells by using the nuclei as a "seed" region, then growing outwards until stopped by the image threshold or by a neighbor. The Propagation method is used to delineate the boundary between neighboring cells.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:Nuclei
+    Name the objects to be identified:Cells
+    Select the method to identify the secondary objects:Propagation
+    Select the input image:OrigGreen
+    Number of pixels by which to expand the primary objects:10
+    Regularization factor:0.05
+    Discard secondary objects touching the border of the image?:No
+    Discard the associated primary objects?:No
+    Name the new primary objects:FilteredNuclei
+    Fill holes in identified objects?:Yes
+    Threshold setting version:12
+    Threshold strategy:Global
+    Thresholding method:Minimum Cross-Entropy
+    Threshold smoothing scale:0
+    Threshold correction factor:1
+    Lower and upper bounds on threshold:0,1
+    Manual threshold:0
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Two classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Size of adaptive window:10
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2
+    Thresholding method:Otsu
+
+IdentifyTertiaryObjects:[module_num:4|svn_version:'Unknown'|variable_revision_number:3|show_window:True|notes:['Identify the cytoplasm by "subtracting" the nuclei objects from the cell objects.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the larger identified objects:Cells
+    Select the smaller identified objects:Nuclei
+    Name the tertiary objects to be identified:Cytoplasm
+    Shrink smaller object prior to subtraction?:Yes
+
+MeasureObjectSizeShape:[module_num:5|svn_version:'Unknown'|variable_revision_number:3|show_window:True|notes:['Measure morphological features from the cell, nuclei and cytoplasm objects.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select object sets to measure:Cells, Nuclei, Cytoplasm
+    Calculate the Zernike features?:Yes
+    Calculate the advanced features?:No
+
+MeasureObjectIntensity:[module_num:6|svn_version:'Unknown'|variable_revision_number:4|show_window:True|notes:['Measure intensity features from nuclei and cell objects against the DAPI image.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:OrigBlue
+    Select objects to measure:Nuclei, Cells, Cytoplasm
+
+MeasureTexture:[module_num:7|svn_version:'Unknown'|variable_revision_number:7|show_window:True|notes:['Measure texture features of the nuclei, cells and cytoplasm from the DAPI image.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:OrigBlue
+    Select objects to measure:Nuclei, Cytoplasm, Cells
+    Enter how many gray levels to measure the texture at:256
+    Hidden:1
+    Measure whole images or objects?:Both
+    Texture scale to measure:3
+
+MeasureObjectNeighbors:[module_num:8|svn_version:'Unknown'|variable_revision_number:3|show_window:True|notes:['Obtain the nuclei neighborhood measures, considering nuclei within 4 pixels in any direction as a neighbor.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select objects to measure:Nuclei
+    Select neighboring objects to measure:Nuclei
+    Method to determine neighbors:Within a specified distance
+    Neighbor distance:4
+    Consider objects discarded for touching image border?:Yes
+    Retain the image of objects colored by numbers of neighbors?:No
+    Name the output image:Do not use
+    Select colormap:Default
+    Retain the image of objects colored by percent of touching pixels?:No
+    Name the output image:PercentTouching
+    Select colormap:Default
+
+MeasureColocalization:[module_num:9|svn_version:'Unknown'|variable_revision_number:5|show_window:True|notes:['Measure the pixel intensity correlation between the pixels in the nuclei objects in the DAPI and FITC images, as well as the entire image.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:OrigBlue, OrigGreen
+    Set threshold as percentage of maximum intensity for the images:15.0
+    Select where to measure correlation:Both
+    Select objects to measure:Nuclei
+    Run all metrics?:Accurate
+    Calculate correlation and slope metrics?:Yes
+    Calculate the Manders coefficients?:Yes
+    Calculate the Rank Weighted Colocalization coefficients?:Yes
+    Calculate the Overlap coefficients?:Yes
+    Calculate the Manders coefficients using Costes auto threshold?:Yes
+    Method for Costes thresholding:Fast
+
+MeasureImageIntensity:[module_num:10|svn_version:'Unknown'|variable_revision_number:4|show_window:True|notes:['Measure the image intensity from the DAPI image.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:OrigBlue
+    Measure the intensity only from areas enclosed by objects?:No
+    Select input object sets:
+    Calculate custom percentiles:No
+    Specify percentiles to measure:10,90
+
+MeasureImageQuality:[module_num:11|svn_version:'Unknown'|variable_revision_number:6|show_window:True|notes:['Obtain some measurements for quality control purposes.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Calculate metrics for which images?:Select...
+    Image count:3
+    Scale count:1
+    Threshold count:1
+    Scale count:1
+    Threshold count:1
+    Scale count:1
+    Threshold count:1
+    Select the images to measure:OrigBlue
+    Include the image rescaling value?:Yes
+    Calculate blur metrics?:Yes
+    Spatial scale for blur measurements:20
+    Calculate saturation metrics?:Yes
+    Calculate intensity metrics?:Yes
+    Calculate thresholds?:Yes
+    Use all thresholding methods?:No
+    Select a thresholding method:Otsu
+    Typical fraction of the image covered by objects:0.1
+    Two-class or three-class thresholding?:Two classes
+    Minimize the weighted variance or the entropy?:Weighted variance
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Select the images to measure:OrigGreen
+    Include the image rescaling value?:Yes
+    Calculate blur metrics?:Yes
+    Spatial scale for blur measurements:20
+    Calculate saturation metrics?:Yes
+    Calculate intensity metrics?:Yes
+    Calculate thresholds?:Yes
+    Use all thresholding methods?:No
+    Select a thresholding method:Otsu
+    Typical fraction of the image covered by objects:0.1
+    Two-class or three-class thresholding?:Two classes
+    Minimize the weighted variance or the entropy?:Weighted variance
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Select the images to measure:OrigRed
+    Include the image rescaling value?:Yes
+    Calculate blur metrics?:Yes
+    Spatial scale for blur measurements:20
+    Calculate saturation metrics?:Yes
+    Calculate intensity metrics?:Yes
+    Calculate thresholds?:Yes
+    Use all thresholding methods?:No
+    Select a thresholding method:Otsu
+    Typical fraction of the image covered by objects:0.1
+    Two-class or three-class thresholding?:Two classes
+    Minimize the weighted variance or the entropy?:Weighted variance
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+
+CalculateMath:[module_num:12|svn_version:'Unknown'|variable_revision_number:3|show_window:True|notes:['Compute a ratio of nuclei mean intensity to nuclear area for each nucleus.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Name the output measurement:Ratio
+    Operation:Divide
+    Select the numerator measurement type:Object
+    Select the numerator objects:Nuclei
+    Select the numerator measurement:Intensity_MeanIntensity_OrigBlue
+    Multiply the above operand by:1.0
+    Raise the power of above operand by:1.0
+    Select the denominator measurement type:Object
+    Select the denominator objects:Nuclei
+    Select the denominator measurement:AreaShape_Area
+    Multiply the above operand by:1.0
+    Raise the power of above operand by:1.0
+    Take log10 of result?:No
+    Multiply the result by:1.0
+    Raise the power of result by:1.0
+    Add to the result:0
+    How should the output value be rounded?:Not rounded
+    Enter how many decimal places the value should be rounded to:0
+    Constrain the result to a lower bound?:No
+    Enter the lower bound:0
+    Constrain the result to an upper bound?:No
+    Enter the upper bound:1
+
+ClassifyObjects:[module_num:13|svn_version:'Unknown'|variable_revision_number:4|show_window:True|notes:['Classify the nuclei on the basis of area. Divide the areas into 3 bins and give each bin a name.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Make classification decision based on:Single measurement
+    Hidden:1
+    Hidden:1
+    Select the object to be classified:Nuclei
+    Select the measurement to classify by:AreaShape_Area
+    Select bin spacing:Evenly spaced bins
+    Number of bins:3
+    Lower threshold:350
+    Use a bin for objects below the threshold?:No
+    Upper threshold:700
+    Use a bin for objects above the threshold?:No
+    Enter the custom thresholds separating the values between bins:0,1
+    Give each bin a name?:Yes
+    Enter the bin names separated by commas:Small,Medium,Large
+    Retain an image of the classified objects?:No
+    Name the output image:Do not use
+    Select a class:None
+    Name the output objects:ClassifiedObjects
+    Select the object name:Nuclei
+    Select the first measurement:None
+    Method to select the cutoff:Mean
+    Enter the cutoff value:.5
+    Select the second measurement:None
+    Method to select the cutoff:Mean
+    Enter the cutoff value:.5
+    Use custom names for the bins?:No
+    Enter the low-low bin name:LowLow
+    Enter the low-high bin name:HighLow
+    Enter the high-low bin name:LowHigh
+    Enter the high-high bin name:HighHigh
+    Retain an image of the classified objects?:No
+    Enter the image name:ClassifiedNuclei
+    Save classes as new object sets?:No
+    Select the location of the classifier model file:Default Output Folder|None
+    Rules or classifier file name:None
+    Allow fuzzy feature matching?:No
+
+ExportToSpreadsheet:[module_num:14|svn_version:'Unknown'|variable_revision_number:13|show_window:True|notes:['Export any measurements to a comma-delimited file (.csv). The measurements made for the nuclei, cell and cytoplasm objects will be saved to separate .csv files, in addition to the per-image .csv’s.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the column delimiter:Comma (",")
+    Add image metadata columns to your object data file?:No
+    Add image file and folder names to your object data file?:No
+    Select the measurements to export:No
+    Calculate the per-image mean values for object measurements?:Yes
+    Calculate the per-image median values for object measurements?:No
+    Calculate the per-image standard deviation values for object measurements?:No
+    Output file location:Default Output Folder|.
+    Create a GenePattern GCT file?:No
+    Select source of sample row name:Metadata
+    Select the image to use as the identifier:None
+    Select the metadata to use as the identifier:None
+    Export all measurement types?:No
+    Press button to select measurements:None|None
+    Representation of Nan/Inf:NaN
+    Add a prefix to file names?:No
+    Filename prefix:MyExpt_
+    Overwrite existing files without warning?:Yes
+    Data to export:Image
+    Combine these object measurements with those of the previous object?:No
+    File name:Image.csv
+    Use the object name for the file name?:No
+    Data to export:Nuclei
+    Combine these object measurements with those of the previous object?:No
+    File name:Nuclei.csv
+    Use the object name for the file name?:No
+    Data to export:Cells
+    Combine these object measurements with those of the previous object?:No
+    File name:Cells.csv
+    Use the object name for the file name?:No
+    Data to export:Cytoplasm
+    Combine these object measurements with those of the previous object?:No
+    File name:Cytoplasm.csv
+    Use the object name for the file name?:No

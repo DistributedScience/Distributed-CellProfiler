@@ -1,15 +1,10 @@
-from __future__ import print_function
 import boto3
-import glob
 import json
 import logging
 import os
-import re
 import subprocess
-import sys
 import time
 import watchtower
-import string
 
 #################################
 # CONSTANT PATHS IN THE CONTAINER
@@ -110,7 +105,7 @@ def runCellProfiler(message):
     for eachSubDir in rootlist:
         subDirName=os.path.join(DATA_ROOT,eachSubDir)
         if os.path.isdir(subDirName):
-            trashvar=os.system('ls '+subDirName)
+            trashvar=os.system(f'ls {subDirName}')
 
     # Configure the logs
     logger = logging.getLogger(__name__)
@@ -130,11 +125,11 @@ def runCellProfiler(message):
                 if eachMetadata not in metadataID:
                     watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=str(message['Metadata'].values()),create_log_group=False)
                     logger.addHandler(watchtowerlogger)
-                    printandlog('Your specified output structure does not match the Metadata passed',logger)
+                    printandlog('Your specified output structure does not match the Metadata passed. If your CellProfiler-pipeline-grouping is different than your output-file-location-grouping (typically because you are using the output_structure job parameter), then this is expected and NOT an error. Cloudwatch logs will be stored under the output-file-location-grouping, rather than the CellProfiler-pipeline-grouping.',logger)
                     logger.removeHandler(watchtowerlogger)
                 else:
                     metadataID = str.replace(metadataID,eachMetadata,message['Metadata'][eachMetadata])
-                    metadataForCall+=eachMetadata+'='+message['Metadata'][eachMetadata]+','
+                    metadataForCall+=f"{eachMetadata}={message['Metadata'][eachMetadata]},"
             message['Metadata']=metadataForCall[:-1]
     elif 'output_structure' in message.keys():
         if message['output_structure']!='': #support for explicit output structuring
@@ -143,21 +138,18 @@ def runCellProfiler(message):
             metadataID = message['output_structure']
             for eachMetadata in message['Metadata'].split(','):
                 if eachMetadata.split('=')[0] not in metadataID:
-                    printandlog('Your specified output structure does not match the Metadata passed',logger)
+                    printandlog('Your specified output structure does not match the Metadata passed. If your CellProfiler-pipeline-grouping is different than your output-file-location-grouping (typically because you are using the output_structure job parameter), then this is expected and NOT an error. Cloudwatch logs will be stored under the output-file-location-grouping, rather than the CellProfiler-pipeline-grouping.',logger)
                 else:
                     metadataID = str.replace(metadataID,eachMetadata.split('=')[0],eachMetadata.split('=')[1])
-            printandlog('metadataID ='+metadataID, logger)
+            printandlog(f'metadataID={metadataID}', logger)
             logger.removeHandler(watchtowerlogger)
         else: #backwards compatability with 1.0.0 and/or no desire to structure output
             metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
     else: #backwards compatability with 1.0.0 and/or no desire to structure output
         metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
 
-    localOut = LOCAL_OUTPUT + '/%(MetadataID)s' % {'MetadataID': metadataID}
+    localOut = f'{LOCAL_OUTPUT}/{metadataID}'
     remoteOut= os.path.join(message['output'],metadataID)
-    replaceValues = {'PL':message['pipeline'], 'OUT':localOut, 'FL':message['data_file'],
-            'DATA': DATA_ROOT, 'Metadata': message['Metadata'], 'IN': message['input'],
-            'MetadataID':metadataID, 'PLUGINS':PLUGIN_DIR }
 
     # Start loggging now that we have a job we care about
     watchtowerlogger=watchtower.CloudWatchLogHandler(log_group=LOG_GROUP_NAME, stream_name=metadataID,create_log_group=False)
@@ -167,7 +159,7 @@ def runCellProfiler(message):
     if CHECK_IF_DONE_BOOL.upper() == 'TRUE':
         try:
             s3client=boto3.client('s3')
-            bucketlist=s3client.list_objects(Bucket=DESTINATION_BUCKET,Prefix=remoteOut+'/')
+            bucketlist=s3client.list_objects(Bucket=DESTINATION_BUCKET,Prefix=f'{remoteOut}/')
             objectsizelist=[k['Size'] for k in bucketlist['Contents']]
             objectsizelist = [i for i in objectsizelist if i >= MIN_FILE_SIZE_BYTES]
             if NECESSARY_STRING:
@@ -178,80 +170,94 @@ def runCellProfiler(message):
                 logger.removeHandler(watchtowerlogger)
                 return 'SUCCESS'
         except KeyError: #Returned if that folder does not exist
-            pass
+            pass	
+    
+    data_file_path = os.path.join(DATA_ROOT,message['data_file'])
 
-    csv_name = os.path.join(DATA_ROOT,message['data_file'])
     downloaded_files = []
 
     # Optional- download files
     if DOWNLOAD_FILES:
         if DOWNLOAD_FILES.lower() == 'true':
-            printandlog('Figuring which files to download', logger)
-            import pandas
-            s3client = boto3.client('s3')
             if not os.path.exists(localIn):
                 os.mkdir(localIn)
-            printandlog('Downloading ' + message['data_file'] + ' from ' + SOURCE_BUCKET, logger)
-            csv_insubfolders = message['data_file'].split('/')[-3:]
-            subfolders = '/'.join((csv_insubfolders)[:-1])
-            csv_insubfolders = '/'.join(csv_insubfolders)
-            csv_name = os.path.join(localIn, csv_insubfolders)
-            if not os.path.exists(os.path.join(localIn,subfolders)):
-                os.makedirs(os.path.join(localIn,subfolders), exist_ok=True)
-            s3client.download_file(SOURCE_BUCKET, message['data_file'], csv_name)
-            csv_in = pandas.read_csv(os.path.join(localIn,csv_name))
-            csv_in=csv_in.astype('str')
-            #Figure out what metadata fields we need in this experiment, as a dict
-            if type(message['Metadata'])==dict:
-                filter_dict = message['Metadata']
-            else:
-                filter_dict = {}
-                for eachMetadata in message['Metadata'].split(','):
-                    filterkey, filterval = eachMetadata.split('=')
-                    filter_dict[filterkey] = filterval
-            #Filter our CSV to just the rows CellProfiler will process, so that we can download only what we need
-            for eachfilter in filter_dict.keys():
-                csv_in = csv_in[csv_in[eachfilter] == filter_dict[eachfilter]]
-            #Figure out the actual file names and get them
-            channel_list = [x.split('FileName_')[1] for x in csv_in.columns if 'FileName' in x]
-            printandlog(f'Downloading files for channels {channel_list}', logger)
-            for channel in channel_list:
-                for field in range(csv_in.shape[0]):
-                    full_old_file_name = os.path.join(list(csv_in['PathName_'+channel])[field],list(csv_in['FileName_'+channel])[field])
-                    prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1][1:]
-                    new_file_name = os.path.join(localIn,prefix_on_bucket)
-                    if not os.path.exists(os.path.split(new_file_name)[0]):
-                        os.makedirs(os.path.split(new_file_name)[0], exist_ok=True)
-                        printandlog('made directory '+os.path.split(new_file_name)[0],logger)
-                    if not os.path.exists(new_file_name):
-                        s3client.download_file(SOURCE_BUCKET,prefix_on_bucket,new_file_name)
-                        printandlog('Downloading file '+prefix_on_bucket,logger)
-                        downloaded_files.append(new_file_name)
-            printandlog('Downloaded '+str(len(downloaded_files))+' files',logger)
-            # Update paths in csv to local paths
-            csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
-            csv_in.to_csv(csv_name,index=False)
-            print('Updated load_data_csv to local paths')
-            # Download pipeline and update pipeline path in message
-            printandlog('Downloading ' + message['pipeline'] + ' from ' + SOURCE_BUCKET, logger)
-            localpipe = os.path.join(localIn, message['pipeline'].split('/')[-1])
-            s3client.download_file(SOURCE_BUCKET, message['pipeline'], localpipe)
-            # Correct locations in CP run command
-            replaceValues['PL'] = message['pipeline'].split('/')[-1]
-            replaceValues['DATA'] = localIn
+            s3 = boto3.resource('s3')
+            if message['data_file'][-3:]=='.csv':
+                printandlog('Figuring which files to download', logger)
+                import pandas
+                csv_in = pandas.read_csv(data_file_path)
+                csv_in=csv_in.astype('str')
+                #Figure out what metadata fields we need in this experiment, as a dict
+                if type(message['Metadata'])==dict:
+                    filter_dict = message['Metadata']
+                else:
+                    filter_dict = {}
+                    for eachMetadata in message['Metadata'].split(','):
+                        filterkey, filterval = eachMetadata.split('=')
+                        filter_dict[filterkey] = filterval
+                #Filter our CSV to just the rows CellProfiler will process, so that we can download only what we need
+                for eachfilter in filter_dict.keys():
+                    csv_in = csv_in[csv_in[eachfilter] == filter_dict[eachfilter]]
+                if len(csv_in) <= 1:
+                    printandlog('WARNING: All rows filtered out of csv before download. Check your Metadata.')
+                #Figure out the actual file names and get them
+                channel_list = [x.split('FileName_')[1] for x in csv_in.columns if 'FileName' in x]
+                printandlog('Downloading files', logger)
+                for channel in channel_list:
+                    for field in range(csv_in.shape[0]):
+                        full_old_file_name = os.path.join(list(csv_in[f'PathName_{channel}'])[field],list(csv_in[f'FileName_{channel}'])[field])
+                        prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1][1:]
+                        new_file_name = os.path.join(localIn,prefix_on_bucket)
+                        if not os.path.exists(os.path.split(new_file_name)[0]):
+                            os.makedirs(os.path.split(new_file_name)[0])
+                            printandlog(f'made directory {os.path.split(new_file_name)[0]}',logger)
+                        if not os.path.exists(new_file_name):
+                            s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
+                            downloaded_files.append(new_file_name)
+                printandlog(f'Downloaded {str(len(downloaded_files))} files',logger)
+                import random
+                newtag = False
+                while newtag == False:
+                    tag = str(random.randint(100000,999999)) #keep files from overwriting one another
+                    local_data_file_path = os.path.join(localIn,tag,os.path.split(data_file_path)[1])
+                    if not os.path.exists(local_data_file_path):
+                        if not os.path.exists(os.path.split(local_data_file_path)[0]):
+                            os.makedirs(os.path.split(local_data_file_path)[0])
+                        csv_in = pandas.read_csv(data_file_path)
+                        csv_in.replace(DATA_ROOT,localIn,regex=True, inplace=True)
+                        csv_in.to_csv(local_data_file_path,index=False)
+                        print('Wrote updated CSV')
+                        newtag = True
+                    else:
+                        newtag = False
+                data_file_path = local_data_file_path
+            elif message['data_file'][-3:]=='.txt':
+                printandlog('Downloading files', logger)
+                with open(data_file_path, 'r') as f:
+                    for file_path in f:
+                        prefix_on_bucket = file_path.split(DATA_ROOT)[1][1:]
+                        new_file_name = os.path.join(localIn,prefix_on_bucket)
+                        if not os.path.exists(os.path.split(new_file_name)[0]):
+                            os.makedirs(os.path.split(new_file_name)[0])
+                            printandlog(f'made directory {os.path.split(new_file_name)[0]}',logger)
+                        if not os.path.exists(new_file_name):
+                            s3.meta.client.download_file(AWS_BUCKET,prefix_on_bucket,new_file_name)
+                            downloaded_files.append(new_file_name)
+                printandlog(f'Downloaded {str(len(downloaded_files))} files',logger)
+
     # Build and run CellProfiler command
-    cpDone = localOut + '/cp.is.done'
-    cmdstem = 'cellprofiler -c -r '
-    if message['pipeline'][-3:]!='.h5':
-        cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone
-        cmd += ' --data-file='+csv_name+' '
-        cmd += '-g %(Metadata)s'
+    cpDone = f'{localOut}/cp.is.done'
+    if message['data_file'][-4:]=='.csv':
+        cmd = f'cellprofiler -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} --data-file={data_file_path} -g {message["Metadata"]}'
+    elif message['data_file'][-3:]=='.h5':
+        cmd = f'cellprofiler -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} -g {message["Metadata"]}'
+    elif message['data_file'][-4:]=='.txt':
+        cmd = f'cellprofiler -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} --file-list={data_file_path} -g {message["Metadata"]}'
     else:
-        cmd = cmdstem + '-p %(DATA)s/%(PL)s -i %(DATA)s/%(IN)s -o %(OUT)s -d ' + cpDone + ' -g %(Metadata)s'
+        printandlog("Didn't recognize input file",logger)
     if USE_PLUGINS.lower() == 'true':
-        cmd += ' --plugins-directory=%(PLUGINS)s'
-    cmd = cmd % replaceValues
-    print('Running', cmd)
+        cmd += f' --plugins-directory={PLUGIN_DIR}'
+    print(f'Running {cmd}')
     logger.info(cmd)
 
     subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
@@ -267,24 +273,24 @@ def runCellProfiler(message):
         mvtries=0
         while mvtries <3:
             try:
-                    printandlog('Move attempt #'+str(mvtries+1),logger)
-                    cmd = 'aws s3 mv ' + localOut + ' s3://' + DESTINATION_BUCKET + '/' + remoteOut + ' --recursive --exclude=cp.is.done'
-                    if UPLOAD_FLAGS:
-                        cmd += ' ' + UPLOAD_FLAGS
-                    printandlog('Uploading with command ' + cmd, logger)
-                    subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    out,err = subp.communicate()
-                    out=out.decode()
-                    err=err.decode()
-                    printandlog('== OUT \n'+out, logger)
-                    if err == '':
-                        break
-                    else:
-                        printandlog('== ERR \n'+err,logger)
-                        mvtries+=1
+                printandlog(f'Move attempt #{mvtries+1}',logger)
+                cmd = f'aws s3 mv {localOut} s3://{DESTINATION_BUCKET}/{remoteOut} --recursive --exclude=cp.is.done'
+                if UPLOAD_FLAGS:
+                    cmd += f' {UPLOAD_FLAGS}'
+                printandlog(f'Uploading with command {cmd}', logger)
+                subp = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                out,err = subp.communicate()
+                out=out.decode()
+                err=err.decode()
+                printandlog(f'== OUT {out}', logger)
+                if err == '':
+                    break
+                else:
+                    printandlog(f'== ERR {err}',logger)
+                    mvtries+=1
             except:
                 printandlog('Move failed',logger)
-                printandlog('== ERR \n'+err,logger)
+                printandlog(f'== ERR {err}',logger)
                 time.sleep(30)
                 mvtries+=1
         if next(open(cpDone))=='Complete\n':
@@ -293,7 +299,7 @@ def runCellProfiler(message):
                 logger.removeHandler(watchtowerlogger)
                 return 'SUCCESS'
             else:
-                printandlog('OUTPUT PROBLEM. Giving up on '+metadataID,logger)
+                printandlog(f'OUTPUT PROBLEM. Giving up on {metadataID}',logger)
                 logger.removeHandler(watchtowerlogger)
                 return 'OUTPUT_PROBLEM'
         else:
