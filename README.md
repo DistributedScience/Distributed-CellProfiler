@@ -66,4 +66,4 @@ When the cluster is up and running, you can monitor progress using the following
 The file APP_NAMESpotFleetRequestId.json is created after the cluster is setup in step 3.
 It is important to keep this monitor running if you want to automatically shutdown computing resources when there are no more tasks in the queue (recommended).
 
-![Distributed-CellProfiler-Workflow](https://user-images.githubusercontent.com/54687786/193354229-be6f6de3-1b7e-45ee-a8cf-d18654071070.png)
+![Distributed-CellProfiler-Workflow](documentation/DCP-documentation/images/DCP-chronological_schematic.png)
