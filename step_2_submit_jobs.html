@@ -54,7 +54,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="canonical" href="distributedscience.github.io/step_2_submit_jobs.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Step 3: Start Cluster" href="step_3_start_cluster.html" />
+    <link rel="next" title="Passing Files to DCP" href="passing_files_to_DCP.html" />
     <link rel="prev" title="SQS QUEUE Information" href="SQS_QUEUE_information.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -112,6 +112,23 @@ const thebe_selector_output = ".output, .cell_output"
         </ul>
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
+  FAQ
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="overview_2.html">
+   What happens in AWS when I run Distributed-CellProfiler?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="costs.html">
+   What does Distributed-CellProfiler cost?
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
   Running DCP
  </span>
 </p>
@@ -143,10 +160,22 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
   </ul>
  </li>
- <li class="toctree-l1 current active">
+ <li class="toctree-l1 current active has-children">
   <a class="current reference internal" href="#">
    Step 2: Submit Jobs
   </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="passing_files_to_DCP.html">
+     Passing Files to DCP
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="step_3_start_cluster.html">
@@ -160,6 +189,11 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="dashboard.html">
+   AWS Cloudwatch Dashboard
+  </a>
+ </li>
  <li class="toctree-l1">
   <a class="reference internal" href="advanced_configuration.html">
    Advanced Configuration of DCP
@@ -455,12 +489,9 @@ If using LoadData, make sure your “Base image location” is set to “None”
 <h2>Configuring your job file<a class="headerlink" href="#configuring-your-job-file" title="Permalink to this headline">#</a></h2>
 <ul>
 <li><p><strong>pipeline:</strong> The path to your pipeline file.</p></li>
-<li><p><strong>data_file:</strong> The path to your CSV.<br />
-At a minimum, this CSV should contain PathName_{NameOfChannel} and FileName_{NameOfChannel} columns for each of your channels, as well as Metadata_{PieceOfMetadata} for each kind of metadata being used to group your image sets.<br />
-You can create this CSV yourself via your favorite scripting language or by using the Images, Metadata, and NamesAndTypes modules in CellProfiler to generate image sets then using the Export-&gt;Image Set Listing command.<br />
-Some users have reported issues with using relative paths in the PathName columns; using absolute paths beginning with <code class="docutils literal notranslate"><span class="pre">/home/ubuntu/bucket/{relativepath}</span></code> may increase your odds of success.</p></li>
+<li><p><strong>data_file:</strong> The path to your LoadData.csv, batch file, or file list file.</p></li>
 <li><p><strong>input:</strong> The path to your default input directory.
-This is not necessary for every pipeline but can be helpful when non-image files are needed in the pipeline (such as a text file containing quality control rules for the FlagImage module).
+This is not necessary for every pipeline but can be helpful when non-image files are needed in the pipeline (such as a text file containing quality control rules for the FlagImage module or a metadata file for use with file lists).
 DO NOT set this to a large directory, or CellProfiler will try to scan the entire thing before running your pipeline.</p></li>
 <li><p><strong>output:</strong> The top output directory you’d like your files placed in.</p></li>
 <li><p><strong>output_structure:</strong> By default, Distributed-CellProfiler will put your output in subfolders created by hyphenating all your Metadata entries (see below) in order (e.g. if the individual group being processed was <code class="docutils literal notranslate"><span class="pre">{&quot;Metadata&quot;:</span> <span class="pre">&quot;Metadata_Plate=Plate1,Metadata_Well=A01&quot;}</span></code>, the output would be placed in <code class="docutils literal notranslate"><span class="pre">output_top_directory/Plate1-A01</span></code>.)
@@ -491,6 +522,8 @@ This file essentially serves as a “shortcut” to run many common types of ste
 Essentially, if your data follows a regular structure (such as N rows, N columns, N grouping, a particular structure for output, etc.), you may find it useful to take and modify this file for your own usage.<br />
 We recommend new users use the <code class="docutils literal notranslate"><span class="pre">submitJobs</span></code> pathway, as it will help users understand the kinds of information Distributed-CellProfiler needs in order to run properly, but once they are comfortable with it they may find <code class="docutils literal notranslate"><span class="pre">run_batch_general.py</span></code> helps them create jobs faster in the future.</p>
 </section>
+<div class="toctree-wrapper compound">
+</div>
 </section>
 
     <script type="text/x-thebe-config">
@@ -527,10 +560,10 @@ We recommend new users use the <code class="docutils literal notranslate"><span 
             <p class="prev-next-title">SQS QUEUE Information</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="step_3_start_cluster.html" title="next page">
+    <a class='right-next' id="next-link" href="passing_files_to_DCP.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Step 3: Start Cluster</p>
+        <p class="prev-next-title">Passing Files to DCP</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

@@ -112,6 +112,23 @@ const thebe_selector_output = ".output, .cell_output"
         </ul>
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
+  FAQ
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="overview_2.html">
+   What happens in AWS when I run Distributed-CellProfiler?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="costs.html">
+   What does Distributed-CellProfiler cost?
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
   Running DCP
  </span>
 </p>
@@ -143,10 +160,22 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
   </ul>
  </li>
- <li class="toctree-l1">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="step_2_submit_jobs.html">
    Step 2: Submit Jobs
   </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="passing_files_to_DCP.html">
+     Passing Files to DCP
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="step_3_start_cluster.html">
@@ -160,6 +189,11 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="dashboard.html">
+   AWS Cloudwatch Dashboard
+  </a>
+ </li>
  <li class="toctree-l1">
   <a class="reference internal" href="advanced_configuration.html">
    Advanced Configuration of DCP
@@ -485,7 +519,7 @@ title="Print to PDF"
 <td><p></p></td>
 <td><p>Machines made in EC2 and dockers are made in ECS but the dockers are not placed on the machines</p></td>
 <td><p>There is a mismatch in your DCP config file.</p></td>
-<td><p>Confirm that the MEMORY matches the MACHINE_TYPE  set in your config.</p></td>
+<td><p>Confirm that the MEMORY matches the MACHINE_TYPE  set in your config. Confirm that there are no typos in your DOCKERHUB_TAG set in your config.</p></td>
 </tr>
 <tr class="row-even"><td><p></p></td>
 <td><p>Your perinstance logs have an IOError indicating that CellProfiler cannot open your pipeline</p></td>
@@ -514,6 +548,13 @@ title="Print to PDF"
 <td><p></p></td>
 <td><p>S3FS fails to mount if your bucket name has a dot (.) in it.</p></td>
 <td><p>You can bypass S3FS usage by setting DOWNLOAD_FILES = TRUE in your config.py. Note that, depending upon your job and machine setup,  you may need to increase the size of your EBS volume to account for the files being downloaded. Alternatively, you can make your own DCP Docker and edit run-worker.sh to <code class="docutils literal notranslate"><span class="pre">use_path_request_style</span></code>. If your region is not us-east-1 you also need to specify <code class="docutils literal notranslate"><span class="pre">endpoint</span></code>. See S3FS documentation for more information.</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>Your logs show that files are downloading but it never moves beyond that point.</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>If you have set DOWNLOAD_FILES = TRUE in your config, then your files are failing to completely download because you are running out of space and it is failing silently.</p></td>
+<td><p>Place larger volumes on your instances by increasing EBS_VOL_SIZE in your config.py</p></td>
 </tr>
 </tbody>
 </table>

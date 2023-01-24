@@ -55,7 +55,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Step 1: Configuration" href="step_1_configuration.html" />
-    <link rel="prev" title="What is Distributed-CellProfiler?" href="overview.html" />
+    <link rel="prev" title="What does Distributed-CellProfiler cost?" href="costs.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -112,6 +112,23 @@ const thebe_selector_output = ".output, .cell_output"
         </ul>
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
+  FAQ
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="overview_2.html">
+   What happens in AWS when I run Distributed-CellProfiler?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="costs.html">
+   What does Distributed-CellProfiler cost?
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
   Running DCP
  </span>
 </p>
@@ -143,10 +160,22 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
   </ul>
  </li>
- <li class="toctree-l1">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="step_2_submit_jobs.html">
    Step 2: Submit Jobs
   </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="passing_files_to_DCP.html">
+     Passing Files to DCP
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="step_3_start_cluster.html">
@@ -160,6 +189,11 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="dashboard.html">
+   AWS Cloudwatch Dashboard
+  </a>
+ </li>
  <li class="toctree-l1">
   <a class="reference internal" href="advanced_configuration.html">
    Advanced Configuration of DCP
@@ -569,7 +603,9 @@ title="Print to PDF"
 <h1>Step 0: Prep<a class="headerlink" href="#step-0-prep" title="Permalink to this headline">#</a></h1>
 <p>Distributed-CellProfiler runs many parallel jobs in EC2 instances that are automatically managed by ECS.
 To get jobs started, a control node to submit jobs and monitor progress is needed.
-This section describes what you need in AWS and in the control node to get started.</p>
+This section describes what you need in AWS and in the control node to get started.
+This guide only needs to be followed once per account.
+(Though we recommend each user has their own control node, further control nodes can be created from an AMI after this guide has been followed to completion once.)</p>
 <section id="aws-configuration">
 <h2>1. AWS Configuration<a class="headerlink" href="#aws-configuration" title="Permalink to this headline">#</a></h2>
 <p>The AWS resources involved in running Distributed-CellProfiler can be primarily configured using the <a class="reference external" href="https://aws.amazon.com/console/">AWS Web Console</a>.
@@ -605,7 +641,9 @@ In the current interface, it’s easiest to click “Create role”, select “E
 </section>
 <section id="primary-resources">
 <h3>1.4 Primary Resources<a class="headerlink" href="#primary-resources" title="Permalink to this headline">#</a></h3>
-<p>The following five are resources you need to interact with constantly while working with Distributed-CellProfiler. Although at this point you don’t need to create anything special there, you can open each console in a separate tab in your browser to keep them handy and monitor DCP’s behavior.</p>
+<p>The following five are the primary resources that Distributed-CellProfiler interacts with.
+After you have finished preparing for Distributed-CellProfiler (this guide), you do not need to directly interact with any of these services outside of Distributed-CellProfiler.
+If you would like a granular view of <a class="reference internal" href="overview_2.html"><span class="doc std std-doc">what Distributed-CellProfiler is doing while it runs</span></a>, you can open each console in a separate tab in your browser and watch their individual behaviors, though this is not necessary, especially if you run the <a class="reference internal" href="step_4_monitor.html"><span class="doc std std-doc">monitor command</span></a> and/or enable auto-Dashboard creation in your <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">configuration</span></a>.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://console.aws.amazon.com/s3">S3 Console</a></p></li>
 <li><p><a class="reference external" href="https://console.aws.amazon.com/ec2/">EC2 Console</a></p></li>
@@ -717,11 +755,11 @@ Create future control nodes using this AMI so that you don’t need to repeat th
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="overview.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="costs.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">What is Distributed-CellProfiler?</p>
+            <p class="prev-next-title">What does Distributed-CellProfiler cost?</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="step_1_configuration.html" title="next page">

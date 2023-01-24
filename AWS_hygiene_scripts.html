@@ -112,6 +112,23 @@ const thebe_selector_output = ".output, .cell_output"
         </ul>
         <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
+  FAQ
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="overview_2.html">
+   What happens in AWS when I run Distributed-CellProfiler?
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="costs.html">
+   What does Distributed-CellProfiler cost?
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
   Running DCP
  </span>
 </p>
@@ -143,10 +160,22 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
   </ul>
  </li>
- <li class="toctree-l1">
+ <li class="toctree-l1 has-children">
   <a class="reference internal" href="step_2_submit_jobs.html">
    Step 2: Submit Jobs
   </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="passing_files_to_DCP.html">
+     Passing Files to DCP
+    </a>
+   </li>
+  </ul>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="step_3_start_cluster.html">
@@ -160,6 +189,11 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 <ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="dashboard.html">
+   AWS Cloudwatch Dashboard
+  </a>
+ </li>
  <li class="toctree-l1">
   <a class="reference internal" href="advanced_configuration.html">
    Advanced Configuration of DCP
@@ -439,7 +473,7 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="aws-hygiene-scripts">
 <h1>AWS Hygiene Scripts<a class="headerlink" href="#aws-hygiene-scripts" title="Permalink to this headline">#</a></h1>
-<p>See also (AUSPICES)[https://github.com/broadinstitute/AuSPICES] for setting up various hygiene scripts to automatically run in your AWS account.</p>
+<p>See also <a class="reference external" href="https://github.com/broadinstitute/AuSPICES">AUSPICES</a> for setting up various hygiene scripts to automatically run in your AWS account.</p>
 <section id="clean-out-old-alarms">
 <h2>Clean out old alarms<a class="headerlink" href="#clean-out-old-alarms" title="Permalink to this headline">#</a></h2>
 <p>Python:</p>
@@ -464,7 +498,7 @@ title="Print to PDF"
 <section class="tex2jax_ignore mathjax_ignore" id="clean-out-old-log-groups">
 <h1>Clean out old log groups<a class="headerlink" href="#clean-out-old-log-groups" title="Permalink to this headline">#</a></h1>
 <p>Bash:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>aws logs describe-log-groups<span class="p">|</span> in2csv -f json --key logGroups &gt; logs.csv
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>aws<span class="w"> </span>logs<span class="w"> </span>describe-log-groups<span class="p">|</span><span class="w"> </span>in2csv<span class="w"> </span>-f<span class="w"> </span>json<span class="w"> </span>--key<span class="w"> </span>logGroups<span class="w"> </span>&gt;<span class="w"> </span>logs.csv
 </pre></div>
 </div>
 <p>R:</p>
@@ -472,23 +506,23 @@ title="Print to PDF"
 <div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">readr</span><span class="p">)</span>
 <span class="nf">read_csv</span><span class="p">(</span>
-  <span class="s">&quot;logs.csv&quot;</span><span class="p">,</span>
-  <span class="n">col_types</span> <span class="o">=</span> <span class="nf">cols_only</span><span class="p">(</span>
-    <span class="n">storedBytes</span> <span class="o">=</span> <span class="nf">col_integer</span><span class="p">(),</span>
-    <span class="n">creationTime</span> <span class="o">=</span> <span class="nf">col_double</span><span class="p">(),</span>
-    <span class="n">logGroupName</span> <span class="o">=</span> <span class="nf">col_character</span><span class="p">()</span>
-  <span class="p">)</span>
-<span class="p">)</span> <span class="o">%&gt;%</span>
-  <span class="nf">mutate</span><span class="p">(</span><span class="n">creationTime</span> <span class="o">=</span>
-           <span class="nf">as.POSIXct</span><span class="p">(</span><span class="n">creationTime</span> <span class="o">/</span> <span class="m">1000</span><span class="p">,</span>
-                      <span class="n">origin</span> <span class="o">=</span> <span class="s">&quot;1970-01-01&quot;</span><span class="p">))</span> <span class="o">%&gt;%</span>
-  <span class="nf">filter</span><span class="p">(</span><span class="n">storedBytes</span> <span class="o">==</span> <span class="m">0</span><span class="p">)</span> <span class="o">%&gt;%</span>
-  <span class="nf">select</span><span class="p">(</span><span class="n">logGroupName</span><span class="p">)</span> <span class="o">%&gt;%</span>
-  <span class="nf">write_tsv</span><span class="p">(</span><span class="s">&quot;logs_clear.txt&quot;</span><span class="p">,</span> <span class="n">col_names</span> <span class="o">=</span> <span class="bp">F</span><span class="p">)</span>
+<span class="w">  </span><span class="s">&quot;logs.csv&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="n">col_types</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">cols_only</span><span class="p">(</span>
+<span class="w">    </span><span class="n">storedBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">col_integer</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">creationTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">col_double</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">logGroupName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">col_character</span><span class="p">()</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">mutate</span><span class="p">(</span><span class="n">creationTime</span><span class="w"> </span><span class="o">=</span>
+<span class="w">           </span><span class="nf">as.POSIXct</span><span class="p">(</span><span class="n">creationTime</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="m">1000</span><span class="p">,</span>
+<span class="w">                      </span><span class="n">origin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;1970-01-01&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">filter</span><span class="p">(</span><span class="n">storedBytes</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">select</span><span class="p">(</span><span class="n">logGroupName</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">  </span><span class="nf">write_tsv</span><span class="p">(</span><span class="s">&quot;logs_clear.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">col_names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">F</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Bash:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>parallel aws logs delete-log-group --log-group-name <span class="o">{</span><span class="m">1</span><span class="o">}</span> :::: logs_clear.txt
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>parallel<span class="w"> </span>aws<span class="w"> </span>logs<span class="w"> </span>delete-log-group<span class="w"> </span>--log-group-name<span class="w"> </span><span class="o">{</span><span class="m">1</span><span class="o">}</span><span class="w"> </span>::::<span class="w"> </span>logs_clear.txt
 </pre></div>
 </div>
 </section>

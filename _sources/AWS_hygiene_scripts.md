@@ -1,6 +1,6 @@
 # AWS Hygiene Scripts
 
-See also (AUSPICES)[https://github.com/broadinstitute/AuSPICES] for setting up various hygiene scripts to automatically run in your AWS account.
+See also [AUSPICES](https://github.com/broadinstitute/AuSPICES) for setting up various hygiene scripts to automatically run in your AWS account.
 
 ## Clean out old alarms
 

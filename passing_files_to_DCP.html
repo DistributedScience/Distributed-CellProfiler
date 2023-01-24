@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Step 4: Monitor &#8212; Documentation</title>
+    <title>Passing Files to DCP &#8212; Documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -51,11 +51,11 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <link rel="canonical" href="distributedscience.github.io/step_4_monitor.html" />
+    <link rel="canonical" href="distributedscience.github.io/passing_files_to_DCP.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="AWS Cloudwatch Dashboard" href="dashboard.html" />
-    <link rel="prev" title="Step 3: Start Cluster" href="step_3_start_cluster.html" />
+    <link rel="next" title="Step 3: Start Cluster" href="step_3_start_cluster.html" />
+    <link rel="prev" title="Step 2: Submit Jobs" href="step_2_submit_jobs.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -160,18 +160,18 @@ const thebe_selector_output = ".output, .cell_output"
    </li>
   </ul>
  </li>
- <li class="toctree-l1 has-children">
+ <li class="toctree-l1 current active has-children">
   <a class="reference internal" href="step_2_submit_jobs.html">
    Step 2: Submit Jobs
   </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
   <label for="toctree-checkbox-2">
    <i class="fas fa-chevron-down">
    </i>
   </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="passing_files_to_DCP.html">
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
      Passing Files to DCP
     </a>
    </li>
@@ -182,8 +182,8 @@ const thebe_selector_output = ".output, .cell_output"
    Step 3: Start Cluster
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="step_4_monitor.html">
    Step 4: Monitor
   </a>
  </li>
@@ -304,7 +304,7 @@ title="Source repository"
       </li>
       
       <li>
-        <a href="https://github.com/distributed-science/distributed-cellprofiler/issues/new?title=Issue%20on%20page%20%2Fstep_4_monitor.html&body=Your%20issue%20content%20here."
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/issues/new?title=Issue%20on%20page%20%2Fpassing_files_to_DCP.html&body=Your%20issue%20content%20here."
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -321,7 +321,7 @@ title="Open an issue"
       </li>
       
       <li>
-        <a href="https://github.com/distributed-science/distributed-cellprofiler/edit/main/DCP-documentation/step_4_monitor.md"
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/edit/main/DCP-documentation/passing_files_to_DCP.md"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -349,7 +349,7 @@ title="Edit this page"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/step_4_monitor.md"
+        <a href="_sources/passing_files_to_DCP.md"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -409,26 +409,55 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#monitor-functions">
-   Monitor functions
+  <a class="reference internal nav-link" href="#load-data">
+   Load Data
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#while-your-analysis-is-running">
-     While your analysis is running
+    <a class="reference internal nav-link" href="#creating-loaddata-csv">
+     Creating LoadData.csv
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#when-the-number-of-jobs-in-your-queue-goes-to-0">
-     When the number of jobs in your queue goes to 0
+    <a class="reference internal nav-link" href="#using-loaddata-csv">
+     Using LoadData.csv
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#cheapest-mode">
-   Cheapest mode
+  <a class="reference internal nav-link" href="#batch-files">
+   Batch Files
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#creating-batch-files">
+     Creating batch files
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#using-batch-files">
+     Using batch files
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#file-lists">
+   File lists
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#creating-file-lists">
+     Creating File Lists
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#using-file-lists">
+     Using File Lists
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -439,7 +468,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Step 4: Monitor</h1>
+                <h1>Passing Files to DCP</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -450,26 +479,55 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#monitor-functions">
-   Monitor functions
+  <a class="reference internal nav-link" href="#load-data">
+   Load Data
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#while-your-analysis-is-running">
-     While your analysis is running
+    <a class="reference internal nav-link" href="#creating-loaddata-csv">
+     Creating LoadData.csv
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#when-the-number-of-jobs-in-your-queue-goes-to-0">
-     When the number of jobs in your queue goes to 0
+    <a class="reference internal nav-link" href="#using-loaddata-csv">
+     Using LoadData.csv
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#cheapest-mode">
-   Cheapest mode
+  <a class="reference internal nav-link" href="#batch-files">
+   Batch Files
   </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#creating-batch-files">
+     Creating batch files
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#using-batch-files">
+     Using batch files
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#file-lists">
+   File lists
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#creating-file-lists">
+     Creating File Lists
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#using-file-lists">
+     Using File Lists
+    </a>
+   </li>
+  </ul>
  </li>
 </ul>
 
@@ -481,50 +539,73 @@ title="Print to PDF"
                 
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="step-4-monitor">
-<h1>Step 4: Monitor<a class="headerlink" href="#step-4-monitor" title="Permalink to this headline">#</a></h1>
-<p>Your workflow is now submitted.
-Distributed-CellProfiler will keep an eye on a few things for you at this point without you having to do anything else.</p>
-<ul class="simple">
-<li><p>Each instance is labeled with your APP_NAME, so that you can easily find your instances if you want to look at the instance metrics on the Running Instances section of the <a class="reference external" href="https://console.aws.amazon.com/ec2/v2/home">EC2 web interface</a> to monitor performance.</p></li>
-<li><p>You can also look at the whole-cluster CPU and memory usage statistics related to your APP_NAME in the <a class="reference external" href="https://console.aws.amazon.com/ecs/home">ECS web interface</a>.</p></li>
-<li><p>Each instance will have an alarm placed on it so that if CPU usage dips below 1% for 15 consecutive minutes (almost always the result of a crashed machine), the instance will be automatically terminated and a new one will take its place.</p></li>
-<li><p>Each individual job processed will create a log of the CellProfiler output, and each Docker container will create a log showing CPU, memory, and disk usage.</p></li>
-</ul>
-<p>If you choose to run the monitor script, Distributed-CellProfiler can be even more helpful.
-The monitor can be run by entering <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">monitor</span> <span class="pre">files/APP_NAMESpotFleetRequestId.json</span></code>; the JSON file containing all the information Distributed-CellProfiler needs will have been automatically created when you sent the instructions to start your cluster in the previous step.</p>
-<p>(<strong>Note:</strong> You should run the monitor inside <a class="reference external" href="https://www.gnu.org/software/screen/">Screen</a>, <a class="reference external" href="https://tmux.github.io/">tmux</a>, or another comparable service to keep a network disconnection from killing your monitor; this is particularly critical the longer your run takes.)</p>
-<hr class="docutils" />
-<section id="monitor-functions">
-<h2>Monitor functions<a class="headerlink" href="#monitor-functions" title="Permalink to this headline">#</a></h2>
-<section id="while-your-analysis-is-running">
-<h3>While your analysis is running<a class="headerlink" href="#while-your-analysis-is-running" title="Permalink to this headline">#</a></h3>
-<ul class="simple">
-<li><p>Checks your queue once per minute to see how many jobs are currently processing and how many remain to be processed.</p></li>
-<li><p>Once per hour, it deletes the alarms for any instances that have been terminated in the last 24 hours (because of spot prices rising above your maximum bid, machine crashes, etc).</p></li>
-</ul>
+  <section class="tex2jax_ignore mathjax_ignore" id="passing-files-to-dcp">
+<h1>Passing Files to DCP<a class="headerlink" href="#passing-files-to-dcp" title="Permalink to this headline">#</a></h1>
+<p>Distributed-CellProfiler can be told what files to use through LoadData.csv, Batch Files, or file lists.</p>
+<section id="load-data">
+<h2>Load Data<a class="headerlink" href="#load-data" title="Permalink to this headline">#</a></h2>
+<p><img alt="LoadData.csv" src="_images/LoadDataCSV.png" /></p>
+<p>LoadData.csv are CSVs that tell CellProfiler how the images should be parsed.
+At a minimum, this CSV should contain PathName_{NameOfChannel} and FileName_{NameOfChannel} columns for each of your channels, as well as Metadata_{PieceOfMetadata} for each kind of metadata being used to group your image sets.
+It can contain any other metadata you would like to track.
+Some users have reported issues with using relative paths in the PathName columns; using absolute paths beginning with <code class="docutils literal notranslate"><span class="pre">/home/ubuntu/bucket/{relativepath}</span></code> may increase your odds of success.</p>
+<section id="creating-loaddata-csv">
+<h3>Creating LoadData.csv<a class="headerlink" href="#creating-loaddata-csv" title="Permalink to this headline">#</a></h3>
+<p>You can create this CSV yourself via your favorite scripting language.
+We maintain a script for creating LoadData.csv from Phenix metadata XML files called <a class="reference external" href="https://github.com/broadinstitute/pe2loaddata">pe2loaddata</a>.</p>
+<p>You can also create the LoadData.csv in a local copy of CellProfiler using the standard input modules of Images, Metadata, NamesAndTypes and Groups.
+More written and video information about using the input modules can be found <span class="xref myst">here</span>.
+After loading in your images, use the Export-&gt;Image Set Listing command.
+You will then need to replace the local paths with the paths where the files can be found in the cloud.
+If your files are in the same structure, this can be done with a simple find and replace in any text editing software.
+(e.g. Find ‘/Users/eweisbar/Desktop’ and replace with ‘/home/ubuntu/bucket’)</p>
 </section>
-<section id="when-the-number-of-jobs-in-your-queue-goes-to-0">
-<h3>When the number of jobs in your queue goes to 0<a class="headerlink" href="#when-the-number-of-jobs-in-your-queue-goes-to-0" title="Permalink to this headline">#</a></h3>
-<ul class="simple">
-<li><p>Downscales the ECS service associated with your APP_NAME.</p></li>
-<li><p>Deletes all the alarms associated with your spot fleet (both the currently running and the previously terminated instances).</p></li>
-<li><p>Shuts down your spot fleet to keep you from incurring charges after your analysis is over.</p></li>
-<li><p>Gets rid of the queue, service, and task definition created for this analysis.</p></li>
-<li><p>Exports all the logs from your analysis onto your S3 bucket.</p></li>
-<li><p>Deletes your Cloudwatch Dashboard if you created it and set CLEAN_DASHBOARD to True.</p></li>
-</ul>
+<section id="using-loaddata-csv">
+<h3>Using LoadData.csv<a class="headerlink" href="#using-loaddata-csv" title="Permalink to this headline">#</a></h3>
+<p>To use a LoadData.csv with submitJobs, put the path to the LoadData.csv in <strong>data_file:</strong>.</p>
+<p>To use a LoadData.csv with run_batch_general.py, enter the name of the LoadData.csv under <strong>#project specific stuff</strong> in <code class="docutils literal notranslate"><span class="pre">{STEP}name</span></code>.
+At the bottom of the file, make sure there are no arguments or <code class="docutils literal notranslate"><span class="pre">batch=False</span></code> in the command for the step you are running.
+(e.g. <code class="docutils literal notranslate"><span class="pre">MakeAnalysisJobs()</span></code> or <code class="docutils literal notranslate"><span class="pre">MakeAnalysisJobs(batch=False)</span></code>)
+Note that if you do not follow our standard file organization, under <strong>#not project specific, unless you deviate from the structure</strong> you will also need to edit <code class="docutils literal notranslate"><span class="pre">datafilepath</span></code>.</p>
 </section>
 </section>
-<hr class="docutils" />
-<section id="cheapest-mode">
-<h2>Cheapest mode<a class="headerlink" href="#cheapest-mode" title="Permalink to this headline">#</a></h2>
-<p>You can run the monitor in an optional “cheapest” mode, which will downscale the number of requested machines (but not RUNNING machines) to one 15 minutes after the monitor is engaged.
-You can engage cheapest mode by adding <code class="docutils literal notranslate"><span class="pre">True</span></code> as a final configurable parameter when starting the monitor, aka <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">monitor</span> <span class="pre">files/APP_NAMESpotFleetRequestId.json</span> <span class="pre">True</span></code></p>
-<p>Cheapest mode is cheapest because it will remove all but 1 machine as soon as that machine crashes and/or runs out of jobs to do; this can save you money, particularly in multi-CPU Dockers running long jobs.</p>
-<p>This mode is optional because running this way involves some inherent risks.
-If machines stall out due to processing errors, they will not be replaced, meaning your job will take overall longer.
-Additionally, if there is limited capacity for your requested configuration when you first start (e.g. you want 200 machines but AWS says it can currently only allocate you 50), more machines will not be added if and when they become available in cheapest mode as they would in normal mode.</p>
+<section id="batch-files">
+<h2>Batch Files<a class="headerlink" href="#batch-files" title="Permalink to this headline">#</a></h2>
+<p>Batch files are an easy way to transition from running locally to distributed.
+A batch file is an <code class="docutils literal notranslate"><span class="pre">.h5</span></code> file created by CellProfiler which captures all the data needed to run your workflow - pipeline and file information are packaged together.
+To use a batch file, your data needs to have the same structure in the cloud as on your local machine.</p>
+<section id="creating-batch-files">
+<h3>Creating batch files<a class="headerlink" href="#creating-batch-files" title="Permalink to this headline">#</a></h3>
+<p>To create a batch file, load all your images into a local copy of CellProfiler using the standard input modules of Images, Metadata, NamesAndTypes and Groups.
+More written and video information about using the input modules can be found <span class="xref myst">here</span>.
+Put the <code class="docutils literal notranslate"><span class="pre">CreateBatchFiles</span></code> module at the end of your pipeline and ensure that it is selected.
+Add a path mapping and edit the <code class="docutils literal notranslate"><span class="pre">Local</span> <span class="pre">root</span> <span class="pre">path</span></code> and <code class="docutils literal notranslate"><span class="pre">Cluster</span> <span class="pre">root</span> <span class="pre">path</span></code>.
+Run the CellProfiler pipeline by pressing the <code class="docutils literal notranslate"><span class="pre">Analyze</span> <span class="pre">Images</span></code> button; note that it won’t actually run your pipeline but will instead create a batch file.
+More information on the <code class="docutils literal notranslate"><span class="pre">CreateBatchFiles</span></code> module can be found <a class="reference external" href="https://cellprofiler-manual.s3.amazonaws.com/CellProfiler-4.2.4/modules/fileprocessing.html">here</a>.</p>
+</section>
+<section id="using-batch-files">
+<h3>Using batch files<a class="headerlink" href="#using-batch-files" title="Permalink to this headline">#</a></h3>
+<p>To use a batch file with submitJobs, put the path to the <code class="docutils literal notranslate"><span class="pre">.h5</span></code> file in <strong>data_file:</strong> and <strong>pipeline:</strong>.</p>
+<p>To use a batch file with run_batch_general.py, enter the name of the batch file under <strong>#project specific stuff</strong> in <code class="docutils literal notranslate"><span class="pre">batchpipename{STEP}</span></code>.
+At the bottom of the file, set <code class="docutils literal notranslate"><span class="pre">batch=True</span></code> in the command for the step you are running.
+(e.g. <code class="docutils literal notranslate"><span class="pre">MakeAnalysisJobs(batch=True)</span></code>)
+Note that if you do not follow our standard file organization, under <strong>#not project specific, unless you deviate from the structure</strong> you will also need to edit <code class="docutils literal notranslate"><span class="pre">batchpath</span></code>.</p>
+</section>
+</section>
+<section id="file-lists">
+<h2>File lists<a class="headerlink" href="#file-lists" title="Permalink to this headline">#</a></h2>
+<p>You can also simply pass a list of absolute file paths (not relative paths) with one file per row in <code class="docutils literal notranslate"><span class="pre">.txt</span></code> format.
+Note that file lists themselves do not associate metadata with file paths (in contrast to LoadData.csv files where you can enter any metadata columns you desire.)
+Therefore, you need to extract metadata for Distributed-CellProfiler to use for grouping by extracting metadata from file and folder names in the Metadata module in your CellProfiler pipeline.
+You can pass additional metadata to CellProfiler by <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">another</span> <span class="pre">extraction</span> <span class="pre">method</span></code>, setting the method to <code class="docutils literal notranslate"><span class="pre">Import</span> <span class="pre">from</span> <span class="pre">file</span></code> and setting Metadata file location to <code class="docutils literal notranslate"><span class="pre">Default</span> <span class="pre">Input</span> <span class="pre">Folder</span></code>.</p>
+<section id="creating-file-lists">
+<h3>Creating File Lists<a class="headerlink" href="#creating-file-lists" title="Permalink to this headline">#</a></h3>
+<p>Use any text editing software to create a <code class="docutils literal notranslate"><span class="pre">.txt</span></code> file where each line of the file is a path to a single image that you want to process.</p>
+</section>
+<section id="using-file-lists">
+<h3>Using File Lists<a class="headerlink" href="#using-file-lists" title="Permalink to this headline">#</a></h3>
+<p>To use a file list with submitJobs, put the path to the <code class="docutils literal notranslate"><span class="pre">.txt</span></code> file in <strong>data_file:</strong>.</p>
+</section>
 </section>
 </section>
 
@@ -555,17 +636,17 @@ Additionally, if there is limited capacity for your requested configuration when
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="step_3_start_cluster.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="step_2_submit_jobs.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Step 3: Start Cluster</p>
+            <p class="prev-next-title">Step 2: Submit Jobs</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="dashboard.html" title="next page">
+    <a class='right-next' id="next-link" href="step_3_start_cluster.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">AWS Cloudwatch Dashboard</p>
+        <p class="prev-next-title">Step 3: Start Cluster</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

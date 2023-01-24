@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Versions &#8212; Documentation</title>
+    <title>AWS Cloudwatch Dashboard &#8212; Documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -51,10 +51,11 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <link rel="canonical" href="distributedscience.github.io/versions.html" />
+    <link rel="canonical" href="distributedscience.github.io/dashboard.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Troubleshooting" href="troubleshooting_runs.html" />
+    <link rel="next" title="Advanced Configuration of DCP" href="advanced_configuration.html" />
+    <link rel="prev" title="Step 4: Monitor" href="step_4_monitor.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -188,8 +189,8 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="dashboard.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    AWS Cloudwatch Dashboard
   </a>
  </li>
@@ -208,8 +209,8 @@ const thebe_selector_output = ".output, .cell_output"
    Troubleshooting
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="versions.html">
    Versions
   </a>
  </li>
@@ -303,7 +304,7 @@ title="Source repository"
       </li>
       
       <li>
-        <a href="https://github.com/distributed-science/distributed-cellprofiler/issues/new?title=Issue%20on%20page%20%2Fversions.html&body=Your%20issue%20content%20here."
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/issues/new?title=Issue%20on%20page%20%2Fdashboard.html&body=Your%20issue%20content%20here."
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -320,7 +321,7 @@ title="Open an issue"
       </li>
       
       <li>
-        <a href="https://github.com/distributed-science/distributed-cellprofiler/edit/main/DCP-documentation/versions.md"
+        <a href="https://github.com/distributed-science/distributed-cellprofiler/edit/main/DCP-documentation/dashboard.md"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -348,7 +349,7 @@ title="Edit this page"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/versions.md"
+        <a href="_sources/dashboard.md"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -409,52 +410,49 @@ title="Print to PDF"
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   Versions
-  </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#version-history">
-   Version History
+   AWS Cloudwatch Dashboard
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#forthcoming">
-     2.1.0 (forthcoming)
+    <a class="reference internal nav-link" href="#fulfilledcapacity">
+     FulfilledCapacity:
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#rc2-released-20201110">
-     2.0.0rc2 - Released 20201110
+    <a class="reference internal nav-link" href="#numberofmessagesreceived-deleted">
+     NumberOfMessagesReceived/Deleted
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#rc1-released-20201105">
-     2.0.0rc1 - Released 20201105
+    <a class="reference internal nav-link" href="#memoryutilization">
+     MemoryUtilization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#messagesvisible-notvisible">
+   MessagesVisible/NotVisible
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#distinct-logs">
+     Distinct Logs
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#released-20201103">
-     1.2.2 - Released 20201103
+    <a class="reference internal nav-link" href="#all-logs">
+     All logs
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#released-20200109-updated-through-20191002">
-     1.2.1 - Released 20200109, Updated through 20191002
+    <a class="reference internal nav-link" href="#show-errors">
+     Show Errors
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#released-20181108-updated-through-20200109">
-     1.2.0 - Released 20181108, Updated through 20200109
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#released-20170217-updated-20170221-bugfixes-20181018">
-     1.1.0 - Released 20170217, Updated 20170221 (bugfixes) - 20181018
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#version-as-of-20170213">
-     1.0.0 - Version as of 20170213
+    <a class="reference internal nav-link" href="#interacting-with-a-dashboard">
+     Interacting with a Dashboard:
     </a>
    </li>
   </ul>
@@ -468,7 +466,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Versions</h1>
+                <h1>AWS Cloudwatch Dashboard</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -480,52 +478,49 @@ title="Print to PDF"
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h1 nav-item toc-entry">
   <a class="reference internal nav-link" href="#">
-   Versions
-  </a>
- </li>
- <li class="toc-h1 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#version-history">
-   Version History
+   AWS Cloudwatch Dashboard
   </a>
   <ul class="visible nav section-nav flex-column">
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#forthcoming">
-     2.1.0 (forthcoming)
+    <a class="reference internal nav-link" href="#fulfilledcapacity">
+     FulfilledCapacity:
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#rc2-released-20201110">
-     2.0.0rc2 - Released 20201110
+    <a class="reference internal nav-link" href="#numberofmessagesreceived-deleted">
+     NumberOfMessagesReceived/Deleted
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#rc1-released-20201105">
-     2.0.0rc1 - Released 20201105
+    <a class="reference internal nav-link" href="#memoryutilization">
+     MemoryUtilization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h1 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#messagesvisible-notvisible">
+   MessagesVisible/NotVisible
+  </a>
+  <ul class="visible nav section-nav flex-column">
+   <li class="toc-h2 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#distinct-logs">
+     Distinct Logs
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#released-20201103">
-     1.2.2 - Released 20201103
+    <a class="reference internal nav-link" href="#all-logs">
+     All logs
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#released-20200109-updated-through-20191002">
-     1.2.1 - Released 20200109, Updated through 20191002
+    <a class="reference internal nav-link" href="#show-errors">
+     Show Errors
     </a>
    </li>
    <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#released-20181108-updated-through-20200109">
-     1.2.0 - Released 20181108, Updated through 20200109
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#released-20170217-updated-20170221-bugfixes-20181018">
-     1.1.0 - Released 20170217, Updated 20170221 (bugfixes) - 20181018
-    </a>
-   </li>
-   <li class="toc-h2 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#version-as-of-20170213">
-     1.0.0 - Version as of 20170213
+    <a class="reference internal nav-link" href="#interacting-with-a-dashboard">
+     Interacting with a Dashboard:
     </a>
    </li>
   </ul>
@@ -540,78 +535,91 @@ title="Print to PDF"
                 
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="versions">
-<h1>Versions<a class="headerlink" href="#versions" title="Permalink to this headline">#</a></h1>
-<p>The most current release can always be found on DockerHub at <code class="docutils literal notranslate"><span class="pre">cellprofiler/distributed-cellprofiler</span></code>.
-Current version is 2.0.0.<br />
-Our current tag system is dcpversion_CellProfilerversion, e.g. 1.2.0_3.1.8</p>
-<p>Previous release versions can be accessed at <code class="docutils literal notranslate"><span class="pre">bethcimini/distributed-cellprofiler:versionnumber</span></code></p>
+  <section class="tex2jax_ignore mathjax_ignore" id="aws-cloudwatch-dashboard">
+<h1>AWS Cloudwatch Dashboard<a class="headerlink" href="#aws-cloudwatch-dashboard" title="Permalink to this headline">#</a></h1>
+<p><img alt="Cloudwatch Dashboard Overview" src="_images/dashboard_overview.png" /></p>
+<p>AWS Cloudwatch Dashboards are “customizable home pages in the CloudWatch console that you can use to monitor your resources in a single view and create customized views of the metrics and alarms for your AWS resources.”
+A Dashboard is full of widgets, each of which you create and customize to report on a separate AWS metric.
+Distributed-CellProfiler has the option to auto-create a Cloudwatch Dashboard for each run and the option to clean it up when you are done.
+These options are set in <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">your config file</span></a>.</p>
+<p>The Dashboard setup that DS auto-populates is helfpul for monitoring a run as it is occurring or for a post-mortem to better understand a previous run.
+Some things you can see include: whether your machines are sized appropriately for your jobs, how stable your spot fleet is, whether your jobs are failing and if so if they’re failing in a consistent manner.
+All told, this can help you understand and optimize your resource usage, thus saving you time and money</p>
+<section id="fulfilledcapacity">
+<h2>FulfilledCapacity:<a class="headerlink" href="#fulfilledcapacity" title="Permalink to this headline">#</a></h2>
+<p><img alt="Fulfilled Capacity widget" src="_images/fulfilledcapacity.png" /></p>
+<p>This widget shows the number of machines in your spot fleet that are fulfilled, i.e. how many machines you actually have at any given point.
+After a short spin-up time after initiating a run, you hope to see a straight line at the number of machines requested in your fleet and then a steady decrease at the end of a run as monitor scales your fleet down to match the remaining jobs.</p>
+<p>Some number of small dips are all but inevitable as machines crash and are replaced or AWS takes some of your capacity and gives it to a higher bidder.
+However, every time there is a dip, it means that a machine that was running a job is no longer running it and any progress on that job is lost.
+The job will hang out as “Not Visible” in your SQS queue until it reaches the amount of time set by SQS_MESSAGE_VISIBILITY in <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">your config file</span></a>.
+For quick jobs, this doesn’t have much of an impact, but for jobs that take many hours, this can be frustrating and potentially expensive.</p>
+<p>If you’re seeing lots of dips or very large dips, you may be able to prevent this in future runs by 1) requesting a different machine type 2) bidding a larger amount for your machines 3) changing regions.
+You can also check if blips coincide with AWS outages, in which case there’s nothing you can do, it’s just bad luck (that’s what happened with the large dip in the example above).</p>
 </section>
-<hr class="docutils" />
-<section class="tex2jax_ignore mathjax_ignore" id="version-history">
-<h1>Version History<a class="headerlink" href="#version-history" title="Permalink to this headline">#</a></h1>
-<section id="forthcoming">
-<h2>2.1.0 (forthcoming)<a class="headerlink" href="#forthcoming" title="Permalink to this headline">#</a></h2>
-<ul class="simple">
-<li><p>Increase support for using plugins</p></li>
-<li><p>Improve role handling and allow file download/upload from/to S3 buckets in different accounts</p></li>
-<li><p>Improve file download to S3FS can be completely bypassed</p></li>
-<li><p>Name EBS volumes</p></li>
-</ul>
+<section id="numberofmessagesreceived-deleted">
+<h2>NumberOfMessagesReceived/Deleted<a class="headerlink" href="#numberofmessagesreceived-deleted" title="Permalink to this headline">#</a></h2>
+<p><img alt="NumberofMessagesReceived/Deleted" src="_images/messages_deleted_received.png" /></p>
+<p>This widget shows you in bulk whether your jobs are completing or erroring.
+NumberOfMessagesDeleted shows messages deleted from the queue after the job has successfully completed.
+NumberOfMessagesReceived shows both messages that are deleted from the queue as well as messages that are put back in the queue because they errored.
+You hope to see that the two lines track on top of each other because that means no messages are erroring.
+If there are often gaps between the lines then it means a fraction of your jobs are erroring and you’ll need to figure out why (see MemoryUtilization and Show Errors or look directly in your Cloudwatch Logs for insights).</p>
 </section>
-<section id="rc2-released-20201110">
-<h2>2.0.0rc2 - Released 20201110<a class="headerlink" href="#rc2-released-20201110" title="Permalink to this headline">#</a></h2>
-<ul class="simple">
-<li><p>Add optional ability to download files to EBS rather than reading from S3 (helpful for pipelines that access many files/image sets)</p></li>
-</ul>
+<section id="memoryutilization">
+<h2>MemoryUtilization<a class="headerlink" href="#memoryutilization" title="Permalink to this headline">#</a></h2>
+<p><img alt="Memory Utilization" src="_images/memoryutilization.png" /></p>
+<p>Insufficient memory is the error that we most often encounter (as we try to use the smallest machines possible for economy’s sake) so we like to look at memory usage.
+Note that this is showing memory utilization in bulk for your cluster, not for individual machines.
+Because different machines reach memory intensive steps at different points in time, and because we’re looking at an average across 5 minute windows, the max percentage you see is likely to be much less than 100%, even if you are using all the memory in your machines at some points.</p>
 </section>
-<section id="rc1-released-20201105">
-<h2>2.0.0rc1 - Released 20201105<a class="headerlink" href="#rc1-released-20201105" title="Permalink to this headline">#</a></h2>
-<ul class="simple">
-<li><p>Remove requirement for boto and fabric, using only boto3</p></li>
-<li><p>Add support for Python 3 and CellProfiler 4</p></li>
-<li><p>Move cluster size, machine type, and machine price to the config file from the fleet file, eliminating mismatches between the two</p></li>
-<li><p>Add the ability to filter only files with certain names when running CHECK_IF_DONE</p></li>
-<li><p>Don’t cancel a fleet over capacity errors</p></li>
-<li><p>Add “cheapest” mode to the monitor, allowing you to run more cheaply (at possible expense of running more slowly)</p></li>
-</ul>
 </section>
-<section id="released-20201103">
-<h2>1.2.2 - Released 20201103<a class="headerlink" href="#released-20201103" title="Permalink to this headline">#</a></h2>
-<ul class="simple">
-<li><p>Allow pipelines using batch files to also designate an input output_top_directory</p></li>
-<li><p>Add support for multiple LaunchData specifications</p></li>
-<li><p>Add CellProfiler-plugins</p></li>
-<li><p>Additional way to create job submissions with run_batch_general.py</p></li>
-</ul>
+<section class="tex2jax_ignore mathjax_ignore" id="messagesvisible-notvisible">
+<h1>MessagesVisible/NotVisible<a class="headerlink" href="#messagesvisible-notvisible" title="Permalink to this headline">#</a></h1>
+<p><img alt="MessagesVisible/NotVisible" src="_images/messages_change_slope.png" /></p>
+<p>Visible messages are messages waiting in your queue.
+Hidden messages (aka MessagesNotVisible) have been started and will remain hidden until either they are completed and therefore removed from the queue or they reach the time set in SQS_MESSAGE_VISIBILITY in your config file, whichever comes first.
+(<a class="reference internal" href="SQS_QUEUE_information.html"><span class="doc std std-doc">Read more about Message Visibility</span></a>.)
+After starting your fleet (and waiting long enough for at least one round of jobs to complete), you hope to see a linear decline in total messages with the number of hidden messages equal to the number of jobs being run (fleet size * tasks per machine * docker cores).</p>
+<p><img alt="Blip in MessagesVisible/NotVisible" src="_images/blip_in_messagesnotvisible.png" /></p>
+<p>Sometimes you’ll see a blip where there is a rapid increase in the number of hidden messages (as pictured above).
+This can happen if there is an error on a machine and the hard disk gets full - it rapidly pulls jobs and puts them back until the machine error is caught and rebooted.
+This type of error shows in this widget as it happens.</p>
+<p>If your spot fleet loses capacity (see FulfilledCapacity), you may see a blip in MessagesVisible/NotVisible where the number of hidden messages rapidly decreases.
+This appears in the widget the amount of time set in SQS_MESSAGE_VISIBILITY in your config file after the capacity loss when jobs that were started (i.e. hidden) but not completed return to visible status.</p>
+<p>The relative slope of your graph can also be informative.
+For the run pictured at top, we discovered that a fraction of our jobs were erroring because the machines were running out of memory.
+Midway through 7/12 we upped the memory of the machines in our fleet and you can see from that point on a greater slope as more jobs were finishing in the same amount of time (as fewer were failing to complete because of memory errors.)</p>
+<section id="distinct-logs">
+<h2>Distinct Logs<a class="headerlink" href="#distinct-logs" title="Permalink to this headline">#</a></h2>
+<p><img alt="Logs comparison" src="_images/logs_comparison.png" /></p>
+<p>This widget shows you the number of different specific jobs that start within your given time window by plotting the number of Cloudwatch logs that have your run command in them.
+In this example, our run command is “cellprofiler -c”.
+It is not necessarily informative on its own, but very helpful when compared with the following widget.</p>
 </section>
-<section id="released-20200109-updated-through-20191002">
-<h2>1.2.1 - Released 20200109, Updated through 20191002<a class="headerlink" href="#released-20200109-updated-through-20191002" title="Permalink to this headline">#</a></h2>
-<ul class="simple">
-<li><p>Allow monitor to downscale machines when number of jobs &lt; number of machines</p></li>
-<li><p>Add a parameter to discount files when running CHECK_IF_DONE checks if less than a certain size</p></li>
-</ul>
+<section id="all-logs">
+<h2>All logs<a class="headerlink" href="#all-logs" title="Permalink to this headline">#</a></h2>
+<p>This widget shows you the number of total times that jobs are started within your log group within the given time window.
+Ideally, you want this number to match the number in the previous widget as it means that each job is starting in your software only once.</p>
+<p>If this number is consistently larger than the previous widget’s number, it could mean that some of your jobs are erroring and you’ll need to figure out why (see MemoryUtilization and Show Errors or look directly in your Cloudwatch Logs for insights).</p>
 </section>
-<section id="released-20181108-updated-through-20200109">
-<h2>1.2.0 - Released 20181108, Updated through 20200109<a class="headerlink" href="#released-20181108-updated-through-20200109" title="Permalink to this headline">#</a></h2>
-<ul class="simple">
-<li><p>Improved compatibility with CellProfiler 2 and 3</p></li>
-<li><p>Better handling of logging when using output_structure</p></li>
-</ul>
+<section id="show-errors">
+<h2>Show Errors<a class="headerlink" href="#show-errors" title="Permalink to this headline">#</a></h2>
+<p><img alt="Show errors" src="_images/expand_error_log.png" /></p>
+<p>This widget shows you the log entry any time that it contains “Error”.
+Ideally, this widget will remain empty.
+If it is logging errors, you can toggle each row for more information - it will show the job that errored in &#64;logStream and the actual error message in &#64;message.</p>
 </section>
-<section id="released-20170217-updated-20170221-bugfixes-20181018">
-<h2>1.1.0 - Released 20170217, Updated 20170221 (bugfixes) - 20181018<a class="headerlink" href="#released-20170217-updated-20170221-bugfixes-20181018" title="Permalink to this headline">#</a></h2>
-<ul class="simple">
-<li><p>Changes in this release:</p>
-<ul>
-<li><p>Added the <code class="docutils literal notranslate"><span class="pre">output_structure</span></code> variable to the job file, which allows you to structure the output folders created by DCP (ie <code class="docutils literal notranslate"><span class="pre">Plate/Well-Site</span></code> rather than <code class="docutils literal notranslate"><span class="pre">Plate-Well-Site</span></code>). Job files lacking this variable will still default to the previous settings (hyphenating all Metadata items in order they are presented in the Metadata grouping).</p></li>
-<li><p>Added support for creating the list of groups via <code class="docutils literal notranslate"><span class="pre">cellprofiler</span> <span class="pre">--print-groups</span></code>- see <a class="reference external" href="https://github.com/CellProfiler/Distributed-CellProfiler/issues/52">this issue</a> for example and discussion.  Groups listed in this way MUST use the <code class="docutils literal notranslate"><span class="pre">output_structure</span></code> variable to state their desired folder structure or an error will be returned.</p></li>
-</ul>
-</li>
-</ul>
-</section>
-<section id="version-as-of-20170213">
-<h2>1.0.0 - Version as of 20170213<a class="headerlink" href="#version-as-of-20170213" title="Permalink to this headline">#</a></h2>
+<section id="interacting-with-a-dashboard">
+<h2>Interacting with a Dashboard:<a class="headerlink" href="#interacting-with-a-dashboard" title="Permalink to this headline">#</a></h2>
+<p>Once you have your Dashboard created and full of widgets, you can adjust the timescale for which the widget is reporting metrics.
+For any of the widgets you can set the absolute or relative time that the widget is showing by selecting the time scale from the upper right corner of the screen.
+Zoom in to a particular time selection on a visible widget by drawing a box around that time on the widget itself (note that zooming in doesn’t change what’s plotted, just what part of the plot you can see so metrics like Show Errors won’t update with a zoom).</p>
+<p>Some widgets allow you to select/deselect certain metrics plotted in the widget.
+To hide a metric without permanently removing it from the widget, simply click the X on the box next to the name of the metric in the legend.</p>
+<p>You can move the widgets around on your dashboard by hovering on the upper right or upper left corner of a widget until a 4-direction-arrow icon appears and then dragging and dropping the widget.
+You can change the size of a widget by hovering on the lower right corner of the widget until a diagonal arrow icon appears and then dragging the widget to the desired size.
+After making changes, make sure to select Save dashboard from the top menu so that they are maintained after refreshing the page.</p>
 </section>
 </section>
 
@@ -642,12 +650,19 @@ Our current tag system is dcpversion_CellProfilerversion, e.g. 1.2.0_3.1.8</p>
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="troubleshooting_runs.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="step_4_monitor.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">Troubleshooting</p>
+            <p class="prev-next-title">Step 4: Monitor</p>
         </div>
+    </a>
+    <a class='right-next' id="next-link" href="advanced_configuration.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Advanced Configuration of DCP</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
     </a>
 </div>
             </footer>
