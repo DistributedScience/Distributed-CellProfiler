@@ -141,7 +141,7 @@ def runCellProfiler(message):
                     printandlog('Your specified output structure does not match the Metadata passed. If your CellProfiler-pipeline-grouping is different than your output-file-location-grouping (typically because you are using the output_structure job parameter), then this is expected and NOT an error. Cloudwatch logs will be stored under the output-file-location-grouping, rather than the CellProfiler-pipeline-grouping.',logger)
                 else:
                     metadataID = str.replace(metadataID,eachMetadata.split('=')[0],eachMetadata.split('=')[1])
-            printandlog(f'metadataID ={metadataID}', logger)
+            printandlog(f'metadataID={metadataID}', logger)
             logger.removeHandler(watchtowerlogger)
         else: #backwards compatability with 1.0.0 and/or no desire to structure output
             metadataID = '-'.join([x.split('=')[1] for x in message['Metadata'].split(',')]) # Strip equal signs from the metadata
@@ -247,11 +247,11 @@ def runCellProfiler(message):
 
     # Build and run CellProfiler command
     cpDone = f'{localOut}/cp.is.done'
-    if message['data_file'][-3:]=='.csv':
+    if message['data_file'][-4:]=='.csv':
         cmd = f'cellprofiler -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} --data-file={data_file_path} -g {message["Metadata"]}'
     elif message['data_file'][-3:]=='.h5':
         cmd = f'cellprofiler -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} -g {message["Metadata"]}'
-    elif message['data_file'][-3:]=='.txt':
+    elif message['data_file'][-4:]=='.txt':
         cmd = f'cellprofiler -c -r -p {DATA_ROOT}/{message["pipeline"]} -i {DATA_ROOT}/{message["input"]} -o {localOut} -d {cpDone} --file-list={data_file_path} -g {message["Metadata"]}'
     else:
         printandlog("Didn't recognize input file",logger)

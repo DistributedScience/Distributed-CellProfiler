@@ -33,12 +33,15 @@ AWS_BUCKET = 'your-bucket-name'
 Then run `python3 run.py setup`
 
 ### Step 2
+This command points to the job file created for this demonstartion and should be run as-is.
 `python3 run.py submitJob example_project/files/exampleJob.json`
 
 ### Step 3
+This command should point to whatever fleet file you created in Step 0 so you may need to update the `exampleFleet.json` file name.
 `python3 run.py startCluster files/exampleFleet.json`
 
 ### Step 4
+This command points to the monitor file that is automatically created with your run and should be run as-is.
 `python3 run.py monitor files/FlyExampleSpotFleetRequestId.json`
 
 ## Results
