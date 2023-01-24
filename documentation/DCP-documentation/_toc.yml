@@ -19,7 +19,7 @@ parts:
     - file: passing_files_to_DCP
   - file: step_3_start_cluster
   - file: step_4_monitor
-- caption:
+- caption: Technical Guides
   chapters:
   - file: dashboard
   - file: advanced_configuration
