@@ -29,6 +29,8 @@ AWS_REGION = 'us-east-1'
 AWS_PROFILE = 'default'                 # The same profile used by your AWS CLI installation
 SSH_KEY_NAME = 'your-key-file.pem'      # Expected to be in ~/.ssh
 AWS_BUCKET = 'your-bucket-name'
+SOURCE_BUCKET = 'your-bucket-name'      # Only differs from AWS_BUCKET with advanced configuration
+DESTINATION_BUCKET = 'your-bucket-name' # Only differs from AWS_BUCKET with advanced configuration
 ```
 Then run `python3 run.py setup`
 
