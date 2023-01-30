@@ -561,6 +561,13 @@ title="Print to PDF"
 <td><p>If you have set DOWNLOAD_FILES = TRUE in your config, then your files are failing to completely download because you are running out of space and it is failing silently.</p></td>
 <td><p>Place larger volumes on your instances by increasing EBS_VOL_SIZE in your config.py</p></td>
 </tr>
+<tr class="row-odd"><td><p></p></td>
+<td><p>“ValueError: The Mito image is missing from the pipeline.”</p></td>
+<td><p></p></td>
+<td><p></p></td>
+<td><p>The CellProfiler pipeline is referencing a channel (in this example, “Mito”) that is not being loaded in the pipeline.</p></td>
+<td><p>Check that your load_data csv contains the FileNames and PathNames for all your images. This can sometimes happen when the load_data csv is being automatically generated or edited as part of a workflow.</p></td>
+</tr>
 </tbody>
 </table>
 <p>Further hints:</p>
