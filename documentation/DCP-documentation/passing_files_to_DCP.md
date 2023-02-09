@@ -2,6 +2,12 @@
 
 Distributed-CellProfiler can be told what files to use through LoadData.csv, Batch Files, or file lists.
 
+## Metadata use in DCP
+
+Distributed-CellProfiler requires metadata and grouping in order to split jobs. This means that, unlikely a generic CellProfiler workflow, the inclusion of metadata and grouping are NOT optional for pipelines you wish to use in Distributed-CellProfiler. 
+- If using LoadData, this means ensuring that your input CSV has some metadata to use for grouping and "Group images by metdata?" is set to "Yes". 
+- If using batch files or file lists, this means ensuring that the Metadata and Groups modulles are enabled, and that you are extracting metadata from file and folder names _that will also be present in your remote system_ in the Metadata module in your CellProfiler pipeline. You can pass additional metadata to CellProfiler by `Add another extraction method`, setting the method to `Import from file` and setting Metadata file location to `Default Input Folder`. Metadata of either type can be used for grouping. 
+
 ## Load Data
 
 ![LoadData.csv](images/LoadDataCSV.png)
@@ -58,10 +64,7 @@ Note that if you do not follow our standard file organization, under **#not proj
 
 ## File lists
 
-You can also simply pass a list of absolute file paths (not relative paths) with one file per row in `.txt` format.
-Note that file lists themselves do not associate metadata with file paths (in contrast to LoadData.csv files where you can enter any metadata columns you desire.)
-Therefore, you need to extract metadata for Distributed-CellProfiler to use for grouping by extracting metadata from file and folder names in the Metadata module in your CellProfiler pipeline. 
-You can pass additional metadata to CellProfiler by `Add another extraction method`, setting the method to `Import from file` and setting Metadata file location to `Default Input Folder`.
+You can also simply pass a list of absolute file paths (not relative paths) with one file per row in `.txt` format. These must be the absolute paths that Distributed-CellProfiler will see, aka relative to the root of your bucket (which will be mounted as `/bucket`. 
 
 ### Creating File Lists
 
