@@ -414,6 +414,11 @@ title="Print to PDF"
     <nav id="bd-toc-nav" aria-label="Page">
         <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#metadata-use-in-dcp">
+   Metadata use in DCP
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#load-data">
    Load Data
   </a>
@@ -484,6 +489,11 @@ title="Print to PDF"
                         <nav aria-label="Page">
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#metadata-use-in-dcp">
+   Metadata use in DCP
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#load-data">
    Load Data
   </a>
@@ -547,6 +557,17 @@ title="Print to PDF"
   <section class="tex2jax_ignore mathjax_ignore" id="passing-files-to-dcp">
 <h1>Passing Files to DCP<a class="headerlink" href="#passing-files-to-dcp" title="Permalink to this headline">#</a></h1>
 <p>Distributed-CellProfiler can be told what files to use through LoadData.csv, Batch Files, or file lists.</p>
+<section id="metadata-use-in-dcp">
+<h2>Metadata use in DCP<a class="headerlink" href="#metadata-use-in-dcp" title="Permalink to this headline">#</a></h2>
+<p>Distributed-CellProfiler requires metadata and grouping in order to split jobs.
+This means that, unlikely a generic CellProfiler workflow, the inclusion of metadata and grouping are NOT optional for pipelines you wish to use in Distributed-CellProfiler.</p>
+<ul class="simple">
+<li><p>If using LoadData, this means ensuring that your input CSV has some metadata to use for grouping and “Group images by metdata?” is set to “Yes”.</p></li>
+<li><p>If using batch files or file lists, this means ensuring that the Metadata and Groups modules are enabled, and that you are extracting metadata from file and folder names <em>that will also be present in your remote system</em> in the Metadata module in your CellProfiler pipeline.
+You can pass additional metadata to CellProfiler by <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">another</span> <span class="pre">extraction</span> <span class="pre">method</span></code>, setting the method to <code class="docutils literal notranslate"><span class="pre">Import</span> <span class="pre">from</span> <span class="pre">file</span></code> and setting Metadata file location to <code class="docutils literal notranslate"><span class="pre">Default</span> <span class="pre">Input</span> <span class="pre">Folder</span></code>.
+Metadata of either type can be used for grouping.</p></li>
+</ul>
+</section>
 <section id="load-data">
 <h2>Load Data<a class="headerlink" href="#load-data" title="Permalink to this headline">#</a></h2>
 <p><img alt="LoadData.csv" src="_images/LoadDataCSV.png" /></p>
@@ -600,9 +621,7 @@ Note that if you do not follow our standard file organization, under <strong>#no
 <section id="file-lists">
 <h2>File lists<a class="headerlink" href="#file-lists" title="Permalink to this headline">#</a></h2>
 <p>You can also simply pass a list of absolute file paths (not relative paths) with one file per row in <code class="docutils literal notranslate"><span class="pre">.txt</span></code> format.
-Note that file lists themselves do not associate metadata with file paths (in contrast to LoadData.csv files where you can enter any metadata columns you desire.)
-Therefore, you need to extract metadata for Distributed-CellProfiler to use for grouping by extracting metadata from file and folder names in the Metadata module in your CellProfiler pipeline.
-You can pass additional metadata to CellProfiler by <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">another</span> <span class="pre">extraction</span> <span class="pre">method</span></code>, setting the method to <code class="docutils literal notranslate"><span class="pre">Import</span> <span class="pre">from</span> <span class="pre">file</span></code> and setting Metadata file location to <code class="docutils literal notranslate"><span class="pre">Default</span> <span class="pre">Input</span> <span class="pre">Folder</span></code>.</p>
+These must be the absolute paths that Distributed-CellProfiler will see, aka relative to the root of your bucket (which will be mounted as <code class="docutils literal notranslate"><span class="pre">/bucket</span></code>.</p>
 <section id="creating-file-lists">
 <h3>Creating File Lists<a class="headerlink" href="#creating-file-lists" title="Permalink to this headline">#</a></h3>
 <p>Use any text editing software to create a <code class="docutils literal notranslate"><span class="pre">.txt</span></code> file where each line of the file is a path to a single image that you want to process.</p>
@@ -626,7 +645,7 @@ You can pass additional metadata to CellProfiler by <code class="docutils litera
             mode: "python"
         },
         kernelOptions: {
-            kernelName: "python3",
+            name: "python3",
             path: "./."
         },
         predefinedOutput: true
