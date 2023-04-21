@@ -10,11 +10,12 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 # Back compatability with old config versions
-SOURCE_BUCKET = False
-UPLOAD_FLAGS = False
-UPDATE_PLUGINS = False
-CREATE_DASHBOARD = False
-CLEAN_DASHBOARD = False
+SOURCE_BUCKET = 'False'
+UPLOAD_FLAGS = 'False'
+UPDATE_PLUGINS = 'False'
+CREATE_DASHBOARD = 'False'
+CLEAN_DASHBOARD = 'False'
+AUTO_MONITOR = 'False'
 
 from config import *
 
@@ -123,7 +124,7 @@ def generate_task_definition(AWS_PROFILE):
         {"name": "NECESSARY_STRING", "value": NECESSARY_STRING},
         {"name": "DOWNLOAD_FILES", "value": DOWNLOAD_FILES},
     ]
-    if SOURCE_BUCKET:
+    if SOURCE_BUCKET.lower()=='true':
         task_definition['containerDefinitions'][0]['environment'] += [
             {
                 'name': 'SOURCE_BUCKET',
@@ -133,13 +134,13 @@ def generate_task_definition(AWS_PROFILE):
                 'name': 'DESTINATION_BUCKET',
                 'value': DESTINATION_BUCKET
             }]
-    if UPLOAD_FLAGS:
+    if UPLOAD_FLAGS.lower()=='true':
         task_definition['containerDefinitions'][0]['environment'] += [
             {
                 'name': 'UPLOAD_FLAGS',
                 'value': UPLOAD_FLAGS
             }]
-    if UPDATE_PLUGINS:
+    if UPDATE_PLUGINS.lower()=='true':
         task_definition["containerDefinitions"][0]["environment"] += [
             {"name": "UPDATE_PLUGINS", "value": str(UPDATE_PLUGINS)},
             {"name": "PLUGINS_COMMIT", "value": str(PLUGINS_COMMIT)},
@@ -589,7 +590,8 @@ def startCluster():
 
     # Step 3: Make the monitor
     starttime=str(int(time.time()*1000))
-    createMonitor=open('files/' + APP_NAME + 'SpotFleetRequestId.json','w')
+    monitor_file_name=f'files/{APP_NAME}SpotFleetRequestId.json'
+    createMonitor=open(monitor_file_name,'w')
     createMonitor.write('{"MONITOR_FLEET_ID" : "'+requestInfo['SpotFleetRequestId']+'",\n')
     createMonitor.write('"MONITOR_APP_NAME" : "'+APP_NAME+'",\n')
     createMonitor.write('"MONITOR_ECS_CLUSTER" : "'+ECS_CLUSTER+'",\n')
@@ -597,7 +599,15 @@ def startCluster():
     createMonitor.write('"MONITOR_BUCKET_NAME" : "'+AWS_BUCKET+'",\n')
     createMonitor.write('"MONITOR_LOG_GROUP_NAME" : "'+LOG_GROUP_NAME+'",\n')
     createMonitor.write('"MONITOR_START_TIME" : "'+ starttime+'"}\n')
+    createMonitor.write('"CLEAN_DASHBOARD" : "'+ CLEAN_DASHBOARD+'"}\n')
     createMonitor.close()
+
+    # Upload monitor file to S3 so it can be read by Auto-Monitor lambda function
+    if AUTO_MONITOR.lower()=='true':
+        s3 = boto3.client("s3")
+        json_on_bucket_name = f'monitors/{APP_NAME}SpotFleetRequestId.json' # match path set in lambda function
+        with open(monitor_file_name, "rb") as a:
+            s3.put_object(Body=a, Bucket=AWS_BUCKET, Key=json_on_bucket_name)
 
     # Step 4: Create a log group for this app and date if one does not already exist
     logclient=boto3.client('logs')
@@ -643,10 +653,41 @@ def startCluster():
             SpotFleetRequestId=requestInfo["SpotFleetRequestId"]
         )
     print("Spot fleet successfully created. Your job should start in a few minutes.")
+    print(f"Your monitor file is available at {monitor_file_name}")
     
-    if CREATE_DASHBOARD:
+    if CREATE_DASHBOARD.lower()=='true':
         print ("Creating CloudWatch dashboard for run metrics")
         create_dashboard(requestInfo)
+
+    if AUTO_MONITOR.lower()=='true':
+        # Create alarms that will trigger Monitor based on SQS queue metrics
+        cloudwatch = boto3.client("cloudwatch")
+        metricnames = [
+            "ApproximateNumberOfMessagesNotVisible",
+            "ApproximateNumberOfMessagesVisible",
+        ]
+        sns = boto3.client("sns")
+        MonitorARN = sns.create_topic(Name="Monitor")['TopicArn'] # returns ARN since topic already exists
+        for metric in metricnames:
+            response = cloudwatch.put_metric_alarm(
+                AlarmName=f'{metric}isZero_{APP_NAME}',
+                ActionsEnabled=True,
+                OKActions=[],
+                AlarmActions=[MonitorARN],
+                InsufficientDataActions=[],
+                MetricName=metric,
+                Namespace="AWS/SQS",
+                Statistic="Average",
+                Dimensions=[
+                    {"Name": "QueueName", "Value": f'{APP_NAME}Queue'}
+                ],
+                Period=300,
+                EvaluationPeriods=1,
+                DatapointsToAlarm=1,
+                Threshold=0,
+                ComparisonOperator="LessThanOrEqualToThreshold",
+                TreatMissingData="missing",
+            )
 
 #################################
 # SERVICE 4: MONITOR JOB
@@ -684,6 +725,11 @@ def monitor(cheapest=False):
         while queue.pendingLoad():
             if time.time() - startcountdown > 900:
                 downscaleSpotFleet(queue, fleetId, ec2, manual=1)
+                # Print spot fleet metrics.
+                spot_fleet_info = ec2.describe_spot_fleet_requests(SpotFleetRequestIds=[fleetId])
+                target = spot_fleet_info['SpotFleetRequestConfigs'][0]['SpotFleetRequestConfig']['TargetCapacity']
+                fulfilled = spot_fleet_info['SpotFleetRequestConfigs'][0]['SpotFleetRequestConfig']['FulfilledCapacity']
+                print(f'Spot fleet has {target} requested instances. {fulfilled} are currently fulfilled.')
                 break
             time.sleep(MONITOR_TIME)
 
@@ -752,7 +798,7 @@ def monitor(cheapest=False):
     print("Removing cluster if it's not the default and not otherwise in use")
     removeClusterIfUnused(monitorcluster, ecs)
     # Remove Cloudwatch dashboard if created and cleanup desired
-    if CREATE_DASHBOARD and CLEAN_DASHBOARD:
+    if CREATE_DASHBOARD.lower()=='true' and CLEAN_DASHBOARD.lower()=='true':
         clean_dashboard(monitorapp)
 
     #Step 6: Export the logs to S3
