@@ -157,6 +157,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="overview_2.html">What happens in AWS when I run Distributed-CellProfiler?</a></li>
 
 
+
 <li class="toctree-l1"><a class="reference internal" href="costs.html">What does Distributed-CellProfiler cost?</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Running DCP</span></p>
@@ -400,6 +401,8 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docker-instance-running-environment">DOCKER INSTANCE RUNNING ENVIRONMENT</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sqs-queue-information">SQS QUEUE INFORMATION</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#log-group-information">LOG GROUP INFORMATION</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#monitoring">MONITORING</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cloudwatch-dashboard-creation">CLOUDWATCH DASHBOARD CREATION</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#redundancy-checks">REDUNDANCY CHECKS</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plugins">PLUGINS</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-configurations">EXAMPLE CONFIGURATIONS</a></li>
@@ -475,6 +478,7 @@ This can safely be set to 0 for workflows that don’t require much memory or ex
 <li><p><strong>SQS_MESSAGE_VISIBILITY:</strong> How long each job is hidden from view before being allowed to be tried again.
 We recommend setting this to slightly longer than the average amount of time it takes an individual job to process- if you set it too short, you may waste resources doing the same job multiple times; if you set it too long, your instances may have to wait around a long while to access a job that was sent to an instance that stalled or has since been terminated.</p></li>
 <li><p><strong>SQS_DEAD_LETTER_QUEUE:</strong> The name of the queue to send jobs to if they fail to process correctly multiple times; this keeps a single bad job (such as one where a single file has been corrupted) from keeping your cluster active indefinitely.
+This queue will be automatically made if it doesn’t exist already.
 See <span class="xref myst">Step 0: Prep</span> for more information.</p></li>
 </ul>
 </section>
@@ -483,6 +487,21 @@ See <span class="xref myst">Step 0: Prep</span> for more information.</p></li>
 <h3>LOG GROUP INFORMATION<a class="headerlink" href="#log-group-information" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>LOG_GROUP_NAME:</strong> The name to give the log group that will monitor the progress of your jobs and allow you to check performance or look for problems after the fact.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="monitoring">
+<h3>MONITORING<a class="headerlink" href="#monitoring" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>AUTO_MONITOR:</strong> Whether or not to have Auto-Monitor automatically monitor your jobs.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="cloudwatch-dashboard-creation">
+<h3>CLOUDWATCH DASHBOARD CREATION<a class="headerlink" href="#cloudwatch-dashboard-creation" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>CREATE_DASHBOARD:</strong> Create a Cloudwatch Dashboard that plots run metrics?</p></li>
+<li><p><strong>CLEAN_DASHBOARD:</strong> Automatically clean up the Cloudwatch Dashboard at the end of the run?</p></li>
 </ul>
 </section>
 <hr class="docutils" />
@@ -619,6 +638,8 @@ We might use a spot fleet of 100 of these machines (<strong>CLUSTER_MACHINES</st
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#docker-instance-running-environment">DOCKER INSTANCE RUNNING ENVIRONMENT</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sqs-queue-information">SQS QUEUE INFORMATION</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#log-group-information">LOG GROUP INFORMATION</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#monitoring">MONITORING</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cloudwatch-dashboard-creation">CLOUDWATCH DASHBOARD CREATION</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#redundancy-checks">REDUNDANCY CHECKS</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plugins">PLUGINS</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-configurations">EXAMPLE CONFIGURATIONS</a></li>

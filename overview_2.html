@@ -157,6 +157,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">What happens in AWS when I run Distributed-CellProfiler?</a></li>
 
 
+
 <li class="toctree-l1"><a class="reference internal" href="costs.html">What does Distributed-CellProfiler cost?</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Running DCP</span></p>
@@ -395,8 +396,9 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">What happens in AWS when I run Distributed-CellProfiler?</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-this-look-like">What does this look like?</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-an-instance-configuration-look-like">What does an instance configuration look like?</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-determine-my-configuration">How do I determine my configuration?</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-this-look-like-on-aws">What does this look like on AWS?</a></li>
 </ul>
 
             </nav>
@@ -447,8 +449,8 @@ If SQS tells them there are no visible jobs then they shut themselves down.</p><
 <li><p>When an instance finishes a job it sends a message to SQS and removes that job from the queue.</p></li>
 </ul>
 </section>
-<section id="what-does-this-look-like">
-<h1>What does this look like?<a class="headerlink" href="#what-does-this-look-like" title="Permalink to this heading">#</a></h1>
+<section id="what-does-an-instance-configuration-look-like">
+<h1>What does an instance configuration look like?<a class="headerlink" href="#what-does-an-instance-configuration-look-like" title="Permalink to this heading">#</a></h1>
 <p><img alt="Example Instance Configuration" src="_images/sample_DCP_config_1.png" /></p>
 <p>This is an example of one possible instance configuration.
 This is one m4.16xlarge EC2 instance (64 CPUs, 250GB of RAM) with a 165 EBS volume mounted on it.
@@ -471,6 +473,19 @@ How long a job takes to run and how quickly you need the data may also affect ho
 However, you’re also at a greater risk of running out of hard disk space.</p></li>
 </ul>
 <p>Keep an eye on all of the logs the first few times you run any workflow and you’ll get a sense of whether your resources are being utilized well or if you need to do more tweaking.</p>
+</section>
+<section id="what-does-this-look-like-on-aws">
+<h1>What does this look like on AWS?<a class="headerlink" href="#what-does-this-look-like-on-aws" title="Permalink to this heading">#</a></h1>
+<p>The following five are the primary resources that Distributed-CellProfiler interacts with.
+After you have finished <a class="reference internal" href="step_0_prep.html"><span class="doc std std-doc">preparing for Distributed-CellProfiler</span></a>, you do not need to directly interact with any of these services outside of Distributed-CellProfiler.
+If you would like a granular view of what Distributed-CellProfiler is doing while it runs, you can open each console in a separate tab in your browser and watch their individual behaviors, though this is not necessary, especially if you run the <a class="reference internal" href="step_4_monitor.html"><span class="doc std std-doc">monitor command</span></a> and/or have DS automatically create a Dashboard for you (see <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">Configuration</span></a>).</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://console.aws.amazon.com/s3">S3 Console</a></p></li>
+<li><p><a class="reference external" href="https://console.aws.amazon.com/ec2/">EC2 Console</a></p></li>
+<li><p><a class="reference external" href="https://console.aws.amazon.com/ecs/">ECS Console</a></p></li>
+<li><p><a class="reference external" href="https://console.aws.amazon.com/sqs/">SQS Console</a></p></li>
+<li><p><a class="reference external" href="https://console.aws.amazon.com/cloudwatch/">CloudWatch Console</a></p></li>
+</ul>
 </section>
 
     <script type="text/x-thebe-config">
@@ -541,8 +556,9 @@ However, you’re also at a greater risk of running out of hard disk space.</p><
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">What happens in AWS when I run Distributed-CellProfiler?</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-this-look-like">What does this look like?</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-an-instance-configuration-look-like">What does an instance configuration look like?</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#how-do-i-determine-my-configuration">How do I determine my configuration?</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#what-does-this-look-like-on-aws">What does this look like on AWS?</a></li>
 </ul>
 
   </nav></div>

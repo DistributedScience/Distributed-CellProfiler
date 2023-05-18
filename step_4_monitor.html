@@ -157,6 +157,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="overview_2.html">What happens in AWS when I run Distributed-CellProfiler?</a></li>
 
 
+
 <li class="toctree-l1"><a class="reference internal" href="costs.html">What does Distributed-CellProfiler cost?</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Running DCP</span></p>
@@ -394,12 +395,18 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-monitor">Running Monitor</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#manually-running-monitor">Manually running Monitor</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-auto-monitor">Using Auto-Monitor</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monitor-functions">Monitor functions</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#while-your-analysis-is-running">While your analysis is running</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-the-number-of-jobs-in-your-queue-goes-to-0">When the number of jobs in your queue goes to 0</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-your-queue-is-totally-empty-there-are-no-visible-or-not-visible-messages">When your queue is totally empty (there are no Visible or Not Visible messages)</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cheapest-mode">Cheapest mode</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monitor-file">Monitor file</a></li>
 </ul>
             </nav>
         </div>
@@ -421,40 +428,70 @@ Distributed-CellProfiler will keep an eye on a few things for you at this point 
 <li><p>Each instance will have an alarm placed on it so that if CPU usage dips below 1% for 15 consecutive minutes (almost always the result of a crashed machine), the instance will be automatically terminated and a new one will take its place.</p></li>
 <li><p>Each individual job processed will create a log of the CellProfiler output, and each Docker container will create a log showing CPU, memory, and disk usage.</p></li>
 </ul>
-<p>If you choose to run the monitor script, Distributed-CellProfiler can be even more helpful.
-The monitor can be run by entering <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">monitor</span> <span class="pre">files/APP_NAMESpotFleetRequestId.json</span></code>; the JSON file containing all the information Distributed-CellProfiler needs will have been automatically created when you sent the instructions to start your cluster in the previous step.</p>
-<p>(<strong>Note:</strong> You should run the monitor inside <a class="reference external" href="https://www.gnu.org/software/screen/">Screen</a>, <a class="reference external" href="https://tmux.github.io/">tmux</a>, or another comparable service to keep a network disconnection from killing your monitor; this is particularly critical the longer your run takes.)</p>
-<hr class="docutils" />
+<p>If you choose to run the Monitor script, Distributed-CellProfiler can be even more helpful.</p>
+<section id="running-monitor">
+<h2>Running Monitor<a class="headerlink" href="#running-monitor" title="Permalink to this heading">#</a></h2>
+<section id="manually-running-monitor">
+<h3>Manually running Monitor<a class="headerlink" href="#manually-running-monitor" title="Permalink to this heading">#</a></h3>
+<p>Monitor can be run by entering <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">monitor</span> <span class="pre">files/APP_NAMESpotFleetRequestId.json</span></code>.
+While the optimal time to initiate Monitor is as soon as you have triggered a run as it downscales infrastructure as necessary, you can run Monitor at any point in time and it will clean up whatever infrastructure remains.</p>
+<p><strong>Note:</strong> You should run the monitor inside <a class="reference external" href="https://www.gnu.org/software/screen/">Screen</a>, <a class="reference external" href="https://tmux.github.io/">tmux</a>, or another comparable service to keep a network disconnection from killing your monitor; this is particularly critical the longer your run takes.</p>
+</section>
+<section id="using-auto-monitor">
+<h3>Using Auto-Monitor<a class="headerlink" href="#using-auto-monitor" title="Permalink to this heading">#</a></h3>
+<p>Instead of manually triggering Monitor, you can have a version of Monitor automatically initiate after you <a class="reference internal" href="step_3_start_cluster.html"><span class="doc std std-doc">start your cluster</span></a> by setting <code class="docutils literal notranslate"><span class="pre">AUTO_MONITOR</span> <span class="pre">=</span> <span class="pre">'True'</span></code> in your <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">config file</span></a>.
+Auto-Monitor is an AWS Lambda function that is triggered by alarms placed on the SQS queue.
+Read more about the <a class="reference internal" href="SQS_QUEUE_information.html"><span class="doc std std-doc">SQS Queue</span></a> to better understand the alarm metrics.</p>
+</section>
+</section>
 <section id="monitor-functions">
 <h2>Monitor functions<a class="headerlink" href="#monitor-functions" title="Permalink to this heading">#</a></h2>
 <section id="while-your-analysis-is-running">
 <h3>While your analysis is running<a class="headerlink" href="#while-your-analysis-is-running" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Checks your queue once per minute to see how many jobs are currently processing and how many remain to be processed.</p></li>
-<li><p>Once per hour, it deletes the alarms for any instances that have been terminated in the last 24 hours (because of spot prices rising above your maximum bid, machine crashes, etc).</p></li>
+<li><p>Scales down the spot fleet request to match the number of remaining jobs WITHOUT force terminating them.
+This happens every 10 minutes with manual Monitor or when the are no Visible Messages in your queue for Auto-Monitor.</p></li>
+<li><p>Deletes the alarms for any instances that have been terminated in the last 24 hours (because of spot prices rising above your maximum bid, machine crashes, etc).
+This happens every hour with manual Monitor or when the are no Visible Messages in your queue for Auto-Monitor.</p></li>
 </ul>
 </section>
-<section id="when-the-number-of-jobs-in-your-queue-goes-to-0">
-<h3>When the number of jobs in your queue goes to 0<a class="headerlink" href="#when-the-number-of-jobs-in-your-queue-goes-to-0" title="Permalink to this heading">#</a></h3>
+<section id="when-your-queue-is-totally-empty-there-are-no-visible-or-not-visible-messages">
+<h3>When your queue is totally empty (there are no Visible or Not Visible messages)<a class="headerlink" href="#when-your-queue-is-totally-empty-there-are-no-visible-or-not-visible-messages" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Downscales the ECS service associated with your APP_NAME.</p></li>
 <li><p>Deletes all the alarms associated with your spot fleet (both the currently running and the previously terminated instances).</p></li>
 <li><p>Shuts down your spot fleet to keep you from incurring charges after your analysis is over.</p></li>
 <li><p>Gets rid of the queue, service, and task definition created for this analysis.</p></li>
 <li><p>Exports all the logs from your analysis onto your S3 bucket.</p></li>
-<li><p>Deletes your Cloudwatch Dashboard if you created it and set CLEAN_DASHBOARD to True.</p></li>
+<li><p>Deletes your Cloudwatch Dashboard if you created it and set <code class="docutils literal notranslate"><span class="pre">CLEAN_DASHBOARD</span> <span class="pre">=</span> <span class="pre">'True'</span></code> in your <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">config file</span></a>.</p></li>
 </ul>
 </section>
 </section>
-<hr class="docutils" />
 <section id="cheapest-mode">
 <h2>Cheapest mode<a class="headerlink" href="#cheapest-mode" title="Permalink to this heading">#</a></h2>
-<p>You can run the monitor in an optional “cheapest” mode, which will downscale the number of requested machines (but not RUNNING machines) to one 15 minutes after the monitor is engaged.
+<p>If you are manually triggering Monitor, you can run the monitor in an optional “cheapest” mode, which will downscale the number of requested machines (but not RUNNING machines) to one machine 15 minutes after the monitor is engaged.
 You can engage cheapest mode by adding <code class="docutils literal notranslate"><span class="pre">True</span></code> as a final configurable parameter when starting the monitor, aka <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run.py</span> <span class="pre">monitor</span> <span class="pre">files/APP_NAMESpotFleetRequestId.json</span> <span class="pre">True</span></code></p>
-<p>Cheapest mode is cheapest because it will remove all but 1 machine as soon as that machine crashes and/or runs out of jobs to do; this can save you money, particularly in multi-CPU Dockers running long jobs.</p>
-<p>This mode is optional because running this way involves some inherent risks.
+<p>Cheapest mode is cheapest because it will remove all but 1 machine as soon as that machine crashes and/or runs out of jobs to do; this can save you money, particularly in multi-CPU Dockers running long jobs.
+This mode is optional because running this way involves some inherent risks.
 If machines stall out due to processing errors, they will not be replaced, meaning your job will take overall longer.
 Additionally, if there is limited capacity for your requested configuration when you first start (e.g. you want 200 machines but AWS says it can currently only allocate you 50), more machines will not be added if and when they become available in cheapest mode as they would in normal mode.</p>
+</section>
+<hr class="docutils" />
+<section id="monitor-file">
+<h2>Monitor file<a class="headerlink" href="#monitor-file" title="Permalink to this heading">#</a></h2>
+<p>The JSON monitor file containing all the information Distributed-CellProfiler needs will have been automatically created when you sent the instructions to start your cluster in the <a class="reference internal" href="step_3_start_cluster.html"><span class="doc std std-doc">previous step</span></a>.
+The file itself is quite simple and contains the following information:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;MONITOR_FLEET_ID&quot;</span> <span class="p">:</span> <span class="s2">&quot;sfr-9999ef99-99fc-9d9d-9999-9999999e99ab&quot;</span><span class="p">,</span>
+<span class="s2">&quot;MONITOR_APP_NAME&quot;</span> <span class="p">:</span> <span class="s2">&quot;2021_12_13_Project_Analysis&quot;</span><span class="p">,</span>
+<span class="s2">&quot;MONITOR_ECS_CLUSTER&quot;</span> <span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="s2">&quot;MONITOR_QUEUE_NAME&quot;</span> <span class="p">:</span> <span class="s2">&quot;2021_12_13_Project_AnalysisQueue&quot;</span><span class="p">,</span>
+<span class="s2">&quot;MONITOR_BUCKET_NAME&quot;</span> <span class="p">:</span> <span class="s2">&quot;bucket-name&quot;</span><span class="p">,</span>
+<span class="s2">&quot;MONITOR_LOG_GROUP_NAME&quot;</span> <span class="p">:</span> <span class="s2">&quot;2021_12_13_Project_Analysis&quot;</span><span class="p">,</span>
+<span class="s2">&quot;MONITOR_START_TIME&quot;</span> <span class="p">:</span> <span class="s2">&quot;1649187798951&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>For any Distributed-CellProfiler run where you have run <a class="reference internal" href="step_3_start_cluster.html"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">startCluster</span></code></span></a> more than once, the most recent values will overwrite the older values in the monitor file.
+Therefore, if you have started multiple spot fleets (which you might do in different subnets if you are having trouble getting enough capacity in your spot fleet, for example), Monitor will only clean up the latest request unless you manually edit the <code class="docutils literal notranslate"><span class="pre">MONITOR_FLEET_ID</span></code> to match the spot fleet you have kept.</p>
 </section>
 </section>
 
@@ -525,12 +562,18 @@ Additionally, if there is limited capacity for your requested configuration when
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-monitor">Running Monitor</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#manually-running-monitor">Manually running Monitor</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-auto-monitor">Using Auto-Monitor</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monitor-functions">Monitor functions</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#while-your-analysis-is-running">While your analysis is running</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-the-number-of-jobs-in-your-queue-goes-to-0">When the number of jobs in your queue goes to 0</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-your-queue-is-totally-empty-there-are-no-visible-or-not-visible-messages">When your queue is totally empty (there are no Visible or Not Visible messages)</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cheapest-mode">Cheapest mode</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monitor-file">Monitor file</a></li>
 </ul>
   </nav></div>
 
