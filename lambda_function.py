@@ -27,12 +27,12 @@ def killdeadAlarms(fleetId, monitorapp, project):
                 if eachevent["EventInformation"]["EventSubType"] == "terminated":
                     todel.append(eachevent["EventInformation"]["InstanceId"])
     todel = [f"{project}_{x}" for x in todel]
-    if len(todel) <= 100:
-        cloudwatch.delete_alarms(AlarmNames=todel)
     while len(todel) > 100:
         dellist = todel[:100]
         cloudwatch.delete_alarms(AlarmNames=dellist)
         todel = todel[100:]
+    if len(todel) <= 100:
+        cloudwatch.delete_alarms(AlarmNames=todel)
     print("Old alarms deleted")
 
 
@@ -120,12 +120,12 @@ def lambda_handler(event, lambda_context):
         active_instances = []
         for instance in active_dictionary["ActiveInstances"]:
             active_instances.append(instance["InstanceId"])
-        if len(active_instances) <= 100:
-            cloudwatch.delete_alarms(AlarmNames=active_instances)
         while len(active_instances) > 100:
             dellist = active_instances[:100]
             cloudwatch.delete_alarms(AlarmNames=dellist)
             active_instances = active_instances[100:]
+        if len(active_instances) <= 100:
+            cloudwatch.delete_alarms(AlarmNames=active_instances)
         killdeadAlarms(fleetId, monitorapp, project)
 
         # Read spot fleet id and terminate all EC2 instances
