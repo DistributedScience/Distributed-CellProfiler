@@ -19,19 +19,13 @@ aws ec2 create-tags --resources $VOL_0_ID --tags Key=Name,Value=${APP_NAME}Worke
 VOL_1_ID=$(aws ec2 describe-instance-attribute --instance-id $MY_INSTANCE_ID --attribute blockDeviceMapping --output text --query BlockDeviceMappings[1].Ebs.[VolumeId])
 aws ec2 create-tags --resources $VOL_1_ID --tags Key=Name,Value=${APP_NAME}Worker
 
-# 2. MOUNT S3
+
+# 2. MOUNT S3 
+echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /credentials.txt
+chmod 600 /credentials.txt
 mkdir -p /home/ubuntu/bucket
 mkdir -p /home/ubuntu/local_output
-if [[ -z "$AWS_ACCESS_KEY_ID" ]]
-then
-  AWS_ACCESS_KEY_ID=$(curl 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI | jq '.AccessKeyId')
-  AWS_SECRET_ACCESS_KEY=$(curl 169.254.170.2$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI | jq '.SecretAccessKey')
-  echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /credentials.txt
-  chmod 600 /credentials.txt
-  stdbuf -o0 s3fs $AWS_BUCKET /home/ubuntu/bucket -o passwd_file=/credentials.txt -o dbglevel=info
-else
-  stdbuf -o0 s3fs $AWS_BUCKET /home/ubuntu/bucket -o ecs -o dbglevel=info
-fi
+stdbuf -o0 s3fs $AWS_BUCKET /home/ubuntu/bucket -o passwd_file=/credentials.txt 
 
 
 # 3. SET UP ALARMS
