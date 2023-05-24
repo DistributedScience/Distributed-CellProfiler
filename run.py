@@ -398,7 +398,7 @@ def create_dashboard(requestInfo):
                 "x": 12,
                 "type": "log",
                 "properties": {
-                    "query": f"SOURCE {APP_NAME} | fields @message| filter @message like 'cellprofiler -c'| stats count_distinct(@message)\n",
+                    "query": f"SOURCE '{APP_NAME}' | fields @message| filter @message like 'cellprofiler -c'| stats count_distinct(@message)\n",
                     "region": AWS_REGION,
                     "stacked": False,
                     "title": "Distinct Logs with \"cellprofiler -c\"",
@@ -412,7 +412,7 @@ def create_dashboard(requestInfo):
                 "x": 0,
                 "type": "log",
                 "properties": {
-                    "query": f"SOURCE {APP_NAME} | fields @message| filter @message like 'cellprofiler -c'| stats count(@message)",
+                    "query": f"SOURCE '{APP_NAME}' | fields @message| filter @message like 'cellprofiler -c'| stats count(@message)",
                     "region": AWS_REGION,
                     "stacked": False,
                     "title": "All Logs \"cellprofiler -c\"",
@@ -426,7 +426,7 @@ def create_dashboard(requestInfo):
                 "x": 0,
                 "type": "log",
                 "properties": {
-                    "query": f"SOURCE {APP_NAME} | fields @message   | filter @message like \"Error\"   | display @message",
+                    "query": f"SOURCE '{APP_NAME}' | fields @message   | filter @message like \"Error\"   | display @message",
                     "region": AWS_REGION,
                     "stacked": False,
                     "title": "Errors",
