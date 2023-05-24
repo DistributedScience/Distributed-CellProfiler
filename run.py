@@ -598,7 +598,7 @@ def startCluster():
     createMonitor.write('"MONITOR_QUEUE_NAME" : "'+SQS_QUEUE_NAME+'",\n')
     createMonitor.write('"MONITOR_BUCKET_NAME" : "'+AWS_BUCKET+'",\n')
     createMonitor.write('"MONITOR_LOG_GROUP_NAME" : "'+LOG_GROUP_NAME+'",\n')
-    createMonitor.write('"MONITOR_START_TIME" : "'+ starttime+'"}\n')
+    createMonitor.write('"MONITOR_START_TIME" : "'+ starttime+'"\n')
     createMonitor.write('"CLEAN_DASHBOARD" : "'+ CLEAN_DASHBOARD+'"}\n')
     createMonitor.close()
 
