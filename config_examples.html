@@ -440,7 +440,15 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘PROJECT_NAME_Analysis’</p></td>
 <td><p>If the PROJECT_NAME is excessively long you can enter a truncated version of it here but you will need to be careful to use the correct version in subsequent steps in the protocol. (e.g. 2021_06_08_WCPC_Zproj)</p></td>
 </tr>
-<tr class="row-odd"><td><p>DOCKERHUB_TAG</p></td>
+<tr class="row-odd"><td><p>LOG_GROUP_NAME</p></td>
+<td><p>APP_NAME</p></td>
+<td><p>APP_NAME</p></td>
+<td><p>APP_NAME</p></td>
+<td><p>APP_NAME</p></td>
+<td><p>APP_NAME</p></td>
+<td><p>We never change this.</p></td>
+</tr>
+<tr class="row-even"><td><p>DOCKERHUB_TAG</p></td>
 <td><p>‘cellprofiler/distributed-cellprofiler:2.0.0_4.2.4’</p></td>
 <td><p>‘cellprofiler/distributed-cellprofiler:2.0.0_4.2.4’</p></td>
 <td><p>‘cellprofiler/distributed-cellprofiler:2.0.0_4.2.4’</p></td>
@@ -448,7 +456,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘cellprofiler/distributed-cellprofiler:2.0.0_4.2.4’</p></td>
 <td><p>Ensure the CP tag number matches the version of CellProfiler for your pipeline (can easily see by opening the pipeline in a text editor and looking for the 3rd line “DateRevision: 413”).</p></td>
 </tr>
-<tr class="row-even"><td><p>AWS_REGION</p></td>
+<tr class="row-odd"><td><p>AWS_REGION</p></td>
 <td><p>‘us-east-1’</p></td>
 <td><p>‘us-east-1’</p></td>
 <td><p>‘us-east-1’</p></td>
@@ -456,7 +464,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘us-east-1’</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p>AWS_PROFILE</p></td>
+<tr class="row-even"><td><p>AWS_PROFILE</p></td>
 <td><p>‘default’</p></td>
 <td><p>‘default’</p></td>
 <td><p>‘default’</p></td>
@@ -464,7 +472,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘default’</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>SSH_KEY_NAME</p></td>
+<tr class="row-odd"><td><p>SSH_KEY_NAME</p></td>
 <td><p>‘YOURPEM.pem’</p></td>
 <td><p>‘YOURPEM.pem’</p></td>
 <td><p>‘YOURPEM.pem’</p></td>
@@ -472,12 +480,36 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘YOURPEM.pem’</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p>AWS_BUCKET</p></td>
+<tr class="row-even"><td><p>AWS_BUCKET</p></td>
 <td><p>‘BUCKET’</p></td>
 <td><p>‘BUCKET’</p></td>
 <td><p>‘BUCKET’</p></td>
 <td><p>‘BUCKET’</p></td>
 <td><p>‘BUCKET’</p></td>
+<td><p>Usually a bucket in the account that is running DCP.</p></td>
+</tr>
+<tr class="row-odd"><td><p>SOURCE_BUCKET</p></td>
+<td><p>‘BUCKET’</p></td>
+<td><p>‘BUCKET’</p></td>
+<td><p>‘BUCKET’</p></td>
+<td><p>‘BUCKET’</p></td>
+<td><p>‘BUCKET’</p></td>
+<td><p>Can be a public bucket like cellpainting-gallery.</p></td>
+</tr>
+<tr class="row-even"><td><p>DESTINATION_BUCKET</p></td>
+<td><p>‘BUCKET’</p></td>
+<td><p>‘BUCKET’</p></td>
+<td><p>‘BUCKET’</p></td>
+<td><p>‘BUCKET’</p></td>
+<td><p>‘BUCKET’</p></td>
+<td><p>Usually a bucket in the account that is running DCP.</p></td>
+</tr>
+<tr class="row-odd"><td><p>UPLOAD_FLAGS</p></td>
+<td><p>‘’</p></td>
+<td><p>‘’</p></td>
+<td><p>‘’</p></td>
+<td><p>‘’</p></td>
+<td><p>‘’</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p>ECS_CLUSTER</p></td>
@@ -513,11 +545,11 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>Historically we have used m4.xlarge and then m5.xlarge however very recently we have been having a hard time getting m class machines so we have switched to c class. Note that they have different memory sizes so you need to make sure MEMORY is set correctly if changing between classes.</p></td>
 </tr>
 <tr class="row-even"><td><p>MACHINE_PRICE</p></td>
-<td><p>.10</p></td>
-<td><p>.10</p></td>
-<td><p>.10</p></td>
-<td><p>.10</p></td>
-<td><p>.10</p></td>
+<td><p>.20</p></td>
+<td><p>.20</p></td>
+<td><p>.20</p></td>
+<td><p>.20</p></td>
+<td><p>.20</p></td>
 <td><p>Will be different for different size/classes of machines.</p></td>
 </tr>
 <tr class="row-odd"><td><p>EBS_VOL_SIZE</p></td>
@@ -578,27 +610,43 @@ A standard pipeline can be found <a class="reference external" href="https://git
 </tr>
 <tr class="row-even"><td><p>SQS_MESSAGE_VISIBILITY</p></td>
 <td><p>3*60</p></td>
-<td><p>720*60</p></td>
+<td><p>240*60</p></td>
 <td><p>15*60</p></td>
 <td><p>10*60</p></td>
 <td><p>120*60</p></td>
 <td><p>About how long you expect a job to take * 1.5 in seconds</p></td>
 </tr>
 <tr class="row-odd"><td><p>SQS_DEAD_LETTER_QUEUE</p></td>
-<td><p>‘YOUR_DEADMESSAGES_ARN’</p></td>
-<td><p>‘YOUR_DEADMESSAGES_ARN’</p></td>
-<td><p>‘YOUR_DEADMESSAGES_ARN’</p></td>
-<td><p>‘YOUR_DEADMESSAGES_ARN’</p></td>
-<td><p>‘YOUR_DEADMESSAGES_ARN’</p></td>
+<td><p>‘YOURNAME_DEADMESSAGES’</p></td>
+<td><p>‘YOURNAME_DEADMESSAGES’</p></td>
+<td><p>‘YOURNAME_DEADMESSAGES’</p></td>
+<td><p>‘YOURNAME_DEADMESSAGES’</p></td>
+<td><p>‘YOURNAME_DEADMESSAGES’</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>LOG_GROUP_NAME</p></td>
-<td><p>APP_NAME</p></td>
-<td><p>APP_NAME</p></td>
-<td><p>APP_NAME</p></td>
-<td><p>APP_NAME</p></td>
-<td><p>APP_NAME</p></td>
-<td><p>We never change this.</p></td>
+<tr class="row-even"><td><p>AUTO_MONITOR</p></td>
+<td><p>‘True’</p></td>
+<td><p>‘True’</p></td>
+<td><p>‘True’</p></td>
+<td><p>‘True’</p></td>
+<td><p>‘True’</p></td>
+<td><p>Can be turned off if manually running Monitor.</p></td>
+</tr>
+<tr class="row-odd"><td><p>CREATE_DASHBOARD</p></td>
+<td><p>‘True’</p></td>
+<td><p>‘True’</p></td>
+<td><p>‘True’</p></td>
+<td><p>‘True’</p></td>
+<td><p>‘True’</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>CLEAN_DASHBOARD</p></td>
+<td><p>‘True’</p></td>
+<td><p>‘True’</p></td>
+<td><p>‘True’</p></td>
+<td><p>‘True’</p></td>
+<td><p>‘True’</p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p>CHECK_IF_DONE_BOOL</p></td>
 <td><p>‘True’</p></td>
