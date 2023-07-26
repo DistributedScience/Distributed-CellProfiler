@@ -449,10 +449,13 @@ Some users have reported issues with using relative paths in the PathName column
 We maintain a script for creating LoadData.csv from Phenix metadata XML files called <a class="reference external" href="https://github.com/broadinstitute/pe2loaddata">pe2loaddata</a>.</p>
 <p>You can also create the LoadData.csv in a local copy of CellProfiler using the standard input modules of Images, Metadata, NamesAndTypes and Groups.
 More written and video information about using the input modules can be found <span class="xref myst">here</span>.
-After loading in your images, use the Export-&gt;Image Set Listing command.
-You will then need to replace the local paths with the paths where the files can be found in the cloud.
-If your files are in the same structure, this can be done with a simple find and replace in any text editing software.
+After loading in your images, use the <code class="docutils literal notranslate"><span class="pre">Export</span></code>-&gt;<code class="docutils literal notranslate"><span class="pre">Image</span> <span class="pre">Set</span> <span class="pre">Listing</span></code> command.
+You will then need to replace the local paths with the paths where the files can be found in S3 which is hardcoded to <code class="docutils literal notranslate"><span class="pre">/home/ubuntu/bucket</span></code>.
+If your files are nested in the same structure, this can be done with a simple find and replace in any text editing software.
 (e.g. Find ‘/Users/eweisbar/Desktop’ and replace with ‘/home/ubuntu/bucket’)</p>
+<p>More detail: The <a class="reference external" href="https://github.com/DistributedScience/Distributed-CellProfiler/blob/master/worker/Dockerfile">Dockerfile</a> is the first script to execute in the Docker.
+It creates the <code class="docutils literal notranslate"><span class="pre">/home/ubuntu/</span></code> folder and then executes <a class="reference external" href="https://github.com/DistributedScience/Distributed-CellProfiler/blob/master/worker/run-worker.sh">run_worker.sh</a> from that point.
+run_worker.sh makes <code class="docutils literal notranslate"><span class="pre">/home/ubuntu/bucket/</span></code> and uses S3FS to mount your S3 bucket at that location. (If you set <code class="docutils literal notranslate"><span class="pre">DOWNLOAD_FILES='True'</span></code> in your <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">config</span></a>, then the S3FS mount is bypassed but files are downloaded locally to the <code class="docutils literal notranslate"><span class="pre">/home/ubuntu/bucket</span></code> path so that the paths are the same as if it was S3FS mounted.)</p>
 </section>
 <section id="using-loaddata-csv">
 <h3>Using LoadData.csv<a class="headerlink" href="#using-loaddata-csv" title="Permalink to this heading">#</a></h3>
