@@ -27,10 +27,14 @@ We maintain a script for creating LoadData.csv from Phenix metadata XML files ca
 
 You can also create the LoadData.csv in a local copy of CellProfiler using the standard input modules of Images, Metadata, NamesAndTypes and Groups. 
 More written and video information about using the input modules can be found [here](broad.io/CellProfilerInput).
-After loading in your images, use the Export->Image Set Listing command.
-You will then need to replace the local paths with the paths where the files can be found in the cloud.
-If your files are in the same structure, this can be done with a simple find and replace in any text editing software.
+After loading in your images, use the `Export`->`Image Set Listing` command.
+You will then need to replace the local paths with the paths where the files can be found in S3 which is hardcoded to `/home/ubuntu/bucket`.
+If your files are nested in the same structure, this can be done with a simple find and replace in any text editing software.
 (e.g. Find '/Users/eweisbar/Desktop' and replace with '/home/ubuntu/bucket')
+
+More detail: The [Dockerfile](https://github.com/DistributedScience/Distributed-CellProfiler/blob/master/worker/Dockerfile) is the first script to execute in the Docker. 
+It creates the `/home/ubuntu/` folder and then executes [run_worker.sh](https://github.com/DistributedScience/Distributed-CellProfiler/blob/master/worker/run-worker.sh) from that point.
+run_worker.sh makes `/home/ubuntu/bucket/` and uses S3FS to mount your S3 bucket at that location. (If you set `DOWNLOAD_FILES='True'` in your [config](step_1_configuration.md), then the S3FS mount is bypassed but files are downloaded locally to the `/home/ubuntu/bucket` path so that the paths are the same as if it was S3FS mounted.)
 
 ### Using LoadData.csv
 
