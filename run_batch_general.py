@@ -23,7 +23,7 @@ batchsuffix='' #Batch name (should match the folder structure on S3)
 rows=list(string.ascii_uppercase)[0:16]
 columns=range(1,25)
 sites=range(1,10)
-well_bool = True #Set True to A01 well format name, set False to A1
+well_digit_pad = True #Set True to A01 well format name, set False to A1
 platelist=[] 
 zprojpipename='Zproj.cppipe'
 illumpipename='illum.cppipe'
@@ -53,7 +53,7 @@ csvname = 'load_data.csv'
 csv_with_illumname = 'load_data_with_illum.csv'
 csv_unprojected_name = 'load_data_unprojected.csv'
 #well formatting
-if well_bool:
+if well_digit_pad:
     well_format = '%02d'
 else:
     well_format = '%01d'
