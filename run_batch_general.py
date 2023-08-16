@@ -23,6 +23,7 @@ batchsuffix='' #Batch name (should match the folder structure on S3)
 rows=list(string.ascii_uppercase)[0:16]
 columns=range(1,25)
 sites=range(1,10)
+well_bool = True #Set True to A01 well format name, set False to A1
 platelist=[] 
 zprojpipename='Zproj.cppipe'
 illumpipename='illum.cppipe'
@@ -51,6 +52,11 @@ batchpath=posixpath.join(startpath,os.path.join('workspace/batchfiles',batchsuff
 csvname = 'load_data.csv'
 csv_with_illumname = 'load_data_with_illum.csv'
 csv_unprojected_name = 'load_data_unprojected.csv'
+#well formatting
+if well_bool:
+    well_format = '%02d'
+else:
+    well_format = '%01d'
 
 def MakeZprojJobs(batch=False):
     zprojqueue = JobQueue(appname+'_Zproj')
@@ -59,7 +65,7 @@ def MakeZprojJobs(batch=False):
             for eachcol in columns:
                 for eachsite in sites:
                     if not batch:
-                        templateMessage_zproj = {'Metadata': 'Metadata_Plate='+tozproj+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
+                        templateMessage_zproj = {'Metadata': 'Metadata_Plate='+tozproj+',Metadata_Well='+eachrow+well_format %eachcol+',Metadata_Site='+str(eachsite),
                                         'pipeline': posixpath.join(pipelinepath,zprojpipename),
                                         'output': zprojoutpath,
                                         'output_structure': zprojoutputstructure,
@@ -67,7 +73,7 @@ def MakeZprojJobs(batch=False):
                                         'data_file': posixpath.join(datafilepath,tozproj,csv_unprojected_name)
                                         }
                     else:
-                        templateMessage_zproj = {'Metadata': 'Metadata_Plate='+tozproj+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
+                        templateMessage_zproj = {'Metadata': 'Metadata_Plate='+tozproj+',Metadata_Well='+eachrow+well_format %eachcol+',Metadata_Site='+str(eachsite),
                                         'pipeline': posixpath.join(batchpath,batchpipenamezproj),
                                         'output': zprojoutpath,
                                         'output_structure': zprojoutputstructure,
@@ -106,14 +112,14 @@ def MakeQCJobs(batch=False):
         for eachrow in rows:
             for eachcol in columns:
                 if not batch:
-                    templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+'%02d' %eachcol,
+                    templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+well_format %eachcol,
                                     'pipeline': posixpath.join(pipelinepath,qcpipename),
                                     'output': QCoutpath,
                                     'input': inputpath,
                                     'data_file': posixpath.join(datafilepath,toqc,csvname)
                                     }
                 else:
-                    templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+'%02d' %eachcol,
+                    templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+well_format %eachcol,
                                     'pipeline': posixpath.join(batchpath,batchpipenameqc),
                                     'output': QCoutpath,
                                     'input': inputpath,
@@ -130,14 +136,14 @@ def MakeQCJobs_persite(batch=False):
             for eachcol in columns:
                 for eachsite in sites:
                     if not batch:
-                        templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
+                        templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+well_format %eachcol+',Metadata_Site='+str(eachsite),
                                         'pipeline': posixpath.join(pipelinepath,qcpipename),
                                         'output': QCoutpath,
                                         'input': inputpath,
                                         'data_file': posixpath.join(datafilepath,toqc,csvname)
                                         }
                     else:
-                        templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
+                        templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+well_format %eachcol+',Metadata_Site='+str(eachsite),
                                         'pipeline': posixpath.join(batchpath,batchpipenameqc),
                                         'output': QCoutpath,
                                         'input': inputpath,
@@ -154,14 +160,14 @@ def MakeAssayDevJobs(batch=False):
         for eachrow in rows:
             for eachcol in columns:
                 if not batch:
-                    templateMessage_ad = {'Metadata': 'Metadata_Plate='+toad+',Metadata_Well='+eachrow+'%02d' %eachcol,
+                    templateMessage_ad = {'Metadata': 'Metadata_Plate='+toad+',Metadata_Well='+eachrow+well_format %eachcol,
                                     'pipeline': posixpath.join(pipelinepath,assaydevpipename),
                                     'output': assaydevoutpath,
                                     'input': inputpath,
                                     'data_file': posixpath.join(datafilepath,toad,csv_with_illumname)
                                     }
                 else:
-                    templateMessage_ad = {'Metadata': 'Metadata_Plate='+toad+',Metadata_Well='+eachrow+'%02d' %eachcol,
+                    templateMessage_ad = {'Metadata': 'Metadata_Plate='+toad+',Metadata_Well='+eachrow+well_format %eachcol,
                                     'pipeline': posixpath.join(batchpath,batchpipenameassaydev),
                                     'output': assaydevoutpath,
                                     'input': inputpath,
@@ -178,7 +184,7 @@ def MakeAnalysisJobs(batch=False):
             for eachcol in columns:
                 for eachsite in sites:
                     if not batch:
-                        templateMessage_analysis = {'Metadata': 'Metadata_Plate='+toanalyze+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
+                        templateMessage_analysis = {'Metadata': 'Metadata_Plate='+toanalyze+',Metadata_Well='+eachrow+well_format %eachcol+',Metadata_Site='+str(eachsite),
                                         'pipeline': posixpath.join(pipelinepath,analysispipename),
                                         'output': analysisoutpath,
                                         'output_structure':anlysisoutputstructure,
@@ -186,7 +192,7 @@ def MakeAnalysisJobs(batch=False):
                                         'data_file': posixpath.join(datafilepath,toanalyze,csv_with_illumname)
                                         }                        
                     else:
-                        templateMessage_analysis = {'Metadata': 'Metadata_Plate='+toanalyze+',Metadata_Well='+eachrow+'%02d' %eachcol+',Metadata_Site='+str(eachsite),
+                        templateMessage_analysis = {'Metadata': 'Metadata_Plate='+toanalyze+',Metadata_Well='+eachrow+well_format %eachcol+',Metadata_Site='+str(eachsite),
                                         'pipeline': posixpath.join(batchpath,batchpipenameanalysis),
                                         'output': analysisoutpath,
                                         'output_structure':anlysisoutputstructure,
