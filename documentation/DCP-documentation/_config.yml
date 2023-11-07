@@ -16,7 +16,7 @@ execute:
 
 # Information about where the book exists on the web
 repository:
-  url: https://github.com/distributed-science/distributed-cellprofiler
+  url: https://github.com/distributedscience/distributed-cellprofiler
   branch: main  # Which branch of the repository should be used when creating links (optional)
   path_to_book: DCP-documentation
 
