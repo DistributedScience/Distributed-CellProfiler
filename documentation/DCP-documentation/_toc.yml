@@ -22,6 +22,7 @@ parts:
 - caption: Technical Guides
   chapters:
   - file: dashboard
+  - file: external_buckets
   - file: advanced_configuration
   - file: AWS_hygiene_scripts
   - file: troubleshooting_runs
