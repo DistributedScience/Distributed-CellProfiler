@@ -190,6 +190,7 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="dashboard.html">AWS Cloudwatch Dashboard</a></li>
 
+<li class="toctree-l1"><a class="reference internal" href="external_buckets.html">Using External Buckets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced_configuration.html">Advanced Configuration of DCP</a></li>
 <li class="toctree-l1"><a class="reference internal" href="AWS_hygiene_scripts.html">AWS Hygiene Scripts</a></li>
 
@@ -449,6 +450,20 @@ It need not be unique, but it should be descriptive enough that you can tell job
 <section id="aws-general-settings">
 <h3>AWS GENERAL SETTINGS<a class="headerlink" href="#aws-general-settings" title="Permalink to this heading">#</a></h3>
 <p>These are settings that will allow your instances to be configured correctly and access the resources they need- see <a class="reference internal" href="step_0_prep.html"><span class="doc std std-doc">Step 0: Prep</span></a> for more information.</p>
+<p>Bucket configurations allow you to read/write from/to different bucket in different accounts from where you are running DCP.
+If you are not accessing any external buckets, set AWS_BUCKET, SOURCE_BUCKET, and DESTINATION_BUCKET the same.
+For more information and examples, see <a class="reference internal" href="external_buckets.html"><span class="doc std std-doc">External Buckets</span></a>.</p>
+<ul class="simple">
+<li><p><strong>AWS_BUCKET:</strong> The bucket to which you would like to write log files.
+This is generally the bucket in the account in which you are running compute.</p></li>
+<li><p><strong>SOURCE_BUCKET:</strong> The bucket where the files you will be reading are.
+Often, this is the same as AWS_BUCKET.</p></li>
+<li><p><strong>DESTINATION_BUCKET:</strong> The bucket where you want to write your output files.
+Often, this is the same as AWS_BUCKET.</p></li>
+<li><p><strong>UPLOAD_FLAGS:</strong> If you need to add flags to an AWS CLI command to upload flags to your DESTINATION_BUCKET, this is where you enter them.
+This is typically only used if you are writing to a bucket that is not yours.
+If you don’t need to add UPLOAD_FLAGS, keep it as the default ‘’.</p></li>
+</ul>
 </section>
 <hr class="docutils" />
 <section id="ec2-and-ecs-information">

@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Advanced Configuration of DCP &#8212; DCP Documentation</title>
+    <title>Using External Buckets &#8212; DCP Documentation</title>
   
   
   
@@ -63,12 +63,12 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'advanced_configuration';</script>
-    <link rel="canonical" href="distributedscience.github.io/advanced_configuration.html" />
+    <script>DOCUMENTATION_OPTIONS.pagename = 'external_buckets';</script>
+    <link rel="canonical" href="distributedscience.github.io/external_buckets.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="AWS Hygiene Scripts" href="AWS_hygiene_scripts.html" />
-    <link rel="prev" title="Using External Buckets" href="external_buckets.html" />
+    <link rel="next" title="Advanced Configuration of DCP" href="advanced_configuration.html" />
+    <link rel="prev" title="AWS Cloudwatch Dashboard" href="dashboard.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -190,8 +190,8 @@ const thebe_selector_output = ".output, .cell_output"
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="dashboard.html">AWS Cloudwatch Dashboard</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="external_buckets.html">Using External Buckets</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Advanced Configuration of DCP</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Using External Buckets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_configuration.html">Advanced Configuration of DCP</a></li>
 <li class="toctree-l1"><a class="reference internal" href="AWS_hygiene_scripts.html">AWS Hygiene Scripts</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting_runs.html">Troubleshooting</a></li>
@@ -268,7 +268,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/distributedscience/distributed-cellprofiler/edit/main/DCP-documentation/advanced_configuration.md" target="_blank"
+      <li><a href="https://github.com/distributedscience/distributed-cellprofiler/edit/main/DCP-documentation/external_buckets.md" target="_blank"
    class="btn btn-sm btn-source-edit-button dropdown-item"
    title="Suggest edit"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -285,7 +285,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/distributedscience/distributed-cellprofiler/issues/new?title=Issue%20on%20page%20%2Fadvanced_configuration.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/distributedscience/distributed-cellprofiler/issues/new?title=Issue%20on%20page%20%2Fexternal_buckets.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -315,7 +315,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="_sources/advanced_configuration.md" target="_blank"
+      <li><a href="_sources/external_buckets.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -397,7 +397,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Advanced Configuration of DCP</h1>
+    <h1>Using External Buckets</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -407,9 +407,17 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changes-you-can-make-to-distributed-cellprofiler-outside-of-the-docker-container">Changes you can make to Distributed-CellProfiler outside of the Docker container</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changes-that-will-require-you-to-make-your-own-docker-container">Changes that will require you to make your own Docker container</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changes-to-cellprofiler-pipeline-to-use-distributed-cellprofiler-with-runcellpose-plugin">Changes to CellProfiler pipeline to use Distributed-CellProfiler with RunCellpose plugin</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config-setup">Config setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-configs">Example configs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-from-the-cell-painting-gallery">Reading from the Cell Painting Gallery</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#read-write-to-a-collaborator-s-bucket">Read/Write to a collaborator’s bucket</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#permissions-setup">Permissions setup</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#in-your-aws-account">In your AWS account</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#in-your-dcp-instance">In your DCP instance</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -421,57 +429,105 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="advanced-configuration-of-dcp">
-<h1>Advanced Configuration of DCP<a class="headerlink" href="#advanced-configuration-of-dcp" title="Permalink to this heading">#</a></h1>
-<p>We’ve tried very hard to make Distributed-CellProfiler light and adaptable, but keeping the configuration settings to a manageable number requires making some default assumptions.
-Below is a non-comprehensive list of places where you can adapt the code to your own purposes.</p>
-<hr class="docutils" />
-<section id="changes-you-can-make-to-distributed-cellprofiler-outside-of-the-docker-container">
-<h2>Changes you can make to Distributed-CellProfiler outside of the Docker container<a class="headerlink" href="#changes-you-can-make-to-distributed-cellprofiler-outside-of-the-docker-container" title="Permalink to this heading">#</a></h2>
+  <section id="using-external-buckets">
+<h1>Using External Buckets<a class="headerlink" href="#using-external-buckets" title="Permalink to this heading">#</a></h1>
+<p>Distributed-CellProfiler can read and/or write to/from an external S3 bucket (i.e. a bucket not in the same account as you are running DCP).
+To do so, you will need to appropriately set your configuration in run.py.
+You may need additional configuration in AWS Identity and Access Management (IAM).</p>
+<section id="config-setup">
+<h2>Config setup<a class="headerlink" href="#config-setup" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
-<li><p><strong>Location of ECS configuration files:</strong> By default these are placed into your bucket with a prefix of ‘ecsconfigs/’.
-Alternate locations can be designated in the run script.</p></li>
-<li><p><strong>Log configuration and location of exported logs:</strong> Distributed-CellProfiler creates log groups with a default retention of 60 days (to avoid hitting the AWS limit of 250) and after finishing the run exports them into your bucket with a prefix of ‘exportedlogs/LOG_GROUP_NAME/’.
-These may be modified in the run script.</p></li>
-<li><p><strong>Advanced EC2 configuration:</strong> Any additional configuration of your EC2 spot fleet (such as installing additional packages or running scripts on startup) can be done by modifying the userData parameter in the run script.</p></li>
-<li><p><strong>SQS queue detailed configuration:</strong>  Distributed-CellProfiler creates a queue where messages will be tried 10 times before being consigned to a DeadLetterQueue, and unprocessed messages will expire after 14 days (the AWS maximum).
-These values can be modified in run.py .</p></li>
+<li><p><strong>AWS_PROFILE:</strong> The profile you use must have appropriate permissions for running DCP as well as read/write permissions for the external bucket.
+See below for more information.</p></li>
+<li><p><strong>AWS_BUCKET:</strong> The bucket to which you would like to write log files.
+This is generally the bucket in the account in which you are running compute.</p></li>
+<li><p><strong>SOURCE_BUCKET:</strong> The bucket where the files you will be reading are.
+Often, this is the same as AWS_BUCKET.</p></li>
+<li><p><strong>DESTINATION_BUCKET:</strong> The bucket where you want to write your output files.
+Often, this is the same as AWS_BUCKET.</p></li>
+<li><p><strong>UPLOAD_FLAGS:</strong> If you need to add flags to an AWS CLI command to upload flags to your DESTINATION_BUCKET, this is where you enter them.
+This is typically only used if you are writing to a bucket that is not yours.
+If you don’t need to add UPLOAD_FLAGS, keep it as the default ‘’.</p></li>
 </ul>
 </section>
-<hr class="docutils" />
-<section id="changes-that-will-require-you-to-make-your-own-docker-container">
-<h2>Changes that will require you to make your own Docker container<a class="headerlink" href="#changes-that-will-require-you-to-make-your-own-docker-container" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p><strong>CellProfiler version:</strong> We try to keep Distributed-CellProfiler up to date with the latest stable release of CellProfiler, but in case you want to use your own Dockerized version of a different CellProfiler build you can edit the Dockerfile to call that CellProfiler Docker instead.</p></li>
-<li><p><strong>Alarm names or thresholds:</strong> These can be modified in the run-worker script.</p></li>
-<li><p><strong>Frequency or types of information included in the per-instance logs:</strong> These can be adjusted in the instance-monitor script.</p></li>
-<li><p><strong><a class="reference external" href="https://github.com/CellProfiler/CellProfiler/wiki/Adapting-CellProfiler-to-a-LIMS-environment#cmd">CellProfiler command line flags</a>:</strong> These can be modified in the cp-worker script.</p></li>
-<li><p><strong>Log stream names or logging level:</strong> These can be modified in the cp-worker script.</p></li>
-</ul>
-</section>
-<section id="changes-to-cellprofiler-pipeline-to-use-distributed-cellprofiler-with-runcellpose-plugin">
-<h2>Changes to CellProfiler pipeline to use Distributed-CellProfiler with RunCellpose plugin<a class="headerlink" href="#changes-to-cellprofiler-pipeline-to-use-distributed-cellprofiler-with-runcellpose-plugin" title="Permalink to this heading">#</a></h2>
-<ul class="simple">
-<li><p><strong>Distributed-CellProfiler version:</strong> At least CellProfiler version 4.2.4, and use the DOCKERHUB_TAG in config.py as <code class="docutils literal notranslate"><span class="pre">bethcimini/distributed-cellprofiler:2.1.0_4.2.4_plugins</span></code>.</p></li>
-<li><p>**Custom model: If using a <a class="reference external" href="https://cellpose.readthedocs.io/en/latest/models.html">custom User-trained model</a> generated using Cellpose, add the model file to S3.
-We use the following structure to organize our files on S3.</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   └── &lt;project_name&gt;
-      └── workspace
-           └── model
-               └── custom_model_filename
+<section id="example-configs">
+<h2>Example configs<a class="headerlink" href="#example-configs" title="Permalink to this heading">#</a></h2>
+<section id="reading-from-the-cell-painting-gallery">
+<h3>Reading from the Cell Painting Gallery<a class="headerlink" href="#reading-from-the-cell-painting-gallery" title="Permalink to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AWS_REGION</span> <span class="o">=</span> <span class="s1">&#39;your-region&#39;</span>              <span class="c1"># e.g. &#39;us-east-1&#39;</span>
+<span class="n">AWS_PROFILE</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>                 <span class="c1"># The same profile used by your AWS CLI installation</span>
+<span class="n">SSH_KEY_NAME</span> <span class="o">=</span> <span class="s1">&#39;your-key-file.pem&#39;</span>      <span class="c1"># Expected to be in ~/.ssh</span>
+<span class="n">AWS_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;bucket-name&#39;</span>              <span class="c1"># Your bucket</span>
+<span class="n">SOURCE_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;cellpainting-gallery&#39;</span>  
+<span class="n">DESTINATION_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;bucket-name&#39;</span>      <span class="c1"># Your bucket</span>
+<span class="n">UPLOAD_FLAGS</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>                      
 </pre></div>
 </div>
-<ul class="simple">
-<li><p><strong>RunCellpose module:</strong></p>
-<ul>
-<li><p>Inside RunCellpose, select the “custom” Detection mode.
-In “Location of the pre-trained model file”, enter the mounted bucket path to your model.
-e.g. <strong>/home/ubuntu/bucket/projects/&lt;project_name&gt;/workspace/model/</strong></p></li>
-<li><p>In “Pre-trained model file name”, enter your custom_model_filename</p></li>
-</ul>
-</li>
-</ul>
+</section>
+<section id="read-write-to-a-collaborator-s-bucket">
+<h3>Read/Write to a collaborator’s bucket<a class="headerlink" href="#read-write-to-a-collaborator-s-bucket" title="Permalink to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AWS_REGION</span> <span class="o">=</span> <span class="s1">&#39;your-region&#39;</span>              <span class="c1"># e.g. &#39;us-east-1&#39;</span>
+<span class="n">AWS_PROFILE</span> <span class="o">=</span> <span class="s1">&#39;role-permissions&#39;</span>        <span class="c1"># A profile with the permissions setup described above</span>
+<span class="n">SSH_KEY_NAME</span> <span class="o">=</span> <span class="s1">&#39;your-key-file.pem&#39;</span>      <span class="c1"># Expected to be in ~/.ssh</span>
+<span class="n">AWS_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;bucket-name&#39;</span>              <span class="c1"># Your bucket</span>
+<span class="n">SOURCE_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;collaborator-bucket&#39;</span>  
+<span class="n">DESTINATION_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;collaborator-bucket&#39;</span>    
+<span class="n">UPLOAD_FLAGS</span> <span class="o">=</span> <span class="s1">&#39;--acl bucket-owner-full-control --metadata-directive REPLACE&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="permissions-setup">
+<h2>Permissions setup<a class="headerlink" href="#permissions-setup" title="Permalink to this heading">#</a></h2>
+<p>If you are reading from a public bucket, no additional setup is necessary.</p>
+<p>If you are reading from a non-public bucket or writing to a bucket, you wil need further permissions setup.
+Often, access to someone else’s AWS account is handled through a role that can be assumed.
+Learn more about AWS IAM roles <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html">here</a>.
+Your collaborator will define the access limits of the role within their AWS IAM.
+You will also need to define role limits within your AWS IAM so that when you assume the role (giving you access to your collaborator’s resource), that role also has the appropriate permissions to run DCP.</p>
+<section id="in-your-aws-account">
+<h3>In your AWS account<a class="headerlink" href="#in-your-aws-account" title="Permalink to this heading">#</a></h3>
+<p>In AWS IAM, for the role that has external bucket access, you will need to add all of the DCP permissions described in <a class="reference internal" href="step_0_prep.html"><span class="doc std std-doc">Step 0</span></a>.</p>
+<p>You will also need to edit the trust relationship for the role so that ECS and EC2 can assume the role.
+A template is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Principal&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;AWS&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">&quot;arn:aws:iam::123456789123:user/image_analyst&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;arn:aws:iam::123456789123:user/image_expert&quot;</span>
+                <span class="p">],</span>
+                <span class="s2">&quot;Service&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="s2">&quot;ecs-tasks.amazonaws.com&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;ec2.amazonaws.com&quot;</span>
+                <span class="p">]</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="s2">&quot;sts:AssumeRole&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+</pre></div>
+</div>
+</section>
+<section id="in-your-dcp-instance">
+<h3>In your DCP instance<a class="headerlink" href="#in-your-dcp-instance" title="Permalink to this heading">#</a></h3>
+<p>DCP reads your AWS_PROFILE from your <span class="xref myst">control node</span>.
+Edit your AWS CLI configuration files for assuming that role in your control node as follows:</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">~/.aws/config</span></code>, copy in the following text block at the bottom of the file, editing to your specifications, and save.</p>
+<p>[profile access-collaborator]
+role_arn = arn:aws:iam::123456789123:role/access-to-other-bucket
+source_profile = my-account-profile
+region = us-east-1
+output = json</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">~/.aws/credentials</span></code>, copy in the following text block at the bottom of the file (filling in your access key info) and save.</p>
+<p>[my-account-profile]
+aws_access_key_id = ACCESS_KEY
+aws_secret_access_key = SECRET_ACCESS_KEY</p>
+</section>
 </section>
 </section>
 
@@ -506,20 +562,20 @@ e.g. <strong>/home/ubuntu/bucket/projects/&lt;project_name&gt;/workspace/model/<
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="external_buckets.html"
+       href="dashboard.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Using External Buckets</p>
+        <p class="prev-next-title">AWS Cloudwatch Dashboard</p>
       </div>
     </a>
     <a class="right-next"
-       href="AWS_hygiene_scripts.html"
+       href="advanced_configuration.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">AWS Hygiene Scripts</p>
+        <p class="prev-next-title">Advanced Configuration of DCP</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -538,9 +594,17 @@ e.g. <strong>/home/ubuntu/bucket/projects/&lt;project_name&gt;/workspace/model/<
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changes-you-can-make-to-distributed-cellprofiler-outside-of-the-docker-container">Changes you can make to Distributed-CellProfiler outside of the Docker container</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changes-that-will-require-you-to-make-your-own-docker-container">Changes that will require you to make your own Docker container</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#changes-to-cellprofiler-pipeline-to-use-distributed-cellprofiler-with-runcellpose-plugin">Changes to CellProfiler pipeline to use Distributed-CellProfiler with RunCellpose plugin</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#config-setup">Config setup</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-configs">Example configs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-from-the-cell-painting-gallery">Reading from the Cell Painting Gallery</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#read-write-to-a-collaborator-s-bucket">Read/Write to a collaborator’s bucket</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#permissions-setup">Permissions setup</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#in-your-aws-account">In your AWS account</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#in-your-dcp-instance">In your DCP instance</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

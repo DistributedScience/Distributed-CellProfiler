@@ -19,6 +19,20 @@ It need not be unique, but it should be descriptive enough that you can tell job
 ### AWS GENERAL SETTINGS
 These are settings that will allow your instances to be configured correctly and access the resources they need- see [Step 0: Prep](step_0_prep.md) for more information.
 
+Bucket configurations allow you to read/write from/to different bucket in different accounts from where you are running DCP.
+If you are not accessing any external buckets, set AWS_BUCKET, SOURCE_BUCKET, and DESTINATION_BUCKET the same.
+For more information and examples, see [External Buckets](external_buckets.md).
+
+* **AWS_BUCKET:** The bucket to which you would like to write log files.
+This is generally the bucket in the account in which you are running compute.
+* **SOURCE_BUCKET:** The bucket where the files you will be reading are.
+Often, this is the same as AWS_BUCKET.
+* **DESTINATION_BUCKET:** The bucket where you want to write your output files.
+Often, this is the same as AWS_BUCKET.
+* **UPLOAD_FLAGS:** If you need to add flags to an AWS CLI command to upload flags to your DESTINATION_BUCKET, this is where you enter them.
+This is typically only used if you are writing to a bucket that is not yours.
+If you don't need to add UPLOAD_FLAGS, keep it as the default ''.
+
 ***
 
 ### EC2 AND ECS INFORMATION
