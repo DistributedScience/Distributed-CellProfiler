@@ -200,7 +200,7 @@ def runCellProfiler(message):
             #Filter our CSV to just the rows CellProfiler will process, so that we can download only what we need
             for eachfilter in filter_dict.keys():
                 csv_in = csv_in[csv_in[eachfilter] == filter_dict[eachfilter]]
-            if len(csv_in) <= 1:
+            if len(csv_in) < 1:
                 printandlog('WARNING: All rows filtered out of csv before download. Check your Metadata.',logger)
                 logger.removeHandler(watchtowerlogger)
                 import shutil
