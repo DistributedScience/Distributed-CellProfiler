@@ -1,5 +1,7 @@
 # What is Distributed-CellProfiler?
 
+**How do I run CellProfiler on Amazon?** Use Distributed-CellProfiler!
+
 Distributed-CellProfiler is a series of scripts designed to help you run a Dockerized version of CellProfiler on [Amazon Web Services](https://aws.amazon.com/) (AWS) using AWS's file storage and computing systems.  
 * Data is stored in S3 buckets.
 * Software is run on "Spot Fleets" of computers (or instances) in the cloud.
