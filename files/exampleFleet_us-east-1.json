@@ -4,7 +4,7 @@
   "TerminateInstancesWithExpiration": true,
   "LaunchSpecifications": [
     {
-      "ImageId": "ami-0f161e6034a6262d8",
+      "ImageId": "ami-0ce03502c5bb5e188",
       "KeyName": "your_key_file_name",
       "IamInstanceProfile": {
         "Arn": "arn:aws:iam::XXXXXXXXXXXX:instance-profile/ecsInstanceRole"
@@ -16,7 +16,7 @@
             "DeleteOnTermination": true,
             "VolumeType": "gp2",
             "VolumeSize": 8,
-            "SnapshotId": "snap-0d4b8a5c08e5e71ea"
+            "SnapshotId": "snap-0a7b4ece894d62882"
           }
         },
         {
