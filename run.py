@@ -124,7 +124,7 @@ def generate_task_definition(AWS_PROFILE):
         {"name": "NECESSARY_STRING", "value": NECESSARY_STRING},
         {"name": "DOWNLOAD_FILES", "value": DOWNLOAD_FILES},
     ]
-    if SOURCE_BUCKET.lower()=='true':
+    if SOURCE_BUCKET.lower()!='false':
         task_definition['containerDefinitions'][0]['environment'] += [
             {
                 'name': 'SOURCE_BUCKET',
@@ -134,7 +134,7 @@ def generate_task_definition(AWS_PROFILE):
                 'name': 'DESTINATION_BUCKET',
                 'value': DESTINATION_BUCKET
             }]
-    if UPLOAD_FLAGS.lower()=='true':
+    if UPLOAD_FLAGS.lower()!='false':
         task_definition['containerDefinitions'][0]['environment'] += [
             {
                 'name': 'UPLOAD_FLAGS',
