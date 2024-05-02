@@ -43,7 +43,7 @@ Our internal configurations for each pipeline are as follows:
 | TASKS_PER_MACHINE | 1 | 1 | 1 | 1 | 1 |  |
 | MACHINE_TYPE | ['c5.xlarge'] | ['c5.xlarge'] | ['c5.xlarge'] | ['c5.xlarge'] | ['c5.xlarge'] | Historically we have used m4.xlarge and then m5.xlarge however very recently we have been having a hard time getting m class machines so we have switched to c class. Note that they have different memory sizes so you need to make sure MEMORY is set correctly if changing between classes. |
 | MACHINE_PRICE | .20 | .20 | .20 | .20 | .20 | Will be different for different size/classes of machines. |
-| EBS_VOL_SIZE | 22 | 22 | 22 | 22 | 22 | You might need to make this larger if you set DOWNLOAD_FILES = True  |
+| EBS_VOL_SIZE <br>(if using mounted volume)<br><br>(if downloading from external bucket) | 22<br><br>22 | 22<br><br>200 | 22<br><br>22 | 22<br><br>22 | 22<br><br>40 | Suggested size increases when downloading files from another bucket (DOWNLOAD_FILES = True) depending on the files. |
 | DOWNLOAD_FILES | 'False' | 'False' | 'False' | 'False' | 'False' |   |
 | DOCKER_CORES | 4 | 4 | 4 | 4  | 3 | If using c class machines and large images (2k + pixels) then you might need to reduce this number. |
 | CPU_SHARES | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | We never change this. |
