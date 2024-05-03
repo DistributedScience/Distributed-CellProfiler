@@ -1,3 +1,5 @@
+# Distributed-CellProfiler Minimal Example
+
 Included in this folder is all of the resources for running a complete mini-example of Distributed-Cellprofiler.
 It includes 3 sample image sets and a CellProfiler pipeline that identifies cells within the images and makes measuremements.
 It also includes the Distributed-CellProfiler files pre-configured to create a queue of all 3 jobs and spin up a spot fleet of 3 instances, each of which will process a single image set.
@@ -9,7 +11,7 @@ It also includes the Distributed-CellProfiler files pre-configured to create a q
 Before running this mini-example, you will need to set up your AWS infrastructure as described in our [online documentation](https://distributedscience.github.io/Distributed-CellProfiler/step_0_prep.html).
 This includes creating the fleet file that you will use in Step 3.
 
-Upload the 'sample_project' folder to the top level of your bucket. 
+Upload the 'sample_project' folder to the top level of your bucket.
 While in the `Distributed-CellProfiler` folder, use the following command, replacing `yourbucket` with your bucket name:
 
 ```bash
@@ -22,8 +24,10 @@ cp example_project/config.py config.py
 ```
 
 ### Step 1
+
 In config.py you will need to update the following fields specific to your AWS configuration:
-```
+
+```python
 # AWS GENERAL SETTINGS:
 AWS_REGION = 'us-east-1'
 AWS_PROFILE = 'default'                 # The same profile used by your AWS CLI installation
@@ -32,17 +36,21 @@ AWS_BUCKET = 'your-bucket-name'
 SOURCE_BUCKET = 'your-bucket-name'      # Only differs from AWS_BUCKET with advanced configuration
 DESTINATION_BUCKET = 'your-bucket-name' # Only differs from AWS_BUCKET with advanced configuration
 ```
+
 Then run `python3 run.py setup`
 
 ### Step 2
-This command points to the job file created for this demonstartion and should be run as-is.
+
+This command points to the job file created for this demonstration and should be run as-is.
 `python3 run.py submitJob example_project/files/exampleJob.json`
 
 ### Step 3
+
 This command should point to whatever fleet file you created in Step 0 so you may need to update the `exampleFleet.json` file name.
 `python3 run.py startCluster files/exampleFleet.json`
 
 ### Step 4
+
 This command points to the monitor file that is automatically created with your run and should be run as-is.
 `python3 run.py monitor files/FlyExampleSpotFleetRequestId.json`
 
@@ -52,3 +60,22 @@ While the run is happening, you can watch real-time metrics in your Cloudwatch D
 Note that the metrics update at intervals that may not be helpful with this fast, minimal example.
 
 After the run is done, you should see your CellProfiler output files in S3 at s3://${BUCKET}/project_folder/output in per-image folders.
+
+## Cleanup
+
+The spot fleet, queue, and task definition will be automatically cleaned up after your demo is complete because you are running `monitor`.
+
+To remove everything else:
+
+```bash
+# Remove files added to S3 bucket
+BUCKET=yourbucket
+aws s3 rm --recursive s3://${BUCKET}/demo_project_folder
+
+# Remove Cloudwatch logs
+aws logs delete-log-group --log-group-name FlyExample
+aws logs delete-log-group --log-group-name FlyExample_perInstance
+
+# Delete DeadMessages queue
+aws sqs delete-queue --queue-url ExampleProject_DeadMessages
+```
