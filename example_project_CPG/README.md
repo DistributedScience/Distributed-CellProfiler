@@ -1,7 +1,7 @@
 # CPG Example Project
 
 Included in this folder is all of the resources for running a complete mini-example of Distributed-CellProfiler.
-This example differs from the other example project in that it reads data hosted in the public data repository the [Cell Painting Gallery](https://github.com/broadinstitute/cellpainting-gallery) instead of reading images form your own bucket.
+This example differs from the other example project in that it reads data hosted in the public data repository the [Cell Painting Gallery](https://github.com/broadinstitute/cellpainting-gallery) instead of reading images from your own bucket.
 Workspace files are hosted in your own S3 bucket, and data is output to your bucket, and compute is performed in your account.
 It includes the Distributed-CellProfiler files pre-configured to create a queue of 3 jobs and spin up a spot fleet of 3 instances, each of which will process a single image set.
 
