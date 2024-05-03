@@ -17,7 +17,7 @@ While in the `Distributed-CellProfiler` folder, use the following command, repla
 ```bash
 # Copy example files to S3
 BUCKET=yourbucket
-aws s3 sync example_project/project_folder s3://${BUCKET}/project_folder
+aws s3 sync example_project/demo_project_folder s3://${BUCKET}/demo_project_folder
 
 # Replace the default config with the example config
 cp example_project/config.py config.py
