@@ -16,6 +16,7 @@ UPDATE_PLUGINS = 'False'
 CREATE_DASHBOARD = 'False'
 CLEAN_DASHBOARD = 'False'
 AUTO_MONITOR = 'False'
+ALWAYS_CONTINUE = 'False'
 
 from config import *
 
@@ -123,6 +124,7 @@ def generate_task_definition(AWS_PROFILE):
         {"name": "USE_PLUGINS", "value": str(USE_PLUGINS)},
         {"name": "NECESSARY_STRING", "value": NECESSARY_STRING},
         {"name": "DOWNLOAD_FILES", "value": DOWNLOAD_FILES},
+        {"name": "ALWAYS_CONTINUE", "value": ALWAYS_CONTINUE},
     ]
     if SOURCE_BUCKET.lower()=='true':
         task_definition['containerDefinitions'][0]['environment'] += [
