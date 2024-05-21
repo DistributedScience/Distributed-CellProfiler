@@ -46,6 +46,10 @@ if 'DOWNLOAD_FILES' not in os.environ:
     DOWNLOAD_FILES = False
 else:
     DOWNLOAD_FILES = os.environ['DOWNLOAD_FILES']
+if 'ALWAYS_CONTINUE' not in os.environ:
+    ALWAYS_CONTINUE = False
+else:
+    ALWAYS_CONTINUE = os.environ['ALWAYS_CONTINUE']
 
 localIn = '/home/ubuntu/local_input'
 
@@ -257,6 +261,8 @@ def runCellProfiler(message):
         printandlog("Didn't recognize input file",logger)
     if USE_PLUGINS.lower() == 'true':
         cmd += f' --plugins-directory={PLUGIN_DIR}'
+    if ALWAYS_CONTINUE.lower() == 'true':
+        cmd +='  --always-continue'
     print(f'Running {cmd}')
     logger.info(cmd)
 
