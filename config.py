@@ -48,6 +48,9 @@ EXPECTED_NUMBER_FILES = 7    #What is the number of files that trigger skipping 
 MIN_FILE_SIZE_BYTES = 1      #What is the minimal number of bytes an object should be to "count"?
 NECESSARY_STRING = ''        #Is there any string that should be in the file name to "count"?
 
+# CELLPROFILER SETTINGS
+ALWAYS_CONTINUE = 'False'     # Whether or not to run CellProfiler with the --always-continue flag, which will keep CellProfiler from crashing if it errors
+
 # PLUGINS
 USE_PLUGINS = 'False'        # True to use any plugin from CellProfiler-plugins repo
 UPDATE_PLUGINS = 'False'     # True to download updates from CellProfiler-plugins repo
