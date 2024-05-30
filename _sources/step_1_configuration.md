@@ -25,7 +25,9 @@ For more information and examples, see [External Buckets](external_buckets.md).
 
 * **AWS_BUCKET:** The bucket to which you would like to write log files.
 This is generally the bucket in the account in which you are running compute.
-* **SOURCE_BUCKET:** The bucket where the files you will be reading are.
+* **SOURCE_BUCKET:** The bucket where the image files you will be reading are.
+Often, this is the same as AWS_BUCKET.
+* **WORKSPACE:** The bucket where non-image files you will be reading are (e.g. pipeline, load_data.csv, etc.).
 Often, this is the same as AWS_BUCKET.
 * **DESTINATION_BUCKET:** The bucket where you want to write your output files.
 Often, this is the same as AWS_BUCKET.
