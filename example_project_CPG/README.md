@@ -1,8 +1,9 @@
-# Distributed-CellProfiler Minimal Example
+# CPG Example Project
 
-Included in this folder is all of the resources for running a complete mini-example of Distributed-Cellprofiler.
-It includes 3 sample image sets and a CellProfiler pipeline that identifies cells within the images and makes measuremements.
-It also includes the Distributed-CellProfiler files pre-configured to create a queue of all 3 jobs and spin up a spot fleet of 3 instances, each of which will process a single image set.
+Included in this folder is all of the resources for running a complete mini-example of Distributed-CellProfiler.
+This example differs from the other example project in that it reads data hosted in the public data repository the [Cell Painting Gallery](https://github.com/broadinstitute/cellpainting-gallery) instead of reading images from your own bucket.
+Workspace files are hosted in your own S3 bucket, and data is output to your bucket, and compute is performed in your account.
+It includes the Distributed-CellProfiler files pre-configured to create a queue of 3 jobs and spin up a spot fleet of 3 instances, each of which will process a single image set.
 
 ## Running example project
 
@@ -17,10 +18,10 @@ While in the `Distributed-CellProfiler` folder, use the following command, repla
 ```bash
 # Copy example files to S3
 BUCKET=yourbucket
-aws s3 sync example_project/demo_project_folder s3://${BUCKET}/demo_project_folder
+aws s3 sync example_project_CPG/demo_project_folder s3://${BUCKET}/demo_project_folder
 
 # Replace the default config with the example config
-cp example_project/config.py config.py
+cp example_project_CPG/config.py config.py
 ```
 
 ### Step 1
@@ -33,33 +34,33 @@ AWS_REGION = 'us-east-1'
 AWS_PROFILE = 'default'                 # The same profile used by your AWS CLI installation
 SSH_KEY_NAME = 'your-key-file.pem'      # Expected to be in ~/.ssh
 AWS_BUCKET = 'your-bucket-name'
-SOURCE_BUCKET = 'your-bucket-name'      # Only differs from AWS_BUCKET with advanced configuration
+WORKSPACE_BUCKET = 'your-bucket-name'   # Only differs from AWS_BUCKET with advanced configuration
 DESTINATION_BUCKET = 'your-bucket-name' # Only differs from AWS_BUCKET with advanced configuration
 ```
 
-Then run `python3 run.py setup`
+Then run `python run.py setup`
 
 ### Step 2
 
 This command points to the job file created for this demonstration and should be run as-is.
-`python3 run.py submitJob example_project/files/exampleJob.json`
+`python run.py submitJob example_project_CPG/files/exampleCPGJob.json`
 
 ### Step 3
 
 This command should point to whatever fleet file you created in Step 0 so you may need to update the `exampleFleet.json` file name.
-`python3 run.py startCluster files/exampleFleet.json`
+`python run.py startCluster files/exampleFleet.json`
 
 ### Step 4
 
 This command points to the monitor file that is automatically created with your run and should be run as-is.
-`python3 run.py monitor files/FlyExampleSpotFleetRequestId.json`
+`python run.py monitor files/ExampleCPGSpotFleetRequestId.json`
 
 ## Results
 
-While the run is happening, you can watch real-time metrics in your Cloudwatch Dashboard by navigating in the [Cloudwatch console](https://console.aws.amazon.com/cloudwatch).
+While a run is happening, you can watch real-time metrics in your Cloudwatch Dashboard by navigating in the [Cloudwatch console](https://console.aws.amazon.com/cloudwatch).
 Note that the metrics update at intervals that may not be helpful with this fast, minimal example.
 
-After the run is done, you should see your CellProfiler output files in S3 at s3://${BUCKET}/project_folder/output in per-image folders.
+After the run is done, you should see your CellProfiler output files in your S3 bucket at s3://${BUCKET}/project_folder/output in per-well-and-site folders.
 
 ## Cleanup
 
@@ -73,8 +74,8 @@ BUCKET=yourbucket
 aws s3 rm --recursive s3://${BUCKET}/demo_project_folder
 
 # Remove Cloudwatch logs
-aws logs delete-log-group --log-group-name FlyExample
-aws logs delete-log-group --log-group-name FlyExample_perInstance
+aws logs delete-log-group --log-group-name ExampleCPG
+aws logs delete-log-group --log-group-name ExampleCPG_perInstance
 
 # Delete DeadMessages queue
 aws sqs delete-queue --queue-url ExampleProject_DeadMessages

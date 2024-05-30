@@ -1,15 +1,15 @@
 {
   "_comment1": "Paths in this file are relative to the root of your S3 bucket",
-  "pipeline": "demo_project_folder/workspace/ExampleFly.cppipe", 
+  "pipeline": "demo_project_folder/workspace/ExampleCPG.cppipe", 
   "data_file": "demo_project_folder/workspace/load_data.csv", 
   "input": "demo_project_folder/workspace/",
   "output": "demo_project_folder/output",
-  "output_structure": "Metadata_Position",
+  "output_structure": "Metadata_Well-Metadata_Site",
   "_comment2": "The following groups are tasks, and each will be run in parallel",
   "groups": [
-    {"Metadata": "Metadata_Position=2"},
-    {"Metadata": "Metadata_Position=76"},
-    {"Metadata": "Metadata_Position=218"}
+    {"Metadata": "Metadata_Well=A01,Metadata_Site=1"},
+    {"Metadata": "Metadata_Well=A01,Metadata_Site=2"},
+    {"Metadata": "Metadata_Well=A02,Metadata_Site=1"}
   ]
 }
 

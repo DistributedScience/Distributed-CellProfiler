@@ -1,0 +1,134 @@
+CellProfiler Pipeline: http://www.cellprofiler.org
+Version:4
+DateRevision:426
+GitHash:
+ModuleCount:7
+HasImagePlaneDetails:False
+
+LoadData:[module_num:1|svn_version:'Unknown'|variable_revision_number:6|show_window:True|notes:[]|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Input data file location:Default Input Folder sub-folder|Desktop/github/Distributed-CellProfiler/example_project_CPG/project_folder/workspace
+    Name of the file:load_data.csv
+    Load images based on this data?:Yes
+    Base image location:Default Input Folder|
+    Process just a range of rows?:No
+    Rows to process:1,100000
+    Group images by metadata?:Yes
+    Select metadata tags for grouping:Well,Site
+    Rescale intensities?:Yes
+
+IdentifyPrimaryObjects:[module_num:2|svn_version:'Unknown'|variable_revision_number:15|show_window:True|notes:['Identify the nuclei from the DAPI image. ']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input image:OrigDNA
+    Name the primary objects to be identified:Nuclei
+    Typical diameter of objects, in pixel units (Min,Max):15,90
+    Discard objects outside the diameter range?:Yes
+    Discard objects touching the border of the image?:Yes
+    Method to distinguish clumped objects:Shape
+    Method to draw dividing lines between clumped objects:Intensity
+    Size of smoothing filter:10
+    Suppress local maxima that are closer than this minimum allowed distance:5
+    Speed up by using lower-resolution image to find local maxima?:Yes
+    Fill holes in identified objects?:After declumping only
+    Automatically calculate size of smoothing filter for declumping?:Yes
+    Automatically calculate minimum allowed distance between local maxima?:Yes
+    Handling of objects if excessive number of objects identified:Continue
+    Maximum number of objects:500
+    Use advanced settings?:Yes
+    Threshold setting version:12
+    Threshold strategy:Global
+    Thresholding method:Minimum Cross-Entropy
+    Threshold smoothing scale:1
+    Threshold correction factor:1.0
+    Lower and upper bounds on threshold:0.005,1
+    Manual threshold:0.0
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Three classes
+    Log transform before thresholding?:No
+    Assign pixels in the middle intensity class to the foreground or the background?:Background
+    Size of adaptive window:10
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2
+    Thresholding method:Otsu
+
+IdentifySecondaryObjects:[module_num:3|svn_version:'Unknown'|variable_revision_number:10|show_window:True|notes:['Identify the cells by using the nuclei as a "seed" region, then growing outwards until stopped by the image threshold or by a neighbor.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the input objects:Nuclei
+    Name the objects to be identified:Cells
+    Select the method to identify the secondary objects:Watershed - Image
+    Select the input image:OrigRNA
+    Number of pixels by which to expand the primary objects:10
+    Regularization factor:0.05
+    Discard secondary objects touching the border of the image?:No
+    Discard the associated primary objects?:No
+    Name the new primary objects:FilteredNuclei
+    Fill holes in identified objects?:Yes
+    Threshold setting version:12
+    Threshold strategy:Global
+    Thresholding method:Otsu
+    Threshold smoothing scale:0
+    Threshold correction factor:.7
+    Lower and upper bounds on threshold:0.005,.6
+    Manual threshold:0
+    Select the measurement to threshold with:None
+    Two-class or three-class thresholding?:Three classes
+    Log transform before thresholding?:Yes
+    Assign pixels in the middle intensity class to the foreground or the background?:Foreground
+    Size of adaptive window:10
+    Lower outlier fraction:0.05
+    Upper outlier fraction:0.05
+    Averaging method:Mean
+    Variance method:Standard deviation
+    # of deviations:2
+    Thresholding method:Otsu
+
+IdentifyTertiaryObjects:[module_num:4|svn_version:'Unknown'|variable_revision_number:3|show_window:True|notes:['Identify the cytoplasm by "subtracting" the nuclei objects from the cell objects.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the larger identified objects:Cells
+    Select the smaller identified objects:Nuclei
+    Name the tertiary objects to be identified:Cytoplasm
+    Shrink smaller object prior to subtraction?:Yes
+
+MeasureObjectSizeShape:[module_num:5|svn_version:'Unknown'|variable_revision_number:3|show_window:True|notes:['Measure morphological features from the cell, nuclei and cytoplasm objects.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select object sets to measure:Cells, Nuclei, Cytoplasm
+    Calculate the Zernike features?:Yes
+    Calculate the advanced features?:No
+
+MeasureObjectIntensity:[module_num:6|svn_version:'Unknown'|variable_revision_number:4|show_window:True|notes:['Measure intensity features from nuclei, cell, and cytoplasm objects in all channels']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select images to measure:OrigAGP, OrigDNA, OrigER, OrigMito, OrigRNA
+    Select objects to measure:Nuclei, Cells, Cytoplasm
+
+ExportToSpreadsheet:[module_num:7|svn_version:'Unknown'|variable_revision_number:13|show_window:True|notes:['Export any measurements to a comma-delimited file (.csv). The measurements made for the nuclei, cell and cytoplasm objects will be saved to separate .csv files, in addition to the per-image .csv’s.']|batch_state:array([], dtype=uint8)|enabled:True|wants_pause:False]
+    Select the column delimiter:Comma (",")
+    Add image metadata columns to your object data file?:No
+    Add image file and folder names to your object data file?:No
+    Select the measurements to export:No
+    Calculate the per-image mean values for object measurements?:No
+    Calculate the per-image median values for object measurements?:No
+    Calculate the per-image standard deviation values for object measurements?:No
+    Output file location:Default Output Folder|.
+    Create a GenePattern GCT file?:No
+    Select source of sample row name:Metadata
+    Select the image to use as the identifier:None
+    Select the metadata to use as the identifier:None
+    Export all measurement types?:Yes
+    Press button to select measurements:None|None
+    Representation of Nan/Inf:NaN
+    Add a prefix to file names?:No
+    Filename prefix:MyExpt_
+    Overwrite existing files without warning?:Yes
+    Data to export:Image
+    Combine these object measurements with those of the previous object?:No
+    File name:Image.csv
+    Use the object name for the file name?:No
+    Data to export:Nuclei
+    Combine these object measurements with those of the previous object?:No
+    File name:Nuclei.csv
+    Use the object name for the file name?:No
+    Data to export:Cells
+    Combine these object measurements with those of the previous object?:No
+    File name:Cells.csv
+    Use the object name for the file name?:No
+    Data to export:Cytoplasm
+    Combine these object measurements with those of the previous object?:No
+    File name:Cytoplasm.csv
+    Use the object name for the file name?:No

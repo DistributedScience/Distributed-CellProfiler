@@ -4,14 +4,15 @@ APP_NAME = 'DistributedCP'                # Used to generate derivative names un
 LOG_GROUP_NAME = APP_NAME
 
 # DOCKER REGISTRY INFORMATION:
-DOCKERHUB_TAG = 'cellprofiler/distributed-cellprofiler:2.0.0_4.1.3'
+DOCKERHUB_TAG = 'cellprofiler/distributed-cellprofiler:2.0.0_4.2.4'
 
 # AWS GENERAL SETTINGS:
 AWS_REGION = 'us-east-1'
 AWS_PROFILE = 'default'                 # The same profile used by your AWS CLI installation
 SSH_KEY_NAME = 'your-key-file.pem'      # Expected to be in ~/.ssh
 AWS_BUCKET = 'your-bucket-name'         # Bucket to use for logging
-SOURCE_BUCKET = 'bucket-name'           # Bucket to download files from
+SOURCE_BUCKET = 'bucket-name'           # Bucket to download image files from
+WORKSPACE_BUCKET = 'bucket-name'        # Bucket to download non-image files from
 DESTINATION_BUCKET = 'bucket-name'      # Bucket to upload files to
 UPLOAD_FLAGS = ''                       # Any flags needed for upload to destination bucket
 
@@ -19,8 +20,8 @@ UPLOAD_FLAGS = ''                       # Any flags needed for upload to destina
 ECS_CLUSTER = 'default'
 CLUSTER_MACHINES = 3
 TASKS_PER_MACHINE = 1
-MACHINE_TYPE = ['m4.xlarge']
-MACHINE_PRICE = 0.10
+MACHINE_TYPE = ['m5.xlarge']
+MACHINE_PRICE = 0.20
 EBS_VOL_SIZE = 30                       # In GB.  Minimum allowed is 22.
 DOWNLOAD_FILES = 'False'
 
