@@ -14,7 +14,7 @@
           "DeviceName": "/dev/xvda",
           "Ebs": {
             "DeleteOnTermination": true,
-            "VolumeType": "gp2",
+            "VolumeType": "gp3",
             "VolumeSize": 8,
             "SnapshotId": "snap-0a7b4ece894d62882"
           }
@@ -23,7 +23,7 @@
           "DeviceName": "/dev/xvdcz",
           "Ebs": {
             "DeleteOnTermination": true,
-            "VolumeType": "gp2"
+            "VolumeType": "gp3"
           }
         }
       ],
