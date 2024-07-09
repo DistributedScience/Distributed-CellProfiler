@@ -34,6 +34,7 @@ SECONDS_TO_START = 3*60                 # Wait before the next CP process is ini
 SQS_QUEUE_NAME = APP_NAME + 'Queue'
 SQS_MESSAGE_VISIBILITY = 1*60           # Timeout (secs) for messages in flight (average time to be processed)
 SQS_DEAD_LETTER_QUEUE = 'user_DeadMessages'
+JOB_RETRIES = 3            # Number of times to retry a job before sending it to DEAD_LETTER_QUEUE
 
 # MONITORING
 AUTO_MONITOR = 'True'

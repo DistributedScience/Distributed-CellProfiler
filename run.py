@@ -17,6 +17,7 @@ CREATE_DASHBOARD = 'False'
 CLEAN_DASHBOARD = 'False'
 AUTO_MONITOR = 'False'
 ALWAYS_CONTINUE = 'False'
+JOB_RETRIES = 10
 
 from config import *
 
@@ -213,9 +214,7 @@ def get_or_create_queue(sqs):
         "MaximumMessageSize": "262144",
         "MessageRetentionPeriod": "1209600",
         "ReceiveMessageWaitTimeSeconds": "0",
-        "RedrivePolicy": '{"deadLetterTargetArn":"'
-        + dead_arn
-        + '","maxReceiveCount":"10"}',
+        "RedrivePolicy": f'{{"deadLetterTargetArn":"{dead_arn}","maxReceiveCount":"{str(JOB_RETRIES)}"}}',
         "VisibilityTimeout": str(SQS_MESSAGE_VISIBILITY),
     }
         sqs.create_queue(QueueName=SQS_QUEUE_NAME, Attributes=SQS_DEFINITION)

@@ -68,6 +68,13 @@ To confirm that multiple Dockers are never processing the same job, you can keep
 Once you have run a pipeline once, you can check the execution time (either by noticing how long after you started your jobs that your first jobs begin to finish, or by checking the logs of individual jobs and noting the start and end time), you will then have an accurate idea of roughly how long that pipeline needs to execute, and can set your message visibility accordingly.  
 You can even do this on the fly while jobs are currently processing; the updated visibility time won’t affect the jobs already out for processing (i.e. if the time was set to 3 hours and you change it to 1 hour, the jobs already processing will remain hidden for 3 hours or until finished), but any job that begins processing AFTER the change will use the new visibility timeout setting.
 
+## JOB_RETRIES
+
+**JOB_RETRIES** is the number of times that a job will be retried before it is sent to the Dead Letter Queue.
+The count goes up every time a message is "In Flight" and after the SQS_MESSAGE_VISIBILITY times out, if the count is too high the message will not be made "Available" but will instead go to your SQS_DEAD_LETTER_QUEUE.
+We recommend setting this larger than 1 because stochastic job failures are possible (e.g. the EC2 machine running the job become unavailable mid-run).
+Allowing large numbers of retries tends to waste compute as most failure modes are not stochastic.
+
 ## Example SQS Queue
 
 [[images/Sample_SQS_Queue.png|alt="Sample_SQS_Queue"]]
