@@ -125,6 +125,14 @@ See [CellProfiler-plugins Documentation](https://plugins.cellprofiler.org/using_
 See [CellProfiler-plugins Documentation](https://plugins.cellprofiler.org/using_plugins.html) for more information on supported flags.
 For deprecated versions of CellProfiler-plugins before v1.0, pass a path within the CellProfiler-plugins repository to the requirements file you would like to install that will be used in the `pip install -r REQUIREMENTS_FILE` command.
 
+The [CellProfiler/Distributed-CellProfiler Docker](https://hub.docker.com/r/cellprofiler/distributed-cellprofiler/tags) 2.0.0_4.2.4 and older have a clone of the CellProfiler-plugins repository with deprecated organization in them.
+If you would like to continue using this clone, set `USE_PLUGINS = 'True'` and `UPDATE_PLUGINS = 'False'`.
+Note that if you do need to install requirements with the deprecated organization, pass the path to the requirements file within the CellProfiler-plugins repository as `REQUIREMENTS`.
+If you would like to update the CellProfiler-plugins repository with up-to-date plugins and new structure while using the CellProfiler/Distributed-CellProfiler Docker 2.0.0_4.2.4 and older, set `UPDATE_PLUGINS = 'True'`.
+
+[CellProfiler/Distributed-CellProfiler Dockers](https://hub.docker.com/r/cellprofiler/distributed-cellprofiler/tags) newer than 2.0.0_4.2.4 have current CellProfiler-plugins repository organization.
+If you need to use deprecated plugin organization you can access previous commits or version tags by passing them as `PLUGINS_COMMIT`.
+
 ***
 
 ### EXAMPLE CONFIGURATIONS
