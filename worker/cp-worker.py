@@ -1,4 +1,5 @@
 import boto3
+import botocore
 import json
 import logging
 import os
@@ -186,8 +187,14 @@ def runCellProfiler(message):
         subfolders = '/'.join((csv_insubfolders)[:-1])
         if not os.path.exists(os.path.join(localIn,subfolders)):
             os.makedirs(os.path.join(localIn,subfolders), exist_ok=True)
-        s3 = boto3.resource('s3')
-        s3.meta.client.download_file(WORKSPACE_BUCKET, message['data_file'], data_file_path)
+        s3client=boto3.client('s3')
+        try:
+            s3client.download_file(WORKSPACE_BUCKET, message['data_file'], data_file_path)
+        except botocore.exceptions.ClientError:
+            printandlog(f"Can't find load data file in S3. Looking for {message['data_file']} in {WORKSPACE_BUCKET}",logger)
+            printandlog("Aborting. Can't run without load data.",logger)
+            logger.removeHandler(watchtowerlogger)
+            return 'DOWNLOAD_PROBLEM'
         if message['data_file'][-4:]=='.csv':
             printandlog('Figuring which files to download', logger)
             import pandas
@@ -222,8 +229,11 @@ def runCellProfiler(message):
                         os.makedirs(os.path.split(new_file_name)[0])
                         printandlog(f'Made directory {os.path.split(new_file_name)[0]}',logger)
                     if not os.path.exists(new_file_name):
-                        s3.meta.client.download_file(SOURCE_BUCKET,prefix_on_bucket,new_file_name)
-                        downloaded_files.append(new_file_name)
+                        try:
+                            s3client.download_file(SOURCE_BUCKET,prefix_on_bucket,new_file_name)
+                            downloaded_files.append(new_file_name)
+                        except botocore.exceptions.ClientError:
+                            printandlog(f"Can't find file in S3. Looking for {prefix_on_bucket} in {SOURCE_BUCKET}",logger)
             printandlog(f'Downloaded {str(len(downloaded_files))} files',logger)
             import random
             newtag = False
@@ -251,15 +261,25 @@ def runCellProfiler(message):
                         os.makedirs(os.path.split(new_file_name)[0])
                         printandlog(f'made directory {os.path.split(new_file_name)[0]}',logger)
                     if not os.path.exists(new_file_name):
-                        s3.meta.client.download_file(SOURCE_BUCKET,prefix_on_bucket,new_file_name)
-                        downloaded_files.append(new_file_name)
+                        try:
+                            s3client.download_file(SOURCE_BUCKET,prefix_on_bucket,new_file_name)
+                            downloaded_files.append(new_file_name)
+                        except botocore.exceptions.ClientError:
+                            printandlog(f"Can't find file in S3. Looking for {prefix_on_bucket} in {SOURCE_BUCKET}",logger)
             printandlog(f'Downloaded {str(len(downloaded_files))} files',logger)
         else:
             printandlog("Couldn't parse data file for file download. Not supported input of .csv or .txt",logger)
         # Download pipeline and update pipeline path in message
         printandlog(f"Downloading {message['pipeline']} from {WORKSPACE_BUCKET}", logger)
         pipepath = os.path.join(localIn, message['pipeline'].split('/')[-1])
-        s3.meta.client.download_file(WORKSPACE_BUCKET, message['pipeline'], pipepath)
+        try:
+            s3client.download_file(WORKSPACE_BUCKET, message['pipeline'], pipepath)
+        except botocore.exceptions.ClientError:
+            printandlog(f"Can't find pipeline in S3. Looking for {message['pipeline']} in {WORKSPACE_BUCKET}",logger)
+            printandlog("Aborting. Can't run without pipeline.",logger)
+            logger.removeHandler(watchtowerlogger)
+            return 'DOWNLOAD_PROBLEM'
+   
     else:
         data_file_path = os.path.join(DATA_ROOT,message['data_file'])
         pipepath = os.path.join(DATA_ROOT,message["pipeline"])
