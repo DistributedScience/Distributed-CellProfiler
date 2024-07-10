@@ -468,6 +468,8 @@ You should add an inbound SSH connection from your IP address to your security g
 <section id="automatically-created-resources">
 <h3>1.2 Automatically created resources<a class="headerlink" href="#automatically-created-resources" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
+<li><p>BEFORE running setup_AWS, you need to open <code class="docutils literal notranslate"><span class="pre">lambda_function.py</span></code> and edit the <code class="docutils literal notranslate"><span class="pre">BUCKET_NAME</span></code> (keeping the quotes around the name) at the top of the file to be the name of your bucket.
+After editing, Line 12 of <code class="docutils literal notranslate"><span class="pre">lambda_function.py</span></code> should look like <code class="docutils literal notranslate"><span class="pre">bucket</span> <span class="pre">=</span> <span class="pre">&quot;my-bucket-name&quot;</span></code>.</p></li>
 <li><p>Run setup_AWS by entering <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup_AWS.py</span></code> from your command line.
 It will automatically create:</p>
 <ul>

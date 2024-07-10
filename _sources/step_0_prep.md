@@ -17,6 +17,8 @@ If you'd rather, you can generate a new key pair to use for this during creation
 You should add an inbound SSH connection from your IP address to your security group.
 
 ### 1.2 Automatically created resources
+* BEFORE running setup_AWS, you need to open `lambda_function.py` and edit the `BUCKET_NAME` (keeping the quotes around the name) at the top of the file to be the name of your bucket.
+After editing, Line 12 of `lambda_function.py` should look like `bucket = "my-bucket-name"`.
 * Run setup_AWS by entering `python setup_AWS.py` from your command line.
 It will automatically create:
   * an [ecsInstanceRole](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/instance_IAM_role.html) with appropriate permissions.
