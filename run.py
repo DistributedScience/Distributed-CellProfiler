@@ -17,7 +17,7 @@ UPDATE_PLUGINS = 'False'
 CREATE_DASHBOARD = 'False'
 CLEAN_DASHBOARD = 'False'
 AUTO_MONITOR = 'False'
-REQUIREMENTS_FILE = 'False'
+REQUIREMENTS_FILE = False
 
 from config import *
 
