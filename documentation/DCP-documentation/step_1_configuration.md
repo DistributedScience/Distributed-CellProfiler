@@ -111,13 +111,19 @@ Useful when trying to detect jobs that may have exported smaller corrupted files
 
 ### PLUGINS
 * **USE_PLUGINS:** Whether or not you will be using external plugins from the CellProfiler-plugins repository.
+When True, passes the `--plugins-directory` flag to CellProfiler.
+Defaults to the current v1.0 `CellProfiler-plugins/active_plugins` location for plugins but will revert to the historical location of plugins in the `CellProfiler-plugins` root directory if the `active_plugins` folder is not present.
 * **UPDATE_PLUGINS:** Whether or not to update the plugins repository before use.
 (i.e. run `git fetch --all` on CellProfiler-plugins)
-* **PLUGINS_COMMIT:** What commit or version tag to check out.
+* **PLUGINS_COMMIT:** If desired, what commit or version tag to check out.
 Used in the `git checkout PLUGINS_COMMIT` command in CellProfiler-plugins.
+If you do not want to checkout a specific commit, set to False.
 * **INSTALL_REQUIREMENTS:** Whether or not to install requirements associate with plugins.
-* **REQUIREMENTS_FILE:** A path within the CellProfiler-plugins repository to the requirements file you would like to install.
-Used in the `pip install -r REQUIREMENTS_FILE` command.
+Not all plugins require additional requirement installation.
+See [CellProfiler-plugins Documentation](https://plugins.cellprofiler.org/using_plugins.html) for more information on requirements.
+* **REQUIREMENTS:** For current v1.0 CellProfiler-plugins, a flag that will be passed to the install command (e.g. `cellpose`).
+See [CellProfiler-plugins Documentation](https://plugins.cellprofiler.org/using_plugins.html) for more information on supported flags.
+For deprecated versions of CellProfiler-plugins before v1.0, pass a path within the CellProfiler-plugins repository to the requirements file you would like to install that will be used in the `pip install -r REQUIREMENTS_FILE` command.
 
 ***
 
