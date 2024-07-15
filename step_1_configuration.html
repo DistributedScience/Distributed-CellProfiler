@@ -568,15 +568,27 @@ We suggest using this setting in conjunction with a small number of JOB_RETRIES.
 <section id="plugins">
 <h3>PLUGINS<a class="headerlink" href="#plugins" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
-<li><p><strong>USE_PLUGINS:</strong> Whether or not you will be using external plugins from the CellProfiler-plugins repository.</p></li>
+<li><p><strong>USE_PLUGINS:</strong> Whether or not you will be using external plugins from the CellProfiler-plugins repository.
+When True, passes the <code class="docutils literal notranslate"><span class="pre">--plugins-directory</span></code> flag to CellProfiler.
+Defaults to the current v1.0 <code class="docutils literal notranslate"><span class="pre">CellProfiler-plugins/active_plugins</span></code> location for plugins but will revert to the historical location of plugins in the <code class="docutils literal notranslate"><span class="pre">CellProfiler-plugins</span></code> root directory if the <code class="docutils literal notranslate"><span class="pre">active_plugins</span></code> folder is not present.</p></li>
 <li><p><strong>UPDATE_PLUGINS:</strong> Whether or not to update the plugins repository before use.
 (i.e. run <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">fetch</span> <span class="pre">--all</span></code> on CellProfiler-plugins)</p></li>
-<li><p><strong>PLUGINS_COMMIT:</strong> What commit or version tag to check out.
-Used in the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">PLUGINS_COMMIT</span></code> command in CellProfiler-plugins.</p></li>
-<li><p><strong>INSTALL_REQUIREMENTS:</strong> Whether or not to install requirements associate with plugins.</p></li>
-<li><p><strong>REQUIREMENTS_FILE:</strong> A path within the CellProfiler-plugins repository to the requirements file you would like to install.
-Used in the <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">REQUIREMENTS_FILE</span></code> command.</p></li>
+<li><p><strong>PLUGINS_COMMIT:</strong> If desired, what commit or version tag to check out.
+Used in the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">PLUGINS_COMMIT</span></code> command in CellProfiler-plugins.
+If you do not want to checkout a specific commit, set to False.</p></li>
+<li><p><strong>INSTALL_REQUIREMENTS:</strong> Whether or not to install requirements associate with plugins.
+Not all plugins require additional requirement installation.
+See <a class="reference external" href="https://plugins.cellprofiler.org/using_plugins.html">CellProfiler-plugins Documentation</a> for more information on requirements.</p></li>
+<li><p><strong>REQUIREMENTS:</strong> For current v1.0 CellProfiler-plugins, a flag that will be passed to the install command (e.g. <code class="docutils literal notranslate"><span class="pre">cellpose</span></code>).
+See <a class="reference external" href="https://plugins.cellprofiler.org/using_plugins.html">CellProfiler-plugins Documentation</a> for more information on supported flags.
+For deprecated versions of CellProfiler-plugins before v1.0, pass a path within the CellProfiler-plugins repository to the requirements file you would like to install that will be used in the <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">REQUIREMENTS_FILE</span></code> command.</p></li>
 </ul>
+<p>The <a class="reference external" href="https://hub.docker.com/r/cellprofiler/distributed-cellprofiler/tags">CellProfiler/Distributed-CellProfiler Docker</a> 2.0.0_4.2.4 and older have a clone of the CellProfiler-plugins repository with deprecated organization in them.
+If you would like to continue using this clone, set <code class="docutils literal notranslate"><span class="pre">USE_PLUGINS</span> <span class="pre">=</span> <span class="pre">'True'</span></code> and <code class="docutils literal notranslate"><span class="pre">UPDATE_PLUGINS</span> <span class="pre">=</span> <span class="pre">'False'</span></code>.
+Note that if you do need to install requirements with the deprecated organization, pass the path to the requirements file within the CellProfiler-plugins repository as <code class="docutils literal notranslate"><span class="pre">REQUIREMENTS</span></code>.
+If you would like to update the CellProfiler-plugins repository with up-to-date plugins and new structure while using the CellProfiler/Distributed-CellProfiler Docker 2.0.0_4.2.4 and older, set <code class="docutils literal notranslate"><span class="pre">UPDATE_PLUGINS</span> <span class="pre">=</span> <span class="pre">'True'</span></code>.</p>
+<p><a class="reference external" href="https://hub.docker.com/r/cellprofiler/distributed-cellprofiler/tags">CellProfiler/Distributed-CellProfiler Dockers</a> newer than 2.0.0_4.2.4 have current CellProfiler-plugins repository organization.
+If you need to use deprecated plugin organization you can access previous commits or version tags by passing them as <code class="docutils literal notranslate"><span class="pre">PLUGINS_COMMIT</span></code>.</p>
 </section>
 <hr class="docutils" />
 <section id="example-configurations">
