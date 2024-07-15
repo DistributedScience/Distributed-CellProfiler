@@ -73,6 +73,7 @@ We recommend setting this to slightly longer than the average amount of time it 
 * **SQS_DEAD_LETTER_QUEUE:** The name of the queue to send jobs to if they fail to process correctly multiple times; this keeps a single bad job (such as one where a single file has been corrupted) from keeping your cluster active indefinitely.
 This queue will be automatically made if it doesn't exist already.
 See [Step 0: Prep](step_0_prep.med) for more information.
+* **JOB_RETRIES:** This is the number of times that a job will be retried before it is sent to the Dead Letter Queue.
 
 ***
 
@@ -106,6 +107,15 @@ If you actually do want to overwrite files that were previously generated (such 
 * **MIN_FILE_SIZE_BYTES:** What is the minimal number of bytes an object should be to "count"?
 Useful when trying to detect jobs that may have exported smaller corrupted files vs larger, full-size files.
 * **NECESSARY_STRING:** This allows you to optionally set a string that must be included in your file to count towards the total in EXPECTED_NUMBER_FILES.
+
+***
+
+### CELLPROFILER SETTINGS
+* **ALWAYS CONTINUE:** Whether or not to run CellProfiler with the --always-continue flag, which will keep CellProfiler from crashing if it errors.
+Use with caution.
+This can be particularly helpful in jobs where a large number of files are loaded in a single run (such as during illumination correction) so that a corrupted or missing file doesn't prevent the whole job completing.
+However, this can make it harder to notice jobs that are not completely succesffully so should be used with caution.
+We suggest using this setting in conjunction with a small number of JOB_RETRIES.
 
 ***
 

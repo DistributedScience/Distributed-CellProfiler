@@ -1,6 +1,8 @@
 import sys
 import boto3
 import json
+import shutil
+import os
 
 iam = boto3.client("iam")
 sns = boto3.client("sns")
@@ -119,6 +121,7 @@ def setup():
     # Create Monitor Lambda function
     LambdaFullAccess = iam.get_role(RoleName="LambdaFullAccess")
 
+    shutil.make_archive("lambda_function", 'zip', os.getcwd())
     fxn = open("lambda_function.zip", "rb").read()
     try:
         MonitorFunction = lmbda.create_function(

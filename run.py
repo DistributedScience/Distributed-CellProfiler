@@ -1,5 +1,6 @@
 import os, sys
 import boto3
+import botocore
 import datetime
 import json
 import time
@@ -18,6 +19,8 @@ CREATE_DASHBOARD = 'False'
 CLEAN_DASHBOARD = 'False'
 AUTO_MONITOR = 'False'
 REQUIREMENTS_FILE = False
+ALWAYS_CONTINUE = 'False'
+JOB_RETRIES = 10
 
 from config import *
 
@@ -127,6 +130,7 @@ def generate_task_definition(AWS_PROFILE):
         {"name": "USE_PLUGINS", "value": str(USE_PLUGINS)},
         {"name": "NECESSARY_STRING", "value": NECESSARY_STRING},
         {"name": "DOWNLOAD_FILES", "value": DOWNLOAD_FILES},
+        {"name": "ALWAYS_CONTINUE", "value": ALWAYS_CONTINUE},
     ]
     if SOURCE_BUCKET.lower()!='false':
         task_definition['containerDefinitions'][0]['environment'] += [
@@ -221,9 +225,7 @@ def get_or_create_queue(sqs):
         "MaximumMessageSize": "262144",
         "MessageRetentionPeriod": "1209600",
         "ReceiveMessageWaitTimeSeconds": "0",
-        "RedrivePolicy": '{"deadLetterTargetArn":"'
-        + dead_arn
-        + '","maxReceiveCount":"10"}',
+        "RedrivePolicy": f'{{"deadLetterTargetArn":"{dead_arn}","maxReceiveCount":"{str(JOB_RETRIES)}"}}',
         "VisibilityTimeout": str(SQS_MESSAGE_VISIBILITY),
     }
         sqs.create_queue(QueueName=SQS_QUEUE_NAME, Attributes=SQS_DEFINITION)
@@ -328,8 +330,11 @@ def downscaleSpotFleet(queue, spotFleetID, ec2, manual=False):
             ec2.modify_spot_fleet_request(ExcessCapacityTerminationPolicy='noTermination', SpotFleetRequestId=spotFleetID, TargetCapacity = nonvisible)
 
 def export_logs(logs, loggroupId, starttime, bucketId):
-    result = logs.create_export_task(taskName = loggroupId, logGroupName = loggroupId, fromTime = int(starttime), to = int(time.time()*1000), destination = bucketId, destinationPrefix = 'exportedlogs/'+loggroupId)
-
+    try:
+        result = logs.create_export_task(taskName = loggroupId, logGroupName = loggroupId, fromTime = int(starttime), to = int(time.time()*1000), destination = bucketId, destinationPrefix = 'exportedlogs/'+loggroupId)
+    except botocore.errorfactory.InvalidParameterException:
+        print("Failed to export DCP logs to S3. Check your bucket permissions.")
+        return
     logExportId = result['taskId']
 
     while True:

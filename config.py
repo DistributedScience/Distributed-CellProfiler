@@ -35,6 +35,7 @@ SECONDS_TO_START = 3*60                 # Wait before the next CP process is ini
 SQS_QUEUE_NAME = APP_NAME + 'Queue'
 SQS_MESSAGE_VISIBILITY = 1*60           # Timeout (secs) for messages in flight (average time to be processed)
 SQS_DEAD_LETTER_QUEUE = 'user_DeadMessages'
+JOB_RETRIES = 3            # Number of times to retry a job before sending it to DEAD_LETTER_QUEUE
 
 # MONITORING
 AUTO_MONITOR = 'True'
@@ -48,6 +49,9 @@ CHECK_IF_DONE_BOOL = 'False'  #True or False- should it check if there are a cer
 EXPECTED_NUMBER_FILES = 7    #What is the number of files that trigger skipping a job?
 MIN_FILE_SIZE_BYTES = 1      #What is the minimal number of bytes an object should be to "count"?
 NECESSARY_STRING = ''        #Is there any string that should be in the file name to "count"?
+
+# CELLPROFILER SETTINGS
+ALWAYS_CONTINUE = 'False'     # Whether or not to run CellProfiler with the --always-continue flag, which will keep CellProfiler from crashing if it errors
 
 # PLUGINS
 USE_PLUGINS = 'False'          # True to use any plugin from CellProfiler-plugins repo

@@ -11,8 +11,8 @@ Alternate locations can be designated in the run script.
 * **Log configuration and location of exported logs:** Distributed-CellProfiler creates log groups with a default retention of 60 days (to avoid hitting the AWS limit of 250) and after finishing the run exports them into your bucket with a prefix of 'exportedlogs/LOG_GROUP_NAME/'.
 These may be modified in the run script.
 * **Advanced EC2 configuration:** Any additional configuration of your EC2 spot fleet (such as installing additional packages or running scripts on startup) can be done by modifying the userData parameter in the run script.
-* **SQS queue detailed configuration:**  Distributed-CellProfiler creates a queue where messages will be tried 10 times before being consigned to a DeadLetterQueue, and unprocessed messages will expire after 14 days (the AWS maximum).
-These values can be modified in run.py .
+* **SQS queue detailed configuration:**  Distributed-CellProfiler creates a queue where unprocessed messages will expire after 14 days (the AWS maximum).
+This value can be modified in run.py .
 
 ***
 
