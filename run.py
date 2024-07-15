@@ -18,6 +18,7 @@ UPDATE_PLUGINS = 'False'
 CREATE_DASHBOARD = 'False'
 CLEAN_DASHBOARD = 'False'
 AUTO_MONITOR = 'False'
+REQUIREMENTS_FILE = False
 ALWAYS_CONTINUE = 'False'
 JOB_RETRIES = 10
 
@@ -26,6 +27,8 @@ from config import *
 # Back compatability with old config requirements
 if ':' in SQS_DEAD_LETTER_QUEUE:
     SQS_DEAD_LETTER_QUEUE = SQS_DEAD_LETTER_QUEUE.rsplit(':',1)[1]
+if REQUIREMENTS_FILE:
+    REQUIREMENTS = REQUIREMENTS_FILE
 
 WAIT_TIME = 60
 MONITOR_TIME = 60
@@ -151,12 +154,12 @@ def generate_task_definition(AWS_PROFILE):
                 'name': 'UPLOAD_FLAGS',
                 'value': UPLOAD_FLAGS
             }]
-    if UPDATE_PLUGINS.lower()=='true':
+    if USE_PLUGINS.lower()=='true':
         task_definition["containerDefinitions"][0]["environment"] += [
             {"name": "UPDATE_PLUGINS", "value": str(UPDATE_PLUGINS)},
             {"name": "PLUGINS_COMMIT", "value": str(PLUGINS_COMMIT)},
             {"name": "INSTALL_REQUIREMENTS", "value": str(INSTALL_REQUIREMENTS)},
-            {"name": "REQUIREMENTS_FILE", "value": str(REQUIREMENTS_FILE)},
+            {"name": "REQUIREMENTS", "value": str(REQUIREMENTS)},
         ]
     return task_definition, taskRoleArn
 

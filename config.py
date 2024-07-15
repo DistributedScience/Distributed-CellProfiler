@@ -54,8 +54,8 @@ NECESSARY_STRING = ''        #Is there any string that should be in the file nam
 ALWAYS_CONTINUE = 'False'     # Whether or not to run CellProfiler with the --always-continue flag, which will keep CellProfiler from crashing if it errors
 
 # PLUGINS
-USE_PLUGINS = 'False'        # True to use any plugin from CellProfiler-plugins repo
-UPDATE_PLUGINS = 'False'     # True to download updates from CellProfiler-plugins repo
-PLUGINS_COMMIT = ''          # What commit or version tag do you want to check out?
-INSTALL_REQUIREMENTS = 'False' # True to install REQUIREMENTS_FILE defined below. Requirements should have all plugin dependencies.
-REQUIREMENTS_FILE = ''       # Path within the CellProfiler-plugins repo to a requirements file
+USE_PLUGINS = 'False'          # True to use any plugin from CellProfiler-plugins repo
+UPDATE_PLUGINS = 'False'       # True to download updates from CellProfiler-plugins repo
+PLUGINS_COMMIT = 'False'       # What commit or version tag do you want to check out? If not, set to False.
+INSTALL_REQUIREMENTS = 'False' # True to install REQUIREMENTS defined below. Requirements should have all plugin dependencies.
+REQUIREMENTS = ''       # Flag to use with install (current) or path within the CellProfiler-plugins repo to a requirements file (deprecated).

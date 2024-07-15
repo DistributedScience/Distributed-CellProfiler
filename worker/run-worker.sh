@@ -36,17 +36,35 @@ aws cloudwatch put-metric-alarm --alarm-name ${APP_NAME}_${MY_INSTANCE_ID} --ala
 python3.8 instance-monitor.py &
 
 # 5. UPDATE AND/OR INSTALL PLUGINS
-if [[ ${UPDATE_PLUGINS} == 'True' ]]; then
+if [[ ${USE_PLUGINS} == 'True' ]]; then
+  if [[ ${UPDATE_PLUGINS} == 'True' ]]; then
+    echo "Updating CellProfiler-plugins."
     cd CellProfiler-plugins
     git fetch --all
+    cd ..
+  fi
+  if [[ ${PLUGINS_COMMIT} != 'False' ]]; then
+    echo "Checking out specific CellProfiler-plugins commit."
+    cd CellProfiler-plugins
     git checkout ${PLUGINS_COMMIT} || echo "No such commit, branch, or version; failing here." & exit 1
     cd ..
-fi 
-if [[ ${INSTALL_REQUIREMENTS} == 'True' ]]; then
+  fi 
+  if [[ ${INSTALL_REQUIREMENTS} == 'True' ]]; then
     cd CellProfiler-plugins
-    pip install -r ${REQUIREMENTS_FILE} || echo "Requirements file not present or install failed; failing here." & exit 1
-    cd ..
-fi 
+    if [[ -z "$REQUIREMENTS" ]]; then
+      REQUIREMENTS = $REQUIREMENTS_FILE
+    fi
+    if [[ -d "active_plugins" ]]; then
+      echo "Installing CellProfiler-plugins requirements."
+      pip install -e . ${REQUIREMENTS} || echo "Requirements install failed." & exit 1
+      cd ..
+    else 
+      echo "Detected deprecated CellProfiler-plugins repo organization. Installing requirements."
+      pip install -r ${REQUIREMENTS} || echo "Requirements file not present or install failed; failing here." & exit 1
+      cd ..
+    fi
+  fi
+fi
 
 # 6. RUN CP WORKERS
 for((k=0; k<$DOCKER_CORES; k++)); do

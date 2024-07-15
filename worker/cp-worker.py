@@ -12,7 +12,7 @@ import watchtower
 
 DATA_ROOT = '/home/ubuntu/bucket'
 LOCAL_OUTPUT = '/home/ubuntu/local_output'
-PLUGIN_DIR = '/home/ubuntu/CellProfiler-plugins'
+PLUGIN_DIR = '/home/ubuntu/CellProfiler-plugins/active_plugins'
 QUEUE_URL = os.environ['SQS_QUEUE_URL']
 AWS_BUCKET = os.environ['AWS_BUCKET']
 if 'SOURCE_BUCKET' not in os.environ:
@@ -279,7 +279,11 @@ def runCellProfiler(message):
     else:
         printandlog("Didn't recognize input file",logger)
     if USE_PLUGINS.lower() == 'true':
-        cmd += f' --plugins-directory={PLUGIN_DIR}'
+        if os.path.isdir(PLUGIN_DIR):
+            cmd += f' --plugins-directory={PLUGIN_DIR}'
+        else:
+            printandlog("Can't find current 'active_plugins' folder, defaulting to plugins root directory.",logger)
+            cmd += " --plugins-directory='/home/ubuntu/CellProfiler-plugins/'"
     if ALWAYS_CONTINUE.lower() == 'true':
         cmd +='  --always-continue'
     print(f'Running {cmd}')
