@@ -419,6 +419,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#monitoring">MONITORING</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cloudwatch-dashboard-creation">CLOUDWATCH DASHBOARD CREATION</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#redundancy-checks">REDUNDANCY CHECKS</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cellprofiler-settings">CELLPROFILER SETTINGS</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plugins">PLUGINS</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-configurations">EXAMPLE CONFIGURATIONS</a></li>
 </ul>
@@ -511,6 +512,7 @@ We recommend setting this to slightly longer than the average amount of time it 
 <li><p><strong>SQS_DEAD_LETTER_QUEUE:</strong> The name of the queue to send jobs to if they fail to process correctly multiple times; this keeps a single bad job (such as one where a single file has been corrupted) from keeping your cluster active indefinitely.
 This queue will be automatically made if it doesn’t exist already.
 See <span class="xref myst">Step 0: Prep</span> for more information.</p></li>
+<li><p><strong>JOB_RETRIES:</strong> This is the number of times that a job will be retried before it is sent to the Dead Letter Queue.</p></li>
 </ul>
 </section>
 <hr class="docutils" />
@@ -549,6 +551,17 @@ If you actually do want to overwrite files that were previously generated (such 
 <li><p><strong>MIN_FILE_SIZE_BYTES:</strong> What is the minimal number of bytes an object should be to “count”?
 Useful when trying to detect jobs that may have exported smaller corrupted files vs larger, full-size files.</p></li>
 <li><p><strong>NECESSARY_STRING:</strong> This allows you to optionally set a string that must be included in your file to count towards the total in EXPECTED_NUMBER_FILES.</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="cellprofiler-settings">
+<h3>CELLPROFILER SETTINGS<a class="headerlink" href="#cellprofiler-settings" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>ALWAYS CONTINUE:</strong> Whether or not to run CellProfiler with the –always-continue flag, which will keep CellProfiler from crashing if it errors.
+Use with caution.
+This can be particularly helpful in jobs where a large number of files are loaded in a single run (such as during illumination correction) so that a corrupted or missing file doesn’t prevent the whole job completing.
+However, this can make it harder to notice jobs that are not completely succesffully so should be used with caution.
+We suggest using this setting in conjunction with a small number of JOB_RETRIES.</p></li>
 </ul>
 </section>
 <hr class="docutils" />
@@ -668,6 +681,7 @@ We might use a spot fleet of 100 of these machines (<strong>CLUSTER_MACHINES</st
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#monitoring">MONITORING</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cloudwatch-dashboard-creation">CLOUDWATCH DASHBOARD CREATION</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#redundancy-checks">REDUNDANCY CHECKS</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cellprofiler-settings">CELLPROFILER SETTINGS</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plugins">PLUGINS</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-configurations">EXAMPLE CONFIGURATIONS</a></li>
 </ul>

@@ -647,7 +647,15 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘YOURNAME_DEADMESSAGES’</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p>AUTO_MONITOR</p></td>
+<tr class="row-odd"><td><p>JOB_RETRIES</p></td>
+<td><p>3</p></td>
+<td><p>3</p></td>
+<td><p>3</p></td>
+<td><p>3</p></td>
+<td><p>3</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>AUTO_MONITOR</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
@@ -655,7 +663,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘True’</p></td>
 <td><p>Can be turned off if manually running Monitor.</p></td>
 </tr>
-<tr class="row-even"><td><p>CREATE_DASHBOARD</p></td>
+<tr class="row-odd"><td><p>CREATE_DASHBOARD</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
@@ -663,7 +671,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘True’</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p>CLEAN_DASHBOARD</p></td>
+<tr class="row-even"><td><p>CLEAN_DASHBOARD</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
@@ -671,7 +679,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘True’</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>CHECK_IF_DONE_BOOL</p></td>
+<tr class="row-odd"><td><p>CHECK_IF_DONE_BOOL</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
@@ -679,7 +687,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘True’</p></td>
 <td><p>Can be turned off if wanting to overwrite old data.</p></td>
 </tr>
-<tr class="row-odd"><td><p>EXPECTED_NUMBER_FILES</p></td>
+<tr class="row-even"><td><p>EXPECTED_NUMBER_FILES</p></td>
 <td><p>1 (an image)</p></td>
 <td><p>number channels + 1 (an .npy for each channel and isdone)</p></td>
 <td><p>3 (Experiment.csv, Image.csv, and isdone)</p></td>
@@ -687,7 +695,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>5 (Experiment, Image, Cells, Nuclei, and Cytoplasm .csvs)</p></td>
 <td><p>Better to underestimate than overestimate.</p></td>
 </tr>
-<tr class="row-even"><td><p>MIN_FILE_SIZE_BYTES</p></td>
+<tr class="row-odd"><td><p>MIN_FILE_SIZE_BYTES</p></td>
 <td><p>1</p></td>
 <td><p>1</p></td>
 <td><p>1</p></td>
@@ -695,13 +703,21 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>1</p></td>
 <td><p>Count files of any size.</p></td>
 </tr>
-<tr class="row-odd"><td><p>NECESSARY_STRING</p></td>
+<tr class="row-even"><td><p>NECESSARY_STRING</p></td>
 <td><p>‘’</p></td>
 <td><p>‘’</p></td>
 <td><p>‘’</p></td>
 <td><p>‘’</p></td>
 <td><p>‘’</p></td>
 <td><p>Not necessary for standard workflows.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ALWAYS_CONTINUE</p></td>
+<td><p>‘False’</p></td>
+<td><p>‘False’</p></td>
+<td><p>‘False’</p></td>
+<td><p>‘False’</p></td>
+<td><p>‘False’</p></td>
+<td><p>Use with caution.</p></td>
 </tr>
 <tr class="row-even"><td><p>USE_PLUGINS</p></td>
 <td><p>‘False’</p></td>

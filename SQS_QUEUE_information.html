@@ -413,6 +413,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sqs-queue-name">SQS_QUEUE_NAME</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sqs-dead-letter-queue">SQS_DEAD_LETTER_QUEUE</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sqs-message-visibility">SQS_MESSAGE_VISIBILITY</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#job-retries">JOB_RETRIES</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-sqs-queue">Example SQS Queue</a></li>
 </ul>
             </nav>
@@ -483,6 +484,13 @@ To confirm that multiple Dockers didn’t run the same job, after the jobs are c
 To confirm that multiple Dockers are never processing the same job, you can keep an eye on your queue and make sure that you never have more jobs “In Flight” than the number of copies of CellProfiler that you have running; likewise, if your timeout time is too short, it may seem like too few jobs are “In Flight” even though the CPU usage on all your machines is high.</p>
 <p>Once you have run a pipeline once, you can check the execution time (either by noticing how long after you started your jobs that your first jobs begin to finish, or by checking the logs of individual jobs and noting the start and end time), you will then have an accurate idea of roughly how long that pipeline needs to execute, and can set your message visibility accordingly.<br />
 You can even do this on the fly while jobs are currently processing; the updated visibility time won’t affect the jobs already out for processing (i.e. if the time was set to 3 hours and you change it to 1 hour, the jobs already processing will remain hidden for 3 hours or until finished), but any job that begins processing AFTER the change will use the new visibility timeout setting.</p>
+</section>
+<section id="job-retries">
+<h2>JOB_RETRIES<a class="headerlink" href="#job-retries" title="Permalink to this heading">#</a></h2>
+<p><strong>JOB_RETRIES</strong> is the number of times that a job will be retried before it is sent to the Dead Letter Queue.
+The count goes up every time a message is “In Flight” and after the SQS_MESSAGE_VISIBILITY times out, if the count is too high the message will not be made “Available” but will instead go to your SQS_DEAD_LETTER_QUEUE.
+We recommend setting this larger than 1 because stochastic job failures are possible (e.g. the EC2 machine running the job become unavailable mid-run).
+Allowing large numbers of retries tends to waste compute as most failure modes are not stochastic.</p>
 </section>
 <section id="example-sqs-queue">
 <h2>Example SQS Queue<a class="headerlink" href="#example-sqs-queue" title="Permalink to this heading">#</a></h2>
@@ -560,6 +568,7 @@ You can also see that many lab members have their own dead-letter queues which a
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sqs-queue-name">SQS_QUEUE_NAME</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sqs-dead-letter-queue">SQS_DEAD_LETTER_QUEUE</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sqs-message-visibility">SQS_MESSAGE_VISIBILITY</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#job-retries">JOB_RETRIES</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-sqs-queue">Example SQS Queue</a></li>
 </ul>
   </nav></div>
