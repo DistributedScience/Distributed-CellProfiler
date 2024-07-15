@@ -1,5 +1,6 @@
 import os, sys
 import boto3
+import botocore
 import datetime
 import json
 import time
@@ -325,8 +326,11 @@ def downscaleSpotFleet(queue, spotFleetID, ec2, manual=False):
             ec2.modify_spot_fleet_request(ExcessCapacityTerminationPolicy='noTermination', SpotFleetRequestId=spotFleetID, TargetCapacity = nonvisible)
 
 def export_logs(logs, loggroupId, starttime, bucketId):
-    result = logs.create_export_task(taskName = loggroupId, logGroupName = loggroupId, fromTime = int(starttime), to = int(time.time()*1000), destination = bucketId, destinationPrefix = 'exportedlogs/'+loggroupId)
-
+    try:
+        result = logs.create_export_task(taskName = loggroupId, logGroupName = loggroupId, fromTime = int(starttime), to = int(time.time()*1000), destination = bucketId, destinationPrefix = 'exportedlogs/'+loggroupId)
+    except botocore.errorfactory.InvalidParameterException:
+        print("Failed to export DCP logs to S3. Check your bucket permissions.")
+        return
     logExportId = result['taskId']
 
     while True:
