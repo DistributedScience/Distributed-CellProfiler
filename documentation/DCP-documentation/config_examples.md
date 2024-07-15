@@ -53,6 +53,7 @@ Our internal configurations for each pipeline are as follows:
 | SQS_QUEUE_NAME | APP_NAME + 'Queue' | APP_NAME + 'Queue' | APP_NAME + 'Queue' | APP_NAME + 'Queue' | APP_NAME + 'Queue' | We never change this. |
 | SQS_MESSAGE_VISIBILITY | 3*60 | 240*60 | 15*60 | 10*60 | 120*60 | About how long you expect a job to take * 1.5 in seconds |
 | SQS_DEAD_LETTER_QUEUE | 'YOURNAME_DEADMESSAGES' | 'YOURNAME_DEADMESSAGES' | 'YOURNAME_DEADMESSAGES' | 'YOURNAME_DEADMESSAGES' |'YOURNAME_DEADMESSAGES' |   |
+| JOB_RETRIES | 3 | 3 | 3 | 3 | 3 |  |
 | AUTO_MONITOR | 'True' | 'True' | 'True' | 'True' | 'True' | Can be turned off if manually running Monitor. |
 | CREATE_DASHBOARD | 'True' | 'True' | 'True' | 'True' | 'True' | |
 | CLEAN_DASHBOARD | 'True' | 'True' | 'True' | 'True' | 'True' | |
@@ -60,6 +61,7 @@ Our internal configurations for each pipeline are as follows:
 | EXPECTED_NUMBER_FILES | 1 (an image) | number channels + 1 (an .npy for each channel and isdone) | 3 (Experiment.csv, Image.csv, and isdone) | 1 (an image) | 5 (Experiment, Image, Cells, Nuclei, and Cytoplasm .csvs) | Better to underestimate than overestimate. |
 | MIN_FILE_SIZE_BYTES | 1 | 1 | 1 | 1 | 1 | Count files of any size. |
 | NECESSARY_STRING | '' | '' | '' | '' | '' |  Not necessary for standard workflows. |
+| ALWAYS_CONTINUE | 'False' | 'False' | 'False' | 'False' | 'False' |  Use with caution. |
 | USE_PLUGINS | 'False' | 'False' | 'False' | 'False' | 'False' |  Not necessary for standard workflows. |
 | UPDATE_PLUGINS | 'False' | 'False' | 'False' | 'False' | 'False' |  Not necessary for standard workflows. |
 | PLUGINS_COMMIT | '' | '' | '' | '' | '' |  Not necessary for standard workflows. |
