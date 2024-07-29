@@ -25,7 +25,7 @@ if 'DESTINATION_BUCKET' not in os.environ:
 else:
     DESTINATION_BUCKET = os.environ['DESTINATION_BUCKET']
 if 'WORKSPACE_BUCKET' not in os.environ:
-    WORKSPACE_BUCKET = os.environ['SOURCE_BUCKET']
+    WORKSPACE_BUCKET = SOURCE_BUCKET
 else:
     WORKSPACE_BUCKET = os.environ['WORKSPACE_BUCKET']
 if 'UPLOAD_FLAGS' in os.environ:
@@ -52,7 +52,7 @@ if 'DOWNLOAD_FILES' not in os.environ:
 else:
     DOWNLOAD_FILES = os.environ['DOWNLOAD_FILES']
 if 'ALWAYS_CONTINUE' not in os.environ:
-    ALWAYS_CONTINUE = False
+    ALWAYS_CONTINUE = 'False'
 else:
     ALWAYS_CONTINUE = os.environ['ALWAYS_CONTINUE']
 

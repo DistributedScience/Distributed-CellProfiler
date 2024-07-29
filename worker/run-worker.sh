@@ -50,6 +50,9 @@ if [[ ${USE_PLUGINS} == 'True' ]]; then
     git fetch --all
     cd ..
   fi
+  if [[ -z "$PLUGINS_COMMIT" ]]; then
+    PLUGINS_COMMIT='False'
+  fi
   if [[ ${PLUGINS_COMMIT} != 'False' ]]; then
     echo "Checking out specific CellProfiler-plugins commit."
     cd CellProfiler-plugins
