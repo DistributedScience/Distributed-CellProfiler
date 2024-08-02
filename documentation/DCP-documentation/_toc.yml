@@ -18,6 +18,8 @@ parts:
     sections:
     - file: passing_files_to_DCP
   - file: step_3_start_cluster
+    sections:
+    - file: troubleshooting_start_cluster
   - file: step_4_monitor
 - caption: Technical Guides
   chapters:
