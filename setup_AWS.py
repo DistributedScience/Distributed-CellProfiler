@@ -25,7 +25,7 @@ LambdaFullAccess_policy_list = [
     "arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetTaggingRole",
     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
     "arn:aws:iam::aws:policy/AmazonSQSFullAccess",
-    "arn:aws:iam::aws:policy/CloudWatchFullAccess"
+    "arn:aws:iam::aws:policy/CloudWatchFullAccess",
 ]
 
 
@@ -54,10 +54,19 @@ def setup():
                 PolicyArn=arn,
                 RoleName="ecsInstanceRole",
             )
-        print ('Created ecsInstanceRole.')
+        print("Created ecsInstanceRole.")
     except iam.exceptions.EntityAlreadyExistsException:
-        print ('Skipping creation of ecsInstanceRole. Already exists.')
-
+        print("Skipping creation of ecsInstanceRole. Already exists.")
+    try:
+        iam.create_instance_profile(InstanceProfileName="ecsInstanceRole")
+    except iam.exceptions.EntityAlreadyExistsException:
+        print("Skipping creation of ecsInstanceProfile. Already exists.")
+    try:
+        iam.add_role_to_instance_profile(
+            InstanceProfileName="ecsInstanceRole", RoleName="ecsInstanceRole"
+        )
+    except iam.exceptions.LimitExceededException:
+        print("Instance Profile already added to Instance Role")
 
     # Create EC2 Spot Fleet Tagging Role
     assume_role_policy_document = json.dumps(
@@ -82,9 +91,9 @@ def setup():
             PolicyArn="arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetTaggingRole",
             RoleName="aws-ec2-spot-fleet-tagging-role",
         )
-        print ('Created aws-ec2-spot-fleet-tagging-role.')
+        print("Created aws-ec2-spot-fleet-tagging-role.")
     except iam.exceptions.EntityAlreadyExistsException:
-        print ('Skipping creation of aws-ec2-spot-fleet-tagging-role. Already exists.')
+        print("Skipping creation of aws-ec2-spot-fleet-tagging-role. Already exists.")
 
     # Create Lambda Full Access Role
     assume_role_policy_document = json.dumps(
@@ -110,18 +119,18 @@ def setup():
                 PolicyArn=arn,
                 RoleName="LambdaFullAccess",
             )
-        print ('Created LambdaFullAccess role.')
+        print("Created LambdaFullAccess role.")
     except iam.exceptions.EntityAlreadyExistsException:
-        print ('Skipping creation of LambdaFullAccess role. Already exists.')
- 
+        print("Skipping creation of LambdaFullAccess role. Already exists.")
+
     # Create SNS Monitor topic
     MonitorTopic = sns.create_topic(Name="Monitor")
-    print ('(Re-)Created Monitor SNS Topic.')
+    print("(Re-)Created Monitor SNS Topic.")
 
     # Create Monitor Lambda function
     LambdaFullAccess = iam.get_role(RoleName="LambdaFullAccess")
 
-    shutil.make_archive("lambda_function", 'zip', os.getcwd())
+    shutil.make_archive("lambda_function", "zip", os.getcwd())
     fxn = open("lambda_function.zip", "rb").read()
     try:
         MonitorFunction = lmbda.create_function(
@@ -139,7 +148,7 @@ def setup():
             PackageType="Zip",
             TracingConfig={"Mode": "PassThrough"},
             Architectures=["x86_64"],
-            EphemeralStorage={"Size": 512}
+            EphemeralStorage={"Size": 512},
         )
         # Subscribe Monitor Lambda to Monitor Topic
         sns.subscribe(
@@ -147,22 +156,28 @@ def setup():
             Protocol="lambda",
             Endpoint=MonitorFunction["FunctionArn"],
         )
-        print ('Created Monitor Lambda Function.')
+        print("Created Monitor Lambda Function.")
     except lmbda.exceptions.ResourceConflictException:
-        print ('Skipping creation of Monitor Lambda Function. Already exists.')
+        print("Skipping creation of Monitor Lambda Function. Already exists.")
     try:
         lmbda.add_permission(
-            FunctionName='Monitor',
-            StatementId='InvokeBySNS',
-            Action='lambda:InvokeFunction',
-            Principal='sns.amazonaws.com')
+            FunctionName="Monitor",
+            StatementId="InvokeBySNS",
+            Action="lambda:InvokeFunction",
+            Principal="sns.amazonaws.com",
+        )
     except lmbda.exceptions.ResourceConflictException:
-        print ('Monitor Lambda Function already has SNS invoke permission.')
+        print("Monitor Lambda Function already has SNS invoke permission.")
+
 
 def destroy():
     # Delete roles
     for arn in ecsInstanceRole_policy_list:
         iam.detach_role_policy(RoleName="ecsInstanceRole", PolicyArn=arn)
+    iam.remove_role_from_instance_profile(
+        InstanceProfileName="ecsInstanceRole", RoleName="ecsInstanceRole"
+    )
+    iam.delete_instance_profile(InstanceProfileName="ecsInstanceRole")
     iam.delete_role(RoleName="ecsInstanceRole")
 
     iam.detach_role_policy(
