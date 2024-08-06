@@ -503,7 +503,7 @@ document.write(`
 <td><p>No outcome/saved files on s3</p></td>
 <td><p></p></td>
 <td><p>There is a mismatch in your metadata somewhere.</p></td>
-<td><p>Check the Metadata_ columns in your LoadData.csv for typos or a mismatch with your jobs file. The most common sources of mismatch are case and zero padding (e.g. A01 vs a01 vs A1). Check for these mismatches and edit the job file accordingly. If you use pe2loaddata to create your csvs and the plate was imaged multiple times, pay particular attention to the Metadata_Plate column as numbering reflecting this will be automatically passed into the Load_data.csv</p></td>
+<td><p>Check the <code class="docutils literal notranslate"><span class="pre">Metadata_</span></code> columns in your LoadData.csv for typos or a mismatch with your jobs file. The most common sources of mismatch are case and zero padding (e.g. A01 vs a01 vs A1). Check for these mismatches and edit the job file accordingly. If you use pe2loaddata to create your csvs and the plate was imaged multiple times, pay particular attention to the Metadata_Plate column as numbering reflecting this will be automatically passed into the Load_data.csv</p></td>
 </tr>
 <tr class="row-odd"><td><p></p></td>
 <td><p>Your specified output structure does not match the Metadata passed.</p></td>
@@ -522,9 +522,9 @@ document.write(`
 <tr class="row-odd"><td><p></p></td>
 <td><p></p></td>
 <td><p></p></td>
-<td><p>Machines made in EC2 and dockers are made in ECS but the dockers are not placed on the machines</p></td>
-<td><p>1) There is a mismatch in your DCP config file. OR 2) You haven’t set up permissions correctly.</p></td>
-<td><p>1) Confirm that the MEMORY matches the MACHINE_TYPE  set in your config. Confirm that there are no typos in your DOCKERHUB_TAG set in your config. 2) Check that you have set up permissons correctly for the user or role that you have set in your config under AWS_PROFILE. Confirm that your <code class="docutils literal notranslate"><span class="pre">ecsInstanceRole</span></code> is able to access the S3 bucket where your <code class="docutils literal notranslate"><span class="pre">ecsconfigs</span></code> have been uploaded.</p></td>
+<td><p>Machines made in EC2 but they remain nameless.</p></td>
+<td><p>A nameless machine means that the Dockers are not placed on the machines. 1) There is a mismatch in your DCP config file. OR 2) You haven’t set up permissions correctly. OR 3) Dockers are not being made in ECS</p></td>
+<td><p>1) Confirm that the MEMORY matches the MACHINE_TYPE  set in your config. Confirm that there are no typos in your DOCKERHUB_TAG set in your config. 2) Check that you have set up permissions correctly for the user or role that you have set in your config under AWS_PROFILE. Confirm that your <code class="docutils literal notranslate"><span class="pre">ecsInstanceRole</span></code> is able to access the S3 bucket where your <code class="docutils literal notranslate"><span class="pre">ecsconfigs</span></code> have been uploaded. 3) Check in ECS that you see <code class="docutils literal notranslate"><span class="pre">Registered</span> <span class="pre">container</span> <span class="pre">instances</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p></p></td>
 <td><p>Your perinstance logs have an IOError indicating that CellProfiler cannot open your pipeline</p></td>
