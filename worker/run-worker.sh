@@ -48,6 +48,7 @@ if [[ ${USE_PLUGINS} == 'True' ]]; then
     echo "Updating CellProfiler-plugins."
     cd CellProfiler-plugins
     git fetch --all
+    git pull
     cd ..
   fi
   if [[ -z "$PLUGINS_COMMIT" ]]; then
