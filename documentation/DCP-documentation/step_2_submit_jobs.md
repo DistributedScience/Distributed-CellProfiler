@@ -38,18 +38,20 @@ Job files that don't include it will use the default structure.
 For large numbers of groups, it may be helpful to create this list separately as a .txt file you can then append into the job's JSON file.
 You may create this yourself in your favorite scripting language.
 Alternatively, you can use the following additional tools to help you create and format this list:
-    * `batches.sh` allows you to provide a list of all the individual metadata components (plates, columns, rows, etc).
+  * `batches.sh` allows you to provide a list of all the individual metadata components (plates, columns, rows, etc).
     It then uses [GNU parallel](https://www.gnu.org/software/parallel/parallel_tutorial.html) to create a formatted text file with all the possible combinations of the components you provided.
     This approach is best when you have a large number of groups and the group structure is uniform.
 
       Example: for a 96-well plate experiment where one there are 3 plates and the experiment is grouped by Plate and Well, `batches.sh` would read:
-        `parallel echo '{\"Metadata\": \"Metadata_Plate={1},Metadata_Well={2}{3}\"},' ::: Plate1 Plate2 Plate3 ::: A B C D E F G H ::: 01 02 03 04 05 06 07 08 09 10 11 12 | sort > batches.txt`      
-    * You may also use the list of groupings created by calling `cellprofiler --print-groups` from the command line (see [here](https://github.com/CellProfiler/CellProfiler/wiki/Adapting-CellProfiler-to-a-LIMS-environment#cmd) and [here](https://github.com/CellProfiler/Distributed-CellProfiler/issues/52) for more information).  
-    Note that for job files that specify groupings in this way, the `output_structure` variable is NOT optional - it must be specified or an error will be returned.
+        `parallel echo '{\"Metadata\": \"Metadata_Plate={1},Metadata_Well={2}{3}\"},' ::: Plate1 Plate2 Plate3 ::: A B C D E F G H ::: 01 02 03 04 05 06 07 08 09 10 11 12 | sort > batches.txt`
+  * You may also use the list of groupings created by calling `cellprofiler --print-groups` from the command line (see [here](https://github.com/CellProfiler/CellProfiler/wiki/Adapting-CellProfiler-to-a-LIMS-environment#cmd) and [here](https://github.com/CellProfiler/Distributed-CellProfiler/issues/52) for more information).  
+  Note that for job files that specify groupings in this way, the `output_structure` variable is NOT optional - it must be specified or an error will be returned.
 
-## Alternate job submission: run_batch_general.py
+## Alternate job submission: run_batch_general.py and run_batch_CPG.py
 
 We also support an alternate second path besides `submitJobs` to create the list of jobs - the `run_batch_general.py` file.
 This file essentially serves as a "shortcut" to run many common types of stereotyped experiments we run in our lab.
 Essentially, if your data follows a regular structure (such as N rows, N columns, N grouping, a particular structure for output, etc.), you may find it useful to take and modify this file for your own usage.  
 We recommend new users use the `submitJobs` pathway, as it will help users understand the kinds of information Distributed-CellProfiler needs in order to run properly, but once they are comfortable with it they may find `run_batch_general.py` helps them create jobs faster in the future.
+
+`run_batch_CPG.py` is very similar to `run_batch_general.py` but has been formatted so that the file structure matches that of the Cell Painting Gallery.
