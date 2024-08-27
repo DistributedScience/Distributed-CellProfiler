@@ -1,213 +1,516 @@
 import json
 import boto3
 import string
-import os
 import posixpath
-class JobQueue():
+import argparse
 
-    def __init__(self,name=None):
-        self.sqs = boto3.resource('sqs')
-        self.queue = self.sqs.get_queue_by_name(QueueName=name+'Queue')
+
+class JobQueue:
+
+    def __init__(self, name=None):
+        self.sqs = boto3.resource("sqs")
+        self.queue = self.sqs.get_queue_by_name(QueueName=name + "Queue")
         self.inProcess = -1
         self.pending = -1
 
     def scheduleBatch(self, data):
         msg = json.dumps(data)
         response = self.queue.send_message(MessageBody=msg)
-        print('Batch sent. Message ID:',response.get('MessageId'))
+        print("Batch sent. Message ID:", response.get("MessageId"))
 
-#project specific stuff
-topdirname='' #Project name (should match the folder structure on S3)        
-appname='' #Must match config.py (except for step-specific part)
-batchsuffix='' #Batch name (should match the folder structure on S3)
-rows=list(string.ascii_uppercase)[0:16]
-columns=range(1,25)
-sites=range(1,10)
-well_digit_pad = True #Set True to A01 well format name, set False to A1
-platelist=[] 
-zprojpipename='Zproj.cppipe'
-illumpipename='illum.cppipe'
-qcpipename='qc.cppipe'
-assaydevpipename='assaydev.cppipe'
-analysispipename='analysis.cppipe'
-batchpipenamezproj='Batch_data_zproj.h5'
-batchpipenameillum='Batch_data_illum.h5'
-batchpipenameqc='Batch_data_qc.h5'
-batchpipenameassaydev='Batch_data_assaydev.h5'
-batchpipenameanalysis='Batch_data_analysis.h5'
 
-#not project specific, unless you deviate from the structure
-startpath=posixpath.join('projects',topdirname)
-pipelinepath=posixpath.join(startpath,os.path.join('workspace/pipelines',batchsuffix))
-zprojoutpath=posixpath.join(startpath,os.path.join(batchsuffix,'images'))
-zprojoutputstructure="Metadata_Plate/Images"
-illumoutpath=posixpath.join(startpath,os.path.join(batchsuffix,'illum'))
-QCoutpath=posixpath.join(startpath,os.path.join('workspace/qc',os.path.join(batchsuffix,'results')))
-assaydevoutpath=posixpath.join(startpath,os.path.join('workspace/assaydev',batchsuffix))
-analysisoutpath=posixpath.join(startpath,os.path.join('workspace/analysis',batchsuffix))
-inputpath=posixpath.join(startpath,os.path.join('workspace/qc',os.path.join(batchsuffix,'rules')))
-datafilepath=posixpath.join(startpath,os.path.join('workspace/load_data_csv',batchsuffix))
-anlysisoutputstructure="Metadata_Plate/analysis/Metadata_Plate-Metadata_Well-Metadata_Site"
-batchpath=posixpath.join(startpath,os.path.join('workspace/batchfiles',batchsuffix))
-csvname = 'load_data.csv'
-csv_with_illumname = 'load_data_with_illum.csv'
-csv_unprojected_name = 'load_data_unprojected.csv'
-#well formatting
-if well_digit_pad:
-    well_format = '%02d'
-else:
-    well_format = '%01d'
+def run_batch_general(
+    step, # (zproj, illum, qc, qc_persite, assaydev, or analysis)
+    path_style="",  # ("cpg" or "default")
+    identifier="",  # (e.g. cpg0000-jump-pilot)
+    source="",  # (e.g. source_4, broad. Only with path_style=="cpg")
+    batch="",  # (e.g. 2020_11_04_CPJUMP1)
+    plate_format="", # (96 or 384. Overwrites rows and columns.)
+    rows=list(string.ascii_uppercase)[0:16],
+    columns=range(1, 25),
+    sites=range(1, 10),
+    well_digit_pad=True,  # Set True to A01 well format name, set False to A1
+    platelist=[], # (e.g. ['Plate1','Plate2'])
+    pipeline="", # (overwrite default pipeline names)
+    outputstructure="", # (overwrite default output structures)
+    outpath="", # (overwrite default output paths)
+    csvname="", # (overwrite default load data csv name)
+    usebatch=False, # (use h5 batch files instead of load data csv and cppipe files)
+    batchfile="", # (overwrite default batchfile name)
+    pipelinepath="", # (overwrite default path to pipelines)
+    batchpath="", # (overwrite default path to batch files)
+    inputpath="", # (overwrite default path to input files)
+    datafilepath="", # (overwrite default path to load data files)
+):
 
-def MakeZprojJobs(batch=False):
-    zprojqueue = JobQueue(appname+'_Zproj')
-    for tozproj in platelist:
-        for eachrow in rows:
-            for eachcol in columns:
-                for eachsite in sites:
-                    if not batch:
-                        templateMessage_zproj = {'Metadata': 'Metadata_Plate='+tozproj+',Metadata_Well='+eachrow+well_format %eachcol+',Metadata_Site='+str(eachsite),
-                                        'pipeline': posixpath.join(pipelinepath,zprojpipename),
-                                        'output': zprojoutpath,
-                                        'output_structure': zprojoutputstructure,
-                                        'input': inputpath,
-                                        'data_file': posixpath.join(datafilepath,tozproj,csv_unprojected_name)
-                                        }
-                    else:
-                        templateMessage_zproj = {'Metadata': 'Metadata_Plate='+tozproj+',Metadata_Well='+eachrow+well_format %eachcol+',Metadata_Site='+str(eachsite),
-                                        'pipeline': posixpath.join(batchpath,batchpipenamezproj),
-                                        'output': zprojoutpath,
-                                        'output_structure': zprojoutputstructure,
-                                        'input': inputpath,
-                                        'data_file': posixpath.join(batchpath,batchpipenamezproj)
-                                        }
+    # Two default file organization structures: cpg (for Cell Painting Gallery) and default
+    path_dict = {
+        "cpg": {
+            "pipelinepath": posixpath.join(
+                identifier, source, "workspace", "pipelines", batch
+            ),
+            "zprojoutpath": posixpath.join(
+                identifier, source, "images", batch, "images_projected"
+            ),
+            "zprojoutputstructure": "Metadata_Plate",
+            "illumoutpath": posixpath.join(
+                identifier, source, "images", batch, "illum"
+            ),
+            "QCoutpath": posixpath.join(
+                identifier, source, "workspace", "qc", batch, "results"
+            ),
+            "assaydevoutpath": posixpath.join(
+                identifier, source, "workspace", "assaydev", batch
+            ),
+            "analysisoutpath": posixpath.join(
+                identifier, source, "workspace", "analysis", batch
+            ),
+            "inputpath": posixpath.join(
+                identifier, source, "workspace", "qc", batch, "rules"
+            ),
+            "datafilepath": posixpath.join(
+                identifier, source, "workspace", "load_data_csv", batch
+            ),
+            "batchpath": "",
+        },
+        "default": {
+            "pipelinepath": posixpath.join(
+                "projects", identifier, "workspace", "pipelines", batch
+            ),
+            "zprojoutpath": posixpath.join("projects", identifier, batch, "images"),
+            "zprojoutputstructure": "Metadata_Plate",
+            "illumoutpath": posixpath.join("projects", identifier, batch, "illum"),
+            "QCoutpath": posixpath.join(
+                "projects", identifier, "workspace", "qc", batch, "results"
+            ),
+            "assaydevoutpath": posixpath.join(
+                "projects", identifier, "workspace", "assaydev", batch
+            ),
+            "analysisoutpath": posixpath.join(
+                "projects", identifier, "workspace", "analysis", batch
+            ),
+            "inputpath": posixpath.join(
+                "projects", identifier, "workspace", "qc", batch, "rules"
+            ),
+            "datafilepath": posixpath.join(
+                "projects", identifier, "workspace", "load_data_csv", batch
+            ),
+            "batchpath": posixpath.join(
+                "projects", identifier, "workspace", "batchfiles", batch
+            ),
+        },
+    }
+    if not pipelinepath:
+        pipelinepath = path_dict[path_style]["pipelinepath"]
+    if not batchpath:
+        batchpath = path_dict[path_style]["batchpath"]
+    if not inputpath:
+        inputpath = path_dict[path_style]["inputpath"]
+    if not datafilepath:
+        datafilepath = path_dict[path_style]["datafilepath"]
 
-                    zprojqueue.scheduleBatch(templateMessage_zproj)
-
-    print('Z projection job submitted. Check your queue')
-
-def MakeIllumJobs(batch=False):    
-    illumqueue = JobQueue(appname+'_Illum')
-    for toillum in platelist:
-        if not batch:
-            templateMessage_illum = {'Metadata': 'Metadata_Plate='+toillum,
-                                     'pipeline': posixpath.join(pipelinepath,illumpipename),
-                                     'output': illumoutpath,
-                                     'input': inputpath, 
-                                     'data_file':posixpath.join(datafilepath,toillum,csvname)}            
+    # Plate formatting
+    if plate_format:
+        if plate_format == 384:
+            rows = list(string.ascii_uppercase)[0:16]
+            columns = range(1, 25)
+        elif plate_format == 96:
+            rows = list(string.ascii_uppercase)[0:8]
+            columns = range(1, 13)
         else:
-            templateMessage_illum = {'Metadata': 'Metadata_Plate='+toillum,
-                                        'pipeline': posixpath.join(batchpath,batchpipenameillum),
-                                        'output': illumoutpath,
-                                        'input':inputpath,
-                                        'data_file': posixpath.join(batchpath,batchpipenameillum)
-                                        }
-            
-        illumqueue.scheduleBatch(templateMessage_illum)
+            print(f"Unsupported plate format of {plate_format}.")
+    if well_digit_pad:
+        well_format = "02d"
+    else:
+        well_format = "01d"
 
-    print('Illum job submitted. Check your queue')
+    if step == "zproj":
+        zprojqueue = JobQueue(f"{identifier}_Zproj")
+        if not outputstructure:
+            outputstructure = path_dict[path_style]["zprojoutputstructure"]
+        if not outpath:
+            outpath = path_dict[path_style]["zprojoutpath"]
+        if not usebatch:
+            if not pipeline:
+                pipeline = "Zproj.cppipe"
+            if not csvname:
+                csvname = "load_data_unprojected.csv"
 
-def MakeQCJobs(batch=False):
-    qcqueue = JobQueue(appname+'_QC')
-    for toqc in platelist:
-        for eachrow in rows:
-            for eachcol in columns:
-                if not batch:
-                    templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+well_format %eachcol,
-                                    'pipeline': posixpath.join(pipelinepath,qcpipename),
-                                    'output': QCoutpath,
-                                    'input': inputpath,
-                                    'data_file': posixpath.join(datafilepath,toqc,csvname)
-                                    }
-                else:
-                    templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+well_format %eachcol,
-                                    'pipeline': posixpath.join(batchpath,batchpipenameqc),
-                                    'output': QCoutpath,
-                                    'input': inputpath,
-                                    'data_file': posixpath.join(batchpath,batchpipenameqc)
-                                }
-                qcqueue.scheduleBatch(templateMessage_qc)
+            for plate in platelist:
+                for eachrow in rows:
+                    for eachcol in columns:
+                        for eachsite in sites:
+                            templateMessage_zproj = {
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}},Metadata_Site={str(eachsite)}",
+                                "pipeline": posixpath.join(pipelinepath, pipeline),
+                                "output": outpath,
+                                "output_structure": outputstructure,
+                                "input": inputpath,
+                                "data_file": posixpath.join(
+                                    datafilepath, plate, csvname
+                                ),
+                            }
+                            zprojqueue.scheduleBatch(templateMessage_zproj)
+        else:
+            if not batchfile:
+                batchfile = "Batch_data_zproj.h5"
+            for plate in platelist:
+                for eachrow in rows:
+                    for eachcol in columns:
+                        for eachsite in sites:
+                            templateMessage_zproj = {
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}},Metadata_Site={str(eachsite)}",
+                                "pipeline": posixpath.join(batchpath, batchfile),
+                                "output": outpath,
+                                "output_structure": outputstructure,
+                                "input": inputpath,
+                                "data_file": posixpath.join(batchpath, batchfile),
+                            }
+                            zprojqueue.scheduleBatch(templateMessage_zproj)
+        print("Z projection job submitted. Check your queue")
 
-    print('QC job submitted. Check your queue')
+    elif step == "illum":
+        illumqueue = JobQueue(f"{identifier}_Illum")
+        if not outpath:
+            outpath = path_dict[path_style]["illumoutpath"]
+        if not usebatch:
+            if not pipeline:
+                pipeline = "illum.cppipe"
+            if not csvname:
+                csvname = "load_data.csv"
 
-def MakeQCJobs_persite(batch=False):
-    qcqueue = JobQueue(appname+'_QC')
-    for toqc in platelist:
-        for eachrow in rows:
-            for eachcol in columns:
-                for eachsite in sites:
-                    if not batch:
-                        templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+well_format %eachcol+',Metadata_Site='+str(eachsite),
-                                        'pipeline': posixpath.join(pipelinepath,qcpipename),
-                                        'output': QCoutpath,
-                                        'input': inputpath,
-                                        'data_file': posixpath.join(datafilepath,toqc,csvname)
-                                        }
-                    else:
-                        templateMessage_qc = {'Metadata': 'Metadata_Plate='+toqc+',Metadata_Well='+eachrow+well_format %eachcol+',Metadata_Site='+str(eachsite),
-                                        'pipeline': posixpath.join(batchpath,batchpipenameqc),
-                                        'output': QCoutpath,
-                                        'input': inputpath,
-                                        'data_file': posixpath.join(batchpath,batchpipenameqc)
-                                        }
+            for plate in platelist:
+                templateMessage_illum = {
+                    "Metadata": f"Metadata_Plate={plate}",
+                    "pipeline": posixpath.join(pipelinepath, pipeline),
+                    "output": outpath,
+                    "input": inputpath,
+                    "data_file": posixpath.join(datafilepath, plate, csvname),
+                }
 
-                    qcqueue.scheduleBatch(templateMessage_qc)
+                illumqueue.scheduleBatch(templateMessage_illum)
+        else:
+            if not batchfile:
+                batchfile = "Batch_data_illum.h5"
+            for plate in platelist:
+                templateMessage_illum = {
+                    "Metadata": f"Metadata_Plate={plate}",
+                    "pipeline": posixpath.join(batchpath, batchfile),
+                    "output": outpath,
+                    "input": inputpath,
+                    "data_file": posixpath.join(batchpath, batchfile),
+                }
+                illumqueue.scheduleBatch(templateMessage_illum)
 
-    print('QC job submitted. Check your queue')
+        print("Illum job submitted. Check your queue")
 
-def MakeAssayDevJobs(batch=False):
-    assaydevqueue = JobQueue(appname+'_AssayDev')
-    for toad in platelist:
-        for eachrow in rows:
-            for eachcol in columns:
-                if not batch:
-                    templateMessage_ad = {'Metadata': 'Metadata_Plate='+toad+',Metadata_Well='+eachrow+well_format %eachcol,
-                                    'pipeline': posixpath.join(pipelinepath,assaydevpipename),
-                                    'output': assaydevoutpath,
-                                    'input': inputpath,
-                                    'data_file': posixpath.join(datafilepath,toad,csv_with_illumname)
-                                    }
-                else:
-                    templateMessage_ad = {'Metadata': 'Metadata_Plate='+toad+',Metadata_Well='+eachrow+well_format %eachcol,
-                                    'pipeline': posixpath.join(batchpath,batchpipenameassaydev),
-                                    'output': assaydevoutpath,
-                                    'input': inputpath,
-                                    'data_file': posixpath.join(batchpath,batchpipenameassaydev)
-                                }
-                assaydevqueue.scheduleBatch(templateMessage_ad)
+    elif step == "qc":
+        qcqueue = JobQueue(f"{identifier}_QC")
+        if not outpath:
+            outpath = path_dict[path_style]["QCoutpath"]
+        if not usebatch:
+            if not pipeline:
+                pipeline = "qc.cppipe"
+            if not csvname:
+                csvname = "load_data.csv"
 
-    print('AssayDev job submitted. Check your queue')
+            for plate in platelist:
+                for eachrow in rows:
+                    for eachcol in columns:
+                        templateMessage_qc = {
+                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}}",
+                            "pipeline": posixpath.join(pipelinepath, pipeline),
+                            "output": outpath,
+                            "input": inputpath,
+                            "data_file": posixpath.join(datafilepath, plate, csvname),
+                        }
+                        qcqueue.scheduleBatch(templateMessage_qc)
+        else:
+            if not batchfile:
+                batchfile = "Batch_data_qc.h5"
+            for plate in platelist:
+                for eachrow in rows:
+                    for eachcol in columns:
+                        templateMessage_qc = {
+                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}}",
+                            "pipeline": posixpath.join(batchpath, batchfile),
+                            "output": outpath,
+                            "input": inputpath,
+                            "data_file": posixpath.join(batchpath, batchfile),
+                        }
+                        qcqueue.scheduleBatch(templateMessage_qc)
 
-def MakeAnalysisJobs(batch=False):
-    analysisqueue = JobQueue(appname+'_Analysis')
-    for toanalyze in platelist:
-        for eachrow in rows:
-            for eachcol in columns:
-                for eachsite in sites:
-                    if not batch:
-                        templateMessage_analysis = {'Metadata': 'Metadata_Plate='+toanalyze+',Metadata_Well='+eachrow+well_format %eachcol+',Metadata_Site='+str(eachsite),
-                                        'pipeline': posixpath.join(pipelinepath,analysispipename),
-                                        'output': analysisoutpath,
-                                        'output_structure':anlysisoutputstructure,
-                                        'input':inputpath,
-                                        'data_file': posixpath.join(datafilepath,toanalyze,csv_with_illumname)
-                                        }                        
-                    else:
-                        templateMessage_analysis = {'Metadata': 'Metadata_Plate='+toanalyze+',Metadata_Well='+eachrow+well_format %eachcol+',Metadata_Site='+str(eachsite),
-                                        'pipeline': posixpath.join(batchpath,batchpipenameanalysis),
-                                        'output': analysisoutpath,
-                                        'output_structure':anlysisoutputstructure,
-                                        'input':inputpath,
-                                        'data_file': posixpath.join(batchpath,batchpipenameanalysis)
-                                        }
+        print("QC job submitted. Check your queue")
 
-                    analysisqueue.scheduleBatch(templateMessage_analysis)
+    elif step == "qc_persite":
+        qcqueue = JobQueue(f"{identifier}_QC")
+        if not outpath:
+            outpath = path_dict[path_style]["QCoutpath"]
+        if not usebatch:
+            if not pipeline:
+                pipeline = "qc.cppipe"
+            if not csvname:
+                csvname = "load_data.csv"
 
-    print('Analysis job submitted. Check your queue')
+            for plate in platelist:
+                for eachrow in rows:
+                    for eachcol in columns:
+                        for eachsite in sites:
+                            templateMessage_qc = {
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}},Metadata_Site={str(eachsite)}",
+                                "pipeline": posixpath.join(pipelinepath, pipeline),
+                                "output": outpath,
+                                "input": inputpath,
+                                "data_file": posixpath.join(
+                                    datafilepath, plate, csvname
+                                ),
+                            }
+                            qcqueue.scheduleBatch(templateMessage_qc)
+        else:
+            if not batchfile:
+                batchfile = "Batch_data_qc.h5"
+            for plate in platelist:
+                for eachrow in rows:
+                    for eachcol in columns:
+                        for eachsite in sites:
+                            templateMessage_qc = {
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}},Metadata_Site={str(eachsite)}",
+                                "pipeline": posixpath.join(batchpath, batchfile),
+                                "output": outpath,
+                                "input": inputpath,
+                                "data_file": posixpath.join(batchpath, batchfile),
+                            }
+                            qcqueue.scheduleBatch(templateMessage_qc)
 
-#MakeZprojJobs(batch=False)    
-#MakeIllumJobs(batch=False)
-#MakeQCJobs(batch=False)
-#MakeQCJobs_persite(batch=False)
-#MakeAssayDevJobs(batch=False)
-#MakeAnalysisJobs(batch=False)
+        print("QC job submitted. Check your queue")
 
+    elif step == "assaydev":
+        assaydevqueue = JobQueue(f"{identifier}_AssayDev")
+        if not outpath:
+            outpath = path_dict[path_style]["assaydevoutpath"]
+        if not usebatch:
+            if not pipeline:
+                pipeline = "assaydev.cppipe"
+            if not csvname:
+                csvname = "load_data_with_illum.csv"
+
+            for plate in platelist:
+                for eachrow in rows:
+                    for eachcol in columns:
+                        templateMessage_ad = {
+                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}}",
+                            "pipeline": posixpath.join(pipelinepath, pipeline),
+                            "output": outpath,
+                            "input": inputpath,
+                            "data_file": posixpath.join(datafilepath, plate, csvname),
+                        }
+                        assaydevqueue.scheduleBatch(templateMessage_ad)
+        else:
+            if not batchfile:
+                batchfile = "Batch_data_assaydev.h5"
+            for plate in platelist:
+                for eachrow in rows:
+                    for eachcol in columns:
+                        templateMessage_ad = {
+                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}}",
+                            "pipeline": posixpath.join(batchpath, batchfile),
+                            "output": outpath,
+                            "input": inputpath,
+                            "data_file": posixpath.join(batchpath, batchfile),
+                        }
+                        assaydevqueue.scheduleBatch(templateMessage_ad)
+
+        print("AssayDev job submitted. Check your queue")
+
+    elif step == "analysis":
+        analysisqueue = JobQueue(f"{identifier}_Analysis")
+        if not outputstructure:
+            outputstructure = (
+                "Metadata_Plate/analysis/Metadata_Plate-Metadata_Well-Metadata_Site"
+            )
+        if not outpath:
+            outpath = path_dict[path_style]["analysisoutpath"]
+        if not usebatch:
+            if not pipeline:
+                pipeline = "analysis.cppipe"
+            if not csvname:
+                csvname = "load_data_with_illum.csv"
+            for plate in platelist:
+                for eachrow in rows:
+                    for eachcol in columns:
+                        for eachsite in sites:
+                            templateMessage_analysis = {
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}},Metadata_Site={str(eachsite)}",
+                                "pipeline": posixpath.join(pipelinepath, pipeline),
+                                "output": outpath,
+                                "output_structure": outputstructure,
+                                "input": inputpath,
+                                "data_file": posixpath.join(
+                                    datafilepath, plate, csvname
+                                ),
+                            }
+                            analysisqueue.scheduleBatch(templateMessage_analysis)
+        else:
+            if not batchfile:
+                batchfile = "Batch_data_analysis.h5"
+            for plate in platelist:
+                for eachrow in rows:
+                    for eachcol in columns:
+                        for eachsite in sites:
+                            templateMessage_analysis = {
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}},Metadata_Site={str(eachsite)}",
+                                "pipeline": posixpath.join(batchpath, batchfile),
+                                "output": outpath,
+                                "output_structure": outputstructure,
+                                "input": inputpath,
+                                "data_file": posixpath.join(batchpath, batchfile),
+                            }
+                            analysisqueue.scheduleBatch(templateMessage_analysis)
+
+        print("Analysis job submitted. Check your queue")
+
+    else:
+        print(f"Step {step} not supported.")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Make jobs for Distributed-CellProfiler"
+    )
+    parser.add_argument(
+        "step",
+        help="Step to make jobs for. Supported steps are zproj, illum, qc, qc_persite, assaydev, analysis",
+    )
+    parser.add_argument(
+        "path_style",
+        help="Style of input/output path. default or cpg (for Cell Painting Gallery structure).",
+    )
+    parser.add_argument("identifier", help="Project identifier")
+    parser.add_argument("batch", help="Name of batch")
+    parser.add_argument("platelist", help="List of plates to process")
+    parser.add_argument(
+        "--source",
+        dest="source",
+        default="source_4",
+        help="For Cell Painting Gallery, what is the source (nesting under project identifier).",
+    )
+    parser.add_argument(
+        "--plate-format",
+        dest="plate_format",
+        default=384,
+        help="Plate format. Suppports 384 or 96. Auto-generates rows and columns and will overwrite --rows and --columns.",
+    )
+    parser.add_argument(
+        "--rows",
+        dest="rows",
+        type=lambda s: list(s.split(",")),
+        default="A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P",
+        help="List of rows to process",
+    )
+    parser.add_argument(
+        "--columns",
+        dest="columns",
+        type=lambda s: list(s.split(",")),
+        default="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
+        help="List of rows to process",
+    )
+    parser.add_argument(
+        "--sites",
+        dest="sites",
+        type=lambda s: list(s.split(",")),
+        default="1,2,3,4,5,6,7,8,9",
+        help="List of site to process",
+    )
+    parser.add_argument(
+        "--well-digit-pad",
+        dest="well_digit_pad",
+        action="store_false",
+        default=True,
+        help="Format wells with padding e.g. A01",
+    )
+    parser.add_argument(
+        "--pipeline",
+        dest="pipeline",
+        default="",
+        help="Name of the pipeline to overwrite defaults of Zproj.cppipe, illum.cppipe, qc.cppipe, assaydev.cppipe, analysis.cppipe.",
+    )
+    parser.add_argument(
+        "--outputstructure",
+        dest="outputstructure",
+        default="",
+        help="Overwrites default outuput structure. Supported for zproj and analysis.",
+    )
+    parser.add_argument(
+        "--outpath",
+        dest="outpath",
+        default="",
+        help="Overwrites default outuput path.",
+    )
+    parser.add_argument(
+        "--csvname",
+        dest="csvname",
+        default="Metadata_Plate/analysis/Metadata_Plate-Metadata_Well-Metadata_Site",
+        help="Name of load data .csv. Overwrites default of load_data.csv (illum), load_data_with_illum.csv (assaydev, qc, qc_persite, analysis) and load_data_unprojected.csv (Zproj).",
+    )
+    parser.add_argument(
+        "--usebatch",
+        dest="usebatch",
+        action="store_true",
+        default=False,
+        help="Use CellProfiler h5 batch files instead of separate .cppipe and load_data.csv files. Supported for default, not cpg structure.",
+    )
+    parser.add_argument(
+        "--batchfile",
+        dest="batchfile",
+        default="",
+        help="Name of h5 batch file (if using). Overwrites defaults.",
+    )
+    parser.add_argument(
+        "--pipelinepath",
+        dest="pipelinepath",
+        default="",
+        help="Overwrite default path to pipelines.",
+    )
+    parser.add_argument(
+        "--batchpath",
+        dest="batchpath",
+        default="",
+        help="Overwrite default path to h5 batch files.",
+    )
+    parser.add_argument(
+        "--inputpath",
+        dest="inputpath",
+        default="",
+        help="Overwrite default path to input files.",
+    )
+    parser.add_argument(
+        "--datafilepath",
+        dest="datafilepath",
+        default="",
+        help="Overwrite default path to load data files.",
+    )
+    args = parser.parse_args()
+
+    run_batch_general(
+        args.step,
+        path_styel=args.path_style,
+        identifier=args.identifier,
+        batch=args.batch,
+        platelist=args.platelist,
+        source=args.source,
+        plate_format=args.plate_format,
+        rows=args.rows,
+        columns=args.columns,
+        sites=args.sites,
+        well_digit_pad=args.well_digit_pad,
+        pipeline=args.pipeline,
+        output_structure=args.outputstructure,
+        outpath=args.outpath,
+        csvname=args.csvname,
+        usebatch=args.usebatch,
+        batchfile=args.batchfile,
+        pipelinepath=args.pipelinepath,
+        batchpath = args.batchpath,
+        inputpath= args.inputpath,
+        datafilepath=args.datafilepath
+    )
