@@ -20,27 +20,27 @@ class JobQueue:
 
 
 def run_batch_general(
-    step, # (zproj, illum, qc, qc_persite, assaydev, or analysis)
+    step,  # (zproj, illum, qc, qc_persite, assaydev, or analysis)
     path_style="",  # ("cpg" or "default")
     identifier="",  # (e.g. cpg0000-jump-pilot)
     source="",  # (e.g. source_4, broad. Only with path_style=="cpg")
     batch="",  # (e.g. 2020_11_04_CPJUMP1)
-    plate_format="", # (96 or 384. Overwrites rows and columns.)
+    plate_format="",  # (96 or 384. Overwrites rows and columns.)
     rows=list(string.ascii_uppercase)[0:16],
     columns=range(1, 25),
     sites=range(1, 10),
     well_digit_pad=True,  # Set True to A01 well format name, set False to A1
-    platelist=[], # (e.g. ['Plate1','Plate2'])
-    pipeline="", # (overwrite default pipeline names)
-    outputstructure="", # (overwrite default output structures)
-    outpath="", # (overwrite default output paths)
-    csvname="", # (overwrite default load data csv name)
-    usebatch=False, # (use h5 batch files instead of load data csv and cppipe files)
-    batchfile="", # (overwrite default batchfile name)
-    pipelinepath="", # (overwrite default path to pipelines)
-    batchpath="", # (overwrite default path to batch files)
-    inputpath="", # (overwrite default path to input files)
-    datafilepath="", # (overwrite default path to load data files)
+    platelist=[],  # (e.g. ['Plate1','Plate2'])
+    pipeline="",  # (overwrite default pipeline names)
+    outputstructure="",  # (overwrite default output structures)
+    outpath="",  # (overwrite default output paths)
+    csvname="",  # (overwrite default load data csv name)
+    usebatch=False,  # (use h5 batch files instead of load data csv and cppipe files)
+    batchfile="",  # (overwrite default batchfile name)
+    pipelinepath="",  # (overwrite default path to pipelines)
+    batchpath="",  # (overwrite default path to batch files)
+    inputpath="",  # (overwrite default path to input files)
+    datafilepath="",  # (overwrite default path to load data files)
 ):
 
     # Two default file organization structures: cpg (for Cell Painting Gallery) and default
@@ -510,7 +510,7 @@ if __name__ == "__main__":
         usebatch=args.usebatch,
         batchfile=args.batchfile,
         pipelinepath=args.pipelinepath,
-        batchpath = args.batchpath,
-        inputpath= args.inputpath,
-        datafilepath=args.datafilepath
+        batchpath=args.batchpath,
+        inputpath=args.inputpath,
+        datafilepath=args.datafilepath,
     )
