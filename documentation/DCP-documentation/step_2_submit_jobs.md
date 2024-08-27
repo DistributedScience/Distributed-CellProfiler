@@ -47,11 +47,65 @@ Alternatively, you can use the following additional tools to help you create and
   * You may also use the list of groupings created by calling `cellprofiler --print-groups` from the command line (see [here](https://github.com/CellProfiler/CellProfiler/wiki/Adapting-CellProfiler-to-a-LIMS-environment#cmd) and [here](https://github.com/CellProfiler/Distributed-CellProfiler/issues/52) for more information).  
   Note that for job files that specify groupings in this way, the `output_structure` variable is NOT optional - it must be specified or an error will be returned.
 
-## Alternate job submission: run_batch_general.py and run_batch_CPG.py
+## Alternate job submission: run_batch_general.py
 
 We also support an alternate second path besides `submitJobs` to create the list of jobs - the `run_batch_general.py` file.
 This file essentially serves as a "shortcut" to run many common types of stereotyped experiments we run in our lab.
 Essentially, if your data follows a regular structure (such as N rows, N columns, N grouping, a particular structure for output, etc.), you may find it useful to take and modify this file for your own usage.  
 We recommend new users use the `submitJobs` pathway, as it will help users understand the kinds of information Distributed-CellProfiler needs in order to run properly, but once they are comfortable with it they may find `run_batch_general.py` helps them create jobs faster in the future.
 
-`run_batch_CPG.py` is very similar to `run_batch_general.py` but has been formatted so that the file structure matches that of the Cell Painting Gallery.
+As of Distributed-CellProfiler 2.2.0, `run_batch_general.py` has been reformatted as a CLI tool with greatly enhances customizeability.
+`run_batch_general.py` must be passed 5 pieces of information:
+
+### Required inputs
+
+* `step` is the step that you would like to make jobs for.
+Supported steps are `zproj`, `illum`, `qc`, `qc_persite`, `assaydev`, and`analysis`
+* `path_style` is the style of the input and output paths.
+Supported options are `default` or `cpg` (for Cell Painting Gallery structure).
+All paths can be overwritten with flags (see below).
+* `identifier` is the project identifier (e.g. "cpg0000-jump-pilot")
+* `batch` is the name of the data batch (e.g. "2020_11_04_CPJUMP1")
+* `platelist` is the list of plates to process.
+Format the list in quotes with individual plates separated by commas (e.g. "Plate1,Plate2,Plate3")
+
+A minimal `run_batch_general.py` command may look like:
+"""bash
+run_batch_general.py analysis default 2024_05_16_Segmentation_Project 2024_10_10_Batch1 "Plate1,Plate2,Plate3"
+"""
+
+### Required input for Cell Painting Gallery
+
+Runs being made off of the Cell Painting Gallery require the additional flag of `-- source <value>` to specify the identifier-specific source of the data.
+"""bash
+run_batch_general.py analysis cpg cpg0000-jump-pilot 2020_11_04_CPJUMP1 "BR00116991,BR00116992" --source broad
+"""
+
+### Plate layout flags
+
+* `--plate-format <value>`: can be `96` or `384` and will overwrite `rows` and `columns` to produce standard 96- or 384-well plate well names (e.g. A01, A02, etc.)
+* `--rows <value>`: a custom list of row labels.
+Will be combined with `columns` to generate well names.
+* `--columns <value>`: a custom list of column labels.
+Will be combined with `rows` to generate well names.
+* `--no-well-digit-pad`: Formats wells without well digit padding (e.g. A1 NOT A01)
+* `--sites <value>`: a custom list of sites (fields of view) to be analyzed
+
+### Overwrite structural defaults
+
+* `--outputstructure <value>`: overwrite default output structure
+* `--outpath <value>`: overwrite default output path
+* `--inputpath <value>`: overwrite the default path to input files
+
+### Overwrite defaults (for runs using load data .csv's and .cppipe)
+
+* `--pipeline <value>`: overwrite the default pipeline name
+* `--pipelinepath <value>`: overwrite the default path to pipelines
+* `--csvname <value>`: overwrite the default load data .csv name
+* `--datafilepath <value>`: overwrite the default path to load data files
+
+### Overwrite defaults (for runs using .h5 batch files)
+
+* `--usebatch`: use h5 batch files instead of load data csv and .cppipe files
+* `--batchfile <value>`: overwrite default batchfile name
+* `--batchpath <value>`: overwrite default path to the batchfile
