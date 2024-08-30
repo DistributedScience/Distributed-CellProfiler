@@ -387,7 +387,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("identifier", help="Project identifier")
     parser.add_argument("batch", help="Name of batch")
-    parser.add_argument("platelist", help="List of plates to process")
+    parser.add_argument("platelist", type=lambda s: list(s.split(",")), help="List of plates to process")
     parser.add_argument(
         "--source",
         dest="source",
