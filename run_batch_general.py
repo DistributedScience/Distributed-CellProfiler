@@ -504,7 +504,7 @@ if __name__ == "__main__":
         sites=args.sites,
         well_digit_pad=args.well_digit_pad,
         pipeline=args.pipeline,
-        output_structure=args.outputstructure,
+        outputstructure=args.outputstructure,
         outpath=args.outpath,
         csvname=args.csvname,
         usebatch=args.usebatch,
