@@ -5,7 +5,7 @@ import posixpath
 import argparse
 
 
-class JobQueue:
+class JobQueue():
 
     def __init__(self, name=None):
         self.sqs = boto3.resource("sqs")
@@ -422,7 +422,7 @@ if __name__ == "__main__":
         help="List of site to process",
     )
     parser.add_argument(
-        "--well-digit-pad",
+        "--no-well-digit-pad",
         dest="well_digit_pad",
         action="store_false",
         default=True,
@@ -449,7 +449,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--csvname",
         dest="csvname",
-        default="Metadata_Plate/analysis/Metadata_Plate-Metadata_Well-Metadata_Site",
+        default="",
         help="Name of load data .csv. Overwrites default of load_data.csv (illum), load_data_with_illum.csv (assaydev, qc, qc_persite, analysis) and load_data_unprojected.csv (Zproj).",
     )
     parser.add_argument(
@@ -493,7 +493,7 @@ if __name__ == "__main__":
 
     run_batch_general(
         args.step,
-        path_styel=args.path_style,
+        path_style=args.path_style,
         identifier=args.identifier,
         batch=args.batch,
         platelist=args.platelist,
