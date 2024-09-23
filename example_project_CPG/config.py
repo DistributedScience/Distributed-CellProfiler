@@ -3,7 +3,7 @@
 APP_NAME = 'ExampleCPG'                # Used to generate derivative names unique to the application.
 
 # DOCKER REGISTRY INFORMATION:
-DOCKERHUB_TAG = 'erinweisbart/distributed-cellprofiler:workspace_bucket'
+DOCKERHUB_TAG = 'erinweisbart/distributed-cellprofiler:2.2.0rc1_4.2.4'
 
 # AWS GENERAL SETTINGS:
 AWS_REGION = 'us-east-1'
