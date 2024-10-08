@@ -54,7 +54,7 @@ This file essentially serves as a "shortcut" to run many common types of stereot
 Essentially, if your data follows a regular structure (such as N rows, N columns, N grouping, a particular structure for output, etc.), you may find it useful to take and modify this file for your own usage.  
 We recommend new users use the `submitJobs` pathway, as it will help users understand the kinds of information Distributed-CellProfiler needs in order to run properly, but once they are comfortable with it they may find `run_batch_general.py` helps them create jobs faster in the future.
 
-As of Distributed-CellProfiler 2.2.0, `run_batch_general.py` has been reformatted as a CLI tool with greatly enhances customizeability.
+As of Distributed-CellProfiler 2.2.0, `run_batch_general.py` has been reformatted as a CLI tool with greatly enhanced customizeability.
 `run_batch_general.py` must be passed 5 pieces of information:
 
 ### Required inputs
