@@ -481,8 +481,8 @@ document.write(`
 <td><p>IndexError: index 0 is out of bounds for axis 0 with size 0</p></td>
 <td><p></p></td>
 <td><p></p></td>
-<td><p>1) Metadata values of 0 OR that have leading zeros (ie Metadata_Site=04, rather than Metadata_Site=4) are not handled well by CP. 2) The submitted jobs don’t make sense to CP. 3) DCP is looking for your images in the wrong location.</p></td>
-<td><p>1) Change your LoadData.csv so that there are no Metadata values of 0 or with 0 padding. 2) Change your job file so that your jobs match your pipeline’s expected input. 3) If using LoadData, make sure the file paths are correct in your LoadData.csv and the “Base image location” is set correctly in the LoadData module. If using BatchFiles, make sure your BatchFile paths are correct.</p></td>
+<td><p>1) Metadata values of 0 OR that have leading zeros (ie Metadata_Site=04, rather than Metadata_Site=4) are not handled well by CP. 2) The submitted jobs don’t make sense to CP. 3) DCP is looking for your images in the wrong location. 4) CellProfiler isn’t accessing the rows of your load_data.csv that contain information about the jobs.</p></td>
+<td><p>1) Change your LoadData.csv so that there are no Metadata values of 0 or with 0 padding. 2) Change your job file so that your jobs match your pipeline’s expected input. 3) If using LoadData, make sure the file paths are correct in your LoadData.csv and the “Base image location” is set correctly in the LoadData module. If using BatchFiles, make sure your BatchFile paths are correct. 4) Make sure that your LoadData module has “Process just a range of rows?” as No or that the range you have set do not filter out the jobs that you are submitting.</p></td>
 </tr>
 <tr class="row-even"><td><p></p></td>
 <td><p></p></td>
