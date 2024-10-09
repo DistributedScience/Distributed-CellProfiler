@@ -23,6 +23,7 @@
 |   | Your logs show that files are downloading but it never moves beyond that point. |  |  | If you have set DOWNLOAD_FILES = TRUE in your config, then your files are failing to completely download because you are running out of space and it is failing silently. | Place larger volumes on your instances by increasing EBS_VOL_SIZE in your config.py |
 |   | "ValueError: The Mito image is missing from the pipeline." |  |  | The CellProfiler pipeline is referencing a channel (in this example, "Mito") that is not being loaded in the pipeline. | Check that your load_data csv contains the FileNames and PathNames for all your images. This can sometimes happen when the load_data csv is being automatically generated or edited as part of a workflow. |
 |   | "Failed to prepare run for module LoadData", "ValueError: zero-size array to reduction operation maximum which has no identity" |  |  | CellProfiler cannot read any information from your load_data.csv. | Check that your load_data.csv contains data beyond the header. This can sometimes happen when the load_data csv is being automatically generated or edited as part of a workflow. |
+|   | "CP PROBLEM: Done file reports failure." |  |  | Something went wrong in your CellProfiler pipeline. | Read the logs above the CP PROBLEM message to see what the specific CellProfiler error is and fix that error in your pipeline. |
 
 Further hints:
 - The SSH_KEY_NAME in the config.py file contains the name of the key pair used to access AWS.
