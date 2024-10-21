@@ -435,56 +435,56 @@ if __name__ == "__main__":
         help="Name of the pipeline to overwrite defaults of Zproj.cppipe, illum.cppipe, qc.cppipe, assaydev.cppipe, analysis.cppipe.",
     )
     parser.add_argument(
-        "--outputstructure",
+        "--output-structure",
         dest="outputstructure",
         default="",
         help="Overwrites default outuput structure. Supported for zproj and analysis.",
     )
     parser.add_argument(
-        "--outpath",
+        "--output-path",
         dest="outpath",
         default="",
         help="Overwrites default outuput path.",
     )
     parser.add_argument(
-        "--csvname",
+        "--csv-name",
         dest="csvname",
         default="",
         help="Name of load data .csv. Overwrites default of load_data.csv (illum), load_data_with_illum.csv (assaydev, qc, qc_persite, analysis) and load_data_unprojected.csv (Zproj).",
     )
     parser.add_argument(
-        "--usebatch",
+        "--use-batch",
         dest="usebatch",
         action="store_true",
         default=False,
         help="Use CellProfiler h5 batch files instead of separate .cppipe and load_data.csv files. Supported for default, not cpg structure.",
     )
     parser.add_argument(
-        "--batchfile",
+        "--batchfile-name",
         dest="batchfile",
         default="",
         help="Name of h5 batch file (if using). Overwrites defaults.",
     )
     parser.add_argument(
-        "--pipelinepath",
+        "--pipeline-path",
         dest="pipelinepath",
         default="",
         help="Overwrite default path to pipelines.",
     )
     parser.add_argument(
-        "--batchpath",
+        "--batchfile-path",
         dest="batchpath",
         default="",
         help="Overwrite default path to h5 batch files.",
     )
     parser.add_argument(
-        "--inputpath",
+        "--input-path",
         dest="inputpath",
         default="",
         help="Overwrite default path to input files.",
     )
     parser.add_argument(
-        "--datafilepath",
+        "--datafile-path",
         dest="datafilepath",
         default="",
         help="Overwrite default path to load data files.",
