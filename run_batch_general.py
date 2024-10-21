@@ -111,10 +111,10 @@ def run_batch_general(
 
     # Plate formatting
     if plate_format:
-        if plate_format == 384:
+        if int(plate_format) == 384:
             rows = list(string.ascii_uppercase)[0:16]
             columns = range(1, 25)
-        elif plate_format == 96:
+        elif int(plate_format) == 96:
             rows = list(string.ascii_uppercase)[0:8]
             columns = range(1, 13)
         else:
