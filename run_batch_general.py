@@ -26,7 +26,7 @@ def run_batch_general(
     batch="",  # (e.g. 2020_11_04_CPJUMP1)
     platelist=[],  # (e.g. ['Plate1','Plate2'])
     source="",  # (e.g. source_4, broad. Only with path_style=="cpg")
-    plate_format="",  # (96 or 384. Overwrites rows and columns.)
+    plate_format="",  # (96 or 384. Overwrites rows and columns if passed.)
     rows=list(string.ascii_uppercase)[0:16],
     columns=range(1, 25),
     sites=range(1, 10),
@@ -397,7 +397,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--plate-format",
         dest="plate_format",
-        default=384,
+        default="",
         help="Plate format. Suppports 384 or 96. Auto-generates rows and columns and will overwrite --rows and --columns.",
     )
     parser.add_argument(
