@@ -23,24 +23,24 @@ def run_batch_general(
     step,  # (zproj, illum, qc, qc_persite, assaydev, or analysis)
     path_style="",  # ("cpg" or "default")
     identifier="",  # (e.g. cpg0000-jump-pilot)
-    source="",  # (e.g. source_4, broad. Only with path_style=="cpg")
     batch="",  # (e.g. 2020_11_04_CPJUMP1)
+    platelist=[],  # (e.g. ['Plate1','Plate2'])
+    source="",  # (e.g. source_4, broad. Only with path_style=="cpg")
     plate_format="",  # (96 or 384. Overwrites rows and columns.)
     rows=list(string.ascii_uppercase)[0:16],
     columns=range(1, 25),
     sites=range(1, 10),
     well_digit_pad=True,  # Set True to A01 well format name, set False to A1
-    platelist=[],  # (e.g. ['Plate1','Plate2'])
     pipeline="",  # (overwrite default pipeline names)
+    pipelinepath="",  # (overwrite default path to pipelines)
+    inputpath="",  # (overwrite default path to input files)
     outputstructure="",  # (overwrite default output structures)
     outpath="",  # (overwrite default output paths)
     csvname="",  # (overwrite default load data csv name)
+    datafilepath="",  # (overwrite default path to load data files)
     usebatch=False,  # (use h5 batch files instead of load data csv and cppipe files)
     batchfile="",  # (overwrite default batchfile name)
-    pipelinepath="",  # (overwrite default path to pipelines)
     batchpath="",  # (overwrite default path to batch files)
-    inputpath="",  # (overwrite default path to input files)
-    datafilepath="",  # (overwrite default path to load data files)
 ):
 
     # Two default file organization structures: cpg (for Cell Painting Gallery) and default
@@ -435,6 +435,18 @@ if __name__ == "__main__":
         help="Name of the pipeline to overwrite defaults of Zproj.cppipe, illum.cppipe, qc.cppipe, assaydev.cppipe, analysis.cppipe.",
     )
     parser.add_argument(
+        "--pipeline-path",
+        dest="pipelinepath",
+        default="",
+        help="Overwrite default path to pipelines.",
+    )
+    parser.add_argument(
+        "--input-path",
+        dest="inputpath",
+        default="",
+        help="Overwrite default path to input files.",
+    )
+    parser.add_argument(
         "--output-structure",
         dest="outputstructure",
         default="",
@@ -447,10 +459,16 @@ if __name__ == "__main__":
         help="Overwrites default outuput path.",
     )
     parser.add_argument(
-        "--csv-name",
+        "--datafile-name",
         dest="csvname",
         default="",
         help="Name of load data .csv. Overwrites default of load_data.csv (illum), load_data_with_illum.csv (assaydev, qc, qc_persite, analysis) and load_data_unprojected.csv (Zproj).",
+    )
+    parser.add_argument(
+        "--datafile-path",
+        dest="datafilepath",
+        default="",
+        help="Overwrite default path to load data files.",
     )
     parser.add_argument(
         "--use-batch",
@@ -466,28 +484,10 @@ if __name__ == "__main__":
         help="Name of h5 batch file (if using). Overwrites defaults.",
     )
     parser.add_argument(
-        "--pipeline-path",
-        dest="pipelinepath",
-        default="",
-        help="Overwrite default path to pipelines.",
-    )
-    parser.add_argument(
         "--batchfile-path",
         dest="batchpath",
         default="",
         help="Overwrite default path to h5 batch files.",
-    )
-    parser.add_argument(
-        "--input-path",
-        dest="inputpath",
-        default="",
-        help="Overwrite default path to input files.",
-    )
-    parser.add_argument(
-        "--datafile-path",
-        dest="datafilepath",
-        default="",
-        help="Overwrite default path to load data files.",
     )
     args = parser.parse_args()
 
@@ -504,13 +504,13 @@ if __name__ == "__main__":
         sites=args.sites,
         well_digit_pad=args.well_digit_pad,
         pipeline=args.pipeline,
+        pipelinepath=args.pipelinepath,
+        inputpath=args.inputpath,
         outputstructure=args.outputstructure,
         outpath=args.outpath,
         csvname=args.csvname,
+        datafilepath=args.datafilepath,
         usebatch=args.usebatch,
         batchfile=args.batchfile,
-        pipelinepath=args.pipelinepath,
         batchpath=args.batchpath,
-        inputpath=args.inputpath,
-        datafilepath=args.datafilepath,
     )
