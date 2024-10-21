@@ -83,29 +83,32 @@ run_batch_general.py analysis cpg cpg0000-jump-pilot 2020_11_04_CPJUMP1 "BR00116
 
 ### Plate layout flags
 
-* `--plate-format <value>`: can be `96` or `384` and will overwrite `rows` and `columns` to produce standard 96- or 384-well plate well names (e.g. A01, A02, etc.)
+* `--plate-format <value>`: if used, can be `96` or `384` and will overwrite `rows` and `columns` to produce standard 96- or 384-well plate well names (e.g. A01, A02, etc.)
 * `--rows <value>`: a custom list of row labels.
 Will be combined with `columns` to generate well names.
+Separate values with commas and surround with quotation marks (e.g. `"A,B,C,D,E,F,G"`)
 * `--columns <value>`: a custom list of column labels.
 Will be combined with `rows` to generate well names.
-* `--no-well-digit-pad`: Formats wells without well digit padding (e.g. A1 NOT A01)
-* `--sites <value>`: a custom list of sites (fields of view) to be analyzed
+Separate values with commas and surround with quotation marks (e.g. `"1,2,3,4,5,6,7,8,9,10"`)
+* `--no-well-digit-pad`: Formats wells without well digit padding (e.g. `A1` NOT `A01`)
+* `--sites <value>`: a custom list of sites (fields of view) to be analyzed.
+Separate values with commas and surround with quotation marks (e.g. `"1,2,3,4,5,6"`)
 
 ### Overwrite structural defaults
 
-* `--outputstructure <value>`: overwrite default output structure
-* `--outpath <value>`: overwrite default output path
-* `--inputpath <value>`: overwrite the default path to input files
+* `--output-structure <value>`: overwrite default output structure
+* `--output-path <value>`: overwrite default output path
+* `--input-path <value>`: overwrite the default path to input files
 
 ### Overwrite defaults (for runs using load data .csv's and .cppipe)
 
 * `--pipeline <value>`: overwrite the default pipeline name
-* `--pipelinepath <value>`: overwrite the default path to pipelines
-* `--csvname <value>`: overwrite the default load data .csv name
-* `--datafilepath <value>`: overwrite the default path to load data files
+* `--pipeline-path <value>`: overwrite the default path to pipelines
+* `--datafile-name <value>`: overwrite the default load data .csv name
+* `--datafile-path <value>`: overwrite the default path to load data files
 
 ### Overwrite defaults (for runs using .h5 batch files)
 
-* `--usebatch`: use h5 batch files instead of load data csv and .cppipe files
-* `--batchfile <value>`: overwrite default batchfile name
-* `--batchpath <value>`: overwrite default path to the batchfile
+* `--use-batch`: use h5 batch files instead of load data csv and .cppipe files
+* `--batchfile-name <value>`: overwrite default batchfile name
+* `--batchfile-path <value>`: overwrite default path to the batchfile
