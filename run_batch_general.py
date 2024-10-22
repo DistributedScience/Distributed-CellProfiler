@@ -26,10 +26,11 @@ def run_batch_general(
     batch="",  # (e.g. 2020_11_04_CPJUMP1)
     platelist=[],  # (e.g. ['Plate1','Plate2'])
     source="",  # (e.g. source_4, broad. Only with path_style=="cpg")
-    plate_format="",  # (96 or 384. Overwrites rows and columns if passed.)
-    rows=list(string.ascii_uppercase)[0:16],
-    columns=range(1, 25),
-    sites=range(1, 10),
+    plate_format="",  # (96 or 384. Overwrites rows and columns if passed. Not used by illum.)
+    rows=list(string.ascii_uppercase)[0:16], # (Not used by illum.)
+    columns=range(1, 25), # (Not used by illum.)
+    wells="", # (explicitly list wells. Overwrites rows and columns if passed. Not used by illum. e.g. ['B3','C7'])
+    sites=range(1, 10), # (Not used by illum, qc, or assaydev.)
     well_digit_pad=True,  # Set True to A01 well format name, set False to A1
     pipeline="",  # (overwrite default pipeline names)
     pipelinepath="",  # (overwrite default path to pipelines)
@@ -137,11 +138,26 @@ def run_batch_general(
                 csvname = "load_data_unprojected.csv"
 
             for plate in platelist:
-                for eachrow in rows:
-                    for eachcol in columns:
+                if not wells:
+                    for eachrow in rows:
+                        for eachcol in columns:
+                            for eachsite in sites:
+                                templateMessage_zproj = {
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)}",
+                                    "pipeline": posixpath.join(pipelinepath, pipeline),
+                                    "output": outpath,
+                                    "output_structure": outputstructure,
+                                    "input": inputpath,
+                                    "data_file": posixpath.join(
+                                        datafilepath, plate, csvname
+                                    ),
+                                }
+                                zprojqueue.scheduleBatch(templateMessage_zproj)
+                else:
+                    for eachwell in wells:
                         for eachsite in sites:
                             templateMessage_zproj = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}},Metadata_Site={str(eachsite)}",
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)}",
                                 "pipeline": posixpath.join(pipelinepath, pipeline),
                                 "output": outpath,
                                 "output_structure": outputstructure,
@@ -150,16 +166,29 @@ def run_batch_general(
                                     datafilepath, plate, csvname
                                 ),
                             }
-                            zprojqueue.scheduleBatch(templateMessage_zproj)
+                            zprojqueue.scheduleBatch(templateMessage_zproj)                    
         else:
             if not batchfile:
                 batchfile = "Batch_data_zproj.h5"
             for plate in platelist:
-                for eachrow in rows:
-                    for eachcol in columns:
+                if not wells:
+                    for eachrow in rows:
+                        for eachcol in columns:
+                            for eachsite in sites:
+                                templateMessage_zproj = {
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)}",
+                                    "pipeline": posixpath.join(batchpath, batchfile),
+                                    "output": outpath,
+                                    "output_structure": outputstructure,
+                                    "input": inputpath,
+                                    "data_file": posixpath.join(batchpath, batchfile),
+                                }
+                                zprojqueue.scheduleBatch(templateMessage_zproj)
+                else:
+                    for eachwell in wells:
                         for eachsite in sites:
                             templateMessage_zproj = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}},Metadata_Site={str(eachsite)}",
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)}",
                                 "pipeline": posixpath.join(batchpath, batchfile),
                                 "output": outpath,
                                 "output_structure": outputstructure,
@@ -215,10 +244,21 @@ def run_batch_general(
                 csvname = "load_data.csv"
 
             for plate in platelist:
-                for eachrow in rows:
-                    for eachcol in columns:
+                if not wells:
+                    for eachrow in rows:
+                        for eachcol in columns:
+                            templateMessage_qc = {
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}}",
+                                "pipeline": posixpath.join(pipelinepath, pipeline),
+                                "output": outpath,
+                                "input": inputpath,
+                                "data_file": posixpath.join(datafilepath, plate, csvname),
+                            }
+                            qcqueue.scheduleBatch(templateMessage_qc)
+                else:
+                    for eachwell in wells:
                         templateMessage_qc = {
-                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}}",
+                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell}",
                             "pipeline": posixpath.join(pipelinepath, pipeline),
                             "output": outpath,
                             "input": inputpath,
@@ -229,10 +269,21 @@ def run_batch_general(
             if not batchfile:
                 batchfile = "Batch_data_qc.h5"
             for plate in platelist:
-                for eachrow in rows:
-                    for eachcol in columns:
+                if not wells:
+                    for eachrow in rows:
+                        for eachcol in columns:
+                            templateMessage_qc = {
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}}",
+                                "pipeline": posixpath.join(batchpath, batchfile),
+                                "output": outpath,
+                                "input": inputpath,
+                                "data_file": posixpath.join(batchpath, batchfile),
+                            }
+                            qcqueue.scheduleBatch(templateMessage_qc)
+                else:
+                    for well in wells:
                         templateMessage_qc = {
-                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}}",
+                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell}",
                             "pipeline": posixpath.join(batchpath, batchfile),
                             "output": outpath,
                             "input": inputpath,
@@ -253,11 +304,25 @@ def run_batch_general(
                 csvname = "load_data.csv"
 
             for plate in platelist:
-                for eachrow in rows:
-                    for eachcol in columns:
+                if not wells:
+                    for eachrow in rows:
+                        for eachcol in columns:
+                            for eachsite in sites:
+                                templateMessage_qc = {
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)}",
+                                    "pipeline": posixpath.join(pipelinepath, pipeline),
+                                    "output": outpath,
+                                    "input": inputpath,
+                                    "data_file": posixpath.join(
+                                        datafilepath, plate, csvname
+                                    ),
+                                }
+                                qcqueue.scheduleBatch(templateMessage_qc)
+                else:
+                    for well in wells:
                         for eachsite in sites:
                             templateMessage_qc = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}},Metadata_Site={str(eachsite)}",
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)}",
                                 "pipeline": posixpath.join(pipelinepath, pipeline),
                                 "output": outpath,
                                 "input": inputpath,
@@ -270,11 +335,23 @@ def run_batch_general(
             if not batchfile:
                 batchfile = "Batch_data_qc.h5"
             for plate in platelist:
-                for eachrow in rows:
-                    for eachcol in columns:
+                if not wells:
+                    for eachrow in rows:
+                        for eachcol in columns:
+                            for eachsite in sites:
+                                templateMessage_qc = {
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)}",
+                                    "pipeline": posixpath.join(batchpath, batchfile),
+                                    "output": outpath,
+                                    "input": inputpath,
+                                    "data_file": posixpath.join(batchpath, batchfile),
+                                }
+                                qcqueue.scheduleBatch(templateMessage_qc)
+                else:
+                    for well in wells:
                         for eachsite in sites:
                             templateMessage_qc = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}},Metadata_Site={str(eachsite)}",
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)}",
                                 "pipeline": posixpath.join(batchpath, batchfile),
                                 "output": outpath,
                                 "input": inputpath,
@@ -295,10 +372,21 @@ def run_batch_general(
                 csvname = "load_data_with_illum.csv"
 
             for plate in platelist:
-                for eachrow in rows:
-                    for eachcol in columns:
+                if not wells:
+                    for eachrow in rows:
+                        for eachcol in columns:
+                            templateMessage_ad = {
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}}",
+                                "pipeline": posixpath.join(pipelinepath, pipeline),
+                                "output": outpath,
+                                "input": inputpath,
+                                "data_file": posixpath.join(datafilepath, plate, csvname),
+                            }
+                            assaydevqueue.scheduleBatch(templateMessage_ad)
+                else:
+                    for well in wells:
                         templateMessage_ad = {
-                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}}",
+                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell}",
                             "pipeline": posixpath.join(pipelinepath, pipeline),
                             "output": outpath,
                             "input": inputpath,
@@ -309,10 +397,21 @@ def run_batch_general(
             if not batchfile:
                 batchfile = "Batch_data_assaydev.h5"
             for plate in platelist:
-                for eachrow in rows:
-                    for eachcol in columns:
+                if not wells:
+                    for eachrow in rows:
+                        for eachcol in columns:
+                            templateMessage_ad = {
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}}",
+                                "pipeline": posixpath.join(batchpath, batchfile),
+                                "output": outpath,
+                                "input": inputpath,
+                                "data_file": posixpath.join(batchpath, batchfile),
+                            }
+                            assaydevqueue.scheduleBatch(templateMessage_ad)
+                else:
+                    for eachwell in wells:
                         templateMessage_ad = {
-                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}}",
+                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell}",
                             "pipeline": posixpath.join(batchpath, batchfile),
                             "output": outpath,
                             "input": inputpath,
@@ -336,11 +435,26 @@ def run_batch_general(
             if not csvname:
                 csvname = "load_data_with_illum.csv"
             for plate in platelist:
-                for eachrow in rows:
-                    for eachcol in columns:
+                if not wells:
+                    for eachrow in rows:
+                        for eachcol in columns:
+                            for eachsite in sites:
+                                templateMessage_analysis = {
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)}",
+                                    "pipeline": posixpath.join(pipelinepath, pipeline),
+                                    "output": outpath,
+                                    "output_structure": outputstructure,
+                                    "input": inputpath,
+                                    "data_file": posixpath.join(
+                                        datafilepath, plate, csvname
+                                    ),
+                                }
+                                analysisqueue.scheduleBatch(templateMessage_analysis)
+                else:
+                    for eachwell in wells:
                         for eachsite in sites:
                             templateMessage_analysis = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}},Metadata_Site={str(eachsite)}",
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)}",
                                 "pipeline": posixpath.join(pipelinepath, pipeline),
                                 "output": outpath,
                                 "output_structure": outputstructure,
@@ -354,11 +468,24 @@ def run_batch_general(
             if not batchfile:
                 batchfile = "Batch_data_analysis.h5"
             for plate in platelist:
-                for eachrow in rows:
-                    for eachcol in columns:
+                if not wells:
+                    for eachrow in rows:
+                        for eachcol in columns:
+                            for eachsite in sites:
+                                templateMessage_analysis = {
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)}",
+                                    "pipeline": posixpath.join(batchpath, batchfile),
+                                    "output": outpath,
+                                    "output_structure": outputstructure,
+                                    "input": inputpath,
+                                    "data_file": posixpath.join(batchpath, batchfile),
+                                }
+                                analysisqueue.scheduleBatch(templateMessage_analysis)
+                else:
+                    for eachwell in wells:
                         for eachsite in sites:
                             templateMessage_analysis = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{eachcol:{well_format}},Metadata_Site={str(eachsite)}",
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)}",
                                 "pipeline": posixpath.join(batchpath, batchfile),
                                 "output": outpath,
                                 "output_structure": outputstructure,
@@ -413,6 +540,13 @@ if __name__ == "__main__":
         type=lambda s: list(s.split(",")),
         default="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
         help="List of rows to process",
+    )
+    parser.add_argument(
+        "--wells",
+        dest="wells",
+        type=lambda s: list(s.split(",")),
+        default="",
+        help="Explicit list of rows to process. Will overwrite --rows and --columns.",
     )
     parser.add_argument(
         "--sites",
@@ -501,6 +635,7 @@ if __name__ == "__main__":
         plate_format=args.plate_format,
         rows=args.rows,
         columns=args.columns,
+        wells=args.wells,
         sites=args.sites,
         well_digit_pad=args.well_digit_pad,
         pipeline=args.pipeline,

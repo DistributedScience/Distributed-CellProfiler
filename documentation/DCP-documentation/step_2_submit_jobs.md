@@ -90,7 +90,12 @@ Separate values with commas and no spaces and surround with quotation marks (e.g
 * `--columns <value>`: a custom list of column labels.
 Will be combined with `rows` to generate well names.
 Separate values with commas and no spaces and surround with quotation marks (e.g. `"1,2,3,4,5,6,7,8,9,10"`)
-* `--no-well-digit-pad`: Formats wells without well digit padding (e.g. `A1` NOT `A01`)
+* `--wells <value>`: a custom list of wells.
+Overwrites `rows` and `columns`.
+Separate values with commas and no spaces and surround with quotation marks (e.g. `"C02,D04,E04,N12"`)
+* `--no-well-digit-pad`: Formats wells without well digit padding.
+Formats wells passed with `--plate format` or `--rows` and `--columns` but not `--wells`.
+(e.g. `A1` NOT `A01`)
 * `--sites <value>`: a custom list of sites (fields of view) to be analyzed.
 Separate values with commas and no spaces and surround with quotation marks (e.g. `"1,2,3,4,5,6"`)
 
