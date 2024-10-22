@@ -391,7 +391,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--source",
         dest="source",
-        default="source_4",
+        default="",
         help="For Cell Painting Gallery, what is the source (nesting under project identifier).",
     )
     parser.add_argument(

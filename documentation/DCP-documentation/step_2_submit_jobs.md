@@ -64,10 +64,10 @@ Supported steps are `zproj`, `illum`, `qc`, `qc_persite`, `assaydev`, and`analys
 * `path_style` is the style of the input and output paths.
 Supported options are `default` or `cpg` (for Cell Painting Gallery structure).
 All paths can be overwritten with flags (see below).
-* `identifier` is the project identifier (e.g. "cpg0000-jump-pilot")
+* `identifier` is the project identifier (e.g. "cpg0000-jump-pilot" or "2024_11_07_Collaborator_Cell_Painting")
 * `batch` is the name of the data batch (e.g. "2020_11_04_CPJUMP1")
 * `platelist` is the list of plates to process.
-Format the list in quotes with individual plates separated by commas (e.g. "Plate1,Plate2,Plate3")
+Format the list in quotes with individual plates separated by commas and no spaces (e.g. "Plate1,Plate2,Plate3")
 
 A minimal `run_batch_general.py` command may look like:
 """bash
@@ -76,7 +76,7 @@ run_batch_general.py analysis default 2024_05_16_Segmentation_Project 2024_10_10
 
 ### Required input for Cell Painting Gallery
 
-Runs being made off of the Cell Painting Gallery require the additional flag of `-- source <value>` to specify the identifier-specific source of the data.
+Runs being made off of the Cell Painting Gallery require the additional flag of `--source <value>` to specify the identifier-specific source of the data.
 """bash
 run_batch_general.py analysis cpg cpg0000-jump-pilot 2020_11_04_CPJUMP1 "BR00116991,BR00116992" --source broad
 """
@@ -86,13 +86,13 @@ run_batch_general.py analysis cpg cpg0000-jump-pilot 2020_11_04_CPJUMP1 "BR00116
 * `--plate-format <value>`: if used, can be `96` or `384` and will overwrite `rows` and `columns` to produce standard 96- or 384-well plate well names (e.g. A01, A02, etc.)
 * `--rows <value>`: a custom list of row labels.
 Will be combined with `columns` to generate well names.
-Separate values with commas and surround with quotation marks (e.g. `"A,B,C,D,E,F,G"`)
+Separate values with commas and no spaces and surround with quotation marks (e.g. `"A,B,C,D,E,F,G"`)
 * `--columns <value>`: a custom list of column labels.
 Will be combined with `rows` to generate well names.
-Separate values with commas and surround with quotation marks (e.g. `"1,2,3,4,5,6,7,8,9,10"`)
+Separate values with commas and no spaces and surround with quotation marks (e.g. `"1,2,3,4,5,6,7,8,9,10"`)
 * `--no-well-digit-pad`: Formats wells without well digit padding (e.g. `A1` NOT `A01`)
 * `--sites <value>`: a custom list of sites (fields of view) to be analyzed.
-Separate values with commas and surround with quotation marks (e.g. `"1,2,3,4,5,6"`)
+Separate values with commas and no spaces and surround with quotation marks (e.g. `"1,2,3,4,5,6"`)
 
 ### Overwrite structural defaults
 
