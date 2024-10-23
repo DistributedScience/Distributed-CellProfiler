@@ -1,5 +1,6 @@
 import json
 import boto3
+import botocore
 import string
 import posixpath
 import argparse
@@ -9,7 +10,12 @@ class JobQueue():
 
     def __init__(self, name=None):
         self.sqs = boto3.resource("sqs")
-        self.queue = self.sqs.get_queue_by_name(QueueName=name + "Queue")
+        try:
+            self.queue = self.sqs.get_queue_by_name(QueueName=name + "Queue")
+        except botocore.exceptions.ClientError as error:
+            if 'NonExistentQueue' in error.response['Error']['Code']:
+                print (f"Queue {name}Queue does not exist.")
+                exit()
         self.inProcess = -1
         self.pending = -1
 
