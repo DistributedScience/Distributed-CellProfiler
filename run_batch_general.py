@@ -144,7 +144,7 @@ def run_batch_general(
                 csvname = "load_data_unprojected.csv"
 
             for plate in platelist:
-                if not wells:
+                if all(len(ele) == 0 for ele in wells):
                     for eachrow in rows:
                         for eachcol in columns:
                             for eachsite in sites:
@@ -177,7 +177,7 @@ def run_batch_general(
             if not batchfile:
                 batchfile = "Batch_data_zproj.h5"
             for plate in platelist:
-                if not wells:
+                if all(len(ele) == 0 for ele in wells):
                     for eachrow in rows:
                         for eachcol in columns:
                             for eachsite in sites:
@@ -250,7 +250,7 @@ def run_batch_general(
                 csvname = "load_data.csv"
 
             for plate in platelist:
-                if not wells:
+                if all(len(ele) == 0 for ele in wells):
                     for eachrow in rows:
                         for eachcol in columns:
                             templateMessage_qc = {
@@ -275,7 +275,7 @@ def run_batch_general(
             if not batchfile:
                 batchfile = "Batch_data_qc.h5"
             for plate in platelist:
-                if not wells:
+                if all(len(ele) == 0 for ele in wells):
                     for eachrow in rows:
                         for eachcol in columns:
                             templateMessage_qc = {
@@ -310,7 +310,7 @@ def run_batch_general(
                 csvname = "load_data.csv"
 
             for plate in platelist:
-                if not wells:
+                if all(len(ele) == 0 for ele in wells):
                     for eachrow in rows:
                         for eachcol in columns:
                             for eachsite in sites:
@@ -341,7 +341,7 @@ def run_batch_general(
             if not batchfile:
                 batchfile = "Batch_data_qc.h5"
             for plate in platelist:
-                if not wells:
+                if all(len(ele) == 0 for ele in wells):
                     for eachrow in rows:
                         for eachcol in columns:
                             for eachsite in sites:
@@ -378,7 +378,7 @@ def run_batch_general(
                 csvname = "load_data_with_illum.csv"
 
             for plate in platelist:
-                if not wells:
+                if all(len(ele) == 0 for ele in wells):
                     for eachrow in rows:
                         for eachcol in columns:
                             templateMessage_ad = {
@@ -403,7 +403,7 @@ def run_batch_general(
             if not batchfile:
                 batchfile = "Batch_data_assaydev.h5"
             for plate in platelist:
-                if not wells:
+                if all(len(ele) == 0 for ele in wells):
                     for eachrow in rows:
                         for eachcol in columns:
                             templateMessage_ad = {
@@ -441,7 +441,7 @@ def run_batch_general(
             if not csvname:
                 csvname = "load_data_with_illum.csv"
             for plate in platelist:
-                if not wells:
+                if all(len(ele) == 0 for ele in wells):
                     for eachrow in rows:
                         for eachcol in columns:
                             for eachsite in sites:
@@ -474,7 +474,7 @@ def run_batch_general(
             if not batchfile:
                 batchfile = "Batch_data_analysis.h5"
             for plate in platelist:
-                if not wells:
+                if all(len(ele) == 0 for ele in wells):
                     for eachrow in rows:
                         for eachcol in columns:
                             for eachsite in sites:
