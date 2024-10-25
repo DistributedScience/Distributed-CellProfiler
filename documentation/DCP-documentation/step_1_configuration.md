@@ -17,6 +17,7 @@ It need not be unique, but it should be descriptive enough that you can tell job
 ***
 
 ### AWS GENERAL SETTINGS
+
 These are settings that will allow your instances to be configured correctly and access the resources they need- see [Step 0: Prep](step_0_prep.md) for more information.
 
 Bucket configurations allow you to read/write from/to different bucket in different accounts from where you are running DCP.
@@ -53,10 +54,15 @@ The minimum allowed is 22.
 If you have multiple Dockers running per machine, each Docker will have access to (EBS_VOL_SIZE/TASKS_PER_MACHINE)- 2 GB of space.
 * **DOWNLOAD_FILES:** Whether or not to download the image files to the EBS volume before processing, as opposed to accessing them all from S3FS.
 This typically requires a larger EBS volume (depending on the size of your image sets, and how many sets are processed per group), but avoids occasional issues with S3FS that can crop up on longer runs.
+* **ASSIGN_IP:** Whether or not to assign an a public IPv4 address to each instance in the spot fleet.
+If set to 'False' will overwrite whatever is in the Fleet file.
+If set to 'True' will respect whatever is in the Fleet file.
+Distributed-CellProfiler originally defaulted to assign an IP address to each instance so that one could connect to the instance for troubleshooting but that need has been obviated by the level of logging currently in DCP.
 
 ***
 
 ### DOCKER INSTANCE RUNNING ENVIRONMENT
+
 * **DOCKER_CORES:** How many copies of your script to run in each Docker container.
 * **CPU_SHARES:** How many CPUs each Docker container may have.
 * **MEMORY:** How much memory each Docker container may have.
@@ -83,8 +89,9 @@ See [Step 0: Prep](step_0_prep.med) for more information.
 
 ***
 
- ### MONITORING
- * **AUTO_MONITOR:** Whether or not to have Auto-Monitor automatically monitor your jobs.
+### MONITORING
+
+* **AUTO_MONITOR:** Whether or not to have Auto-Monitor automatically monitor your jobs.
 
 ***
 
@@ -111,6 +118,7 @@ Useful when trying to detect jobs that may have exported smaller corrupted files
 ***
 
 ### CELLPROFILER SETTINGS
+
 * **ALWAYS CONTINUE:** Whether or not to run CellProfiler with the --always-continue flag, which will keep CellProfiler from crashing if it errors.
 Use with caution.
 This can be particularly helpful in jobs where a large number of files are loaded in a single run (such as during illumination correction) so that a corrupted or missing file doesn't prevent the whole job completing.
@@ -120,6 +128,7 @@ We suggest using this setting in conjunction with a small number of JOB_RETRIES.
 ***
 
 ### PLUGINS
+
 * **USE_PLUGINS:** Whether or not you will be using external plugins from the CellProfiler-plugins repository.
 When True, passes the `--plugins-directory` flag to CellProfiler.
 Defaults to the current v1.0 `CellProfiler-plugins/active_plugins` location for plugins but will revert to the historical location of plugins in the `CellProfiler-plugins` root directory if the `active_plugins` folder is not present.
@@ -147,7 +156,7 @@ If you need to use deprecated plugin organization you can access previous commit
 
 ### EXAMPLE CONFIGURATIONS
 
-!(Sample_Distributed-CellProfiler_Configuration_1)[images/sample_DCP_config_1.png]
+![Sample_Distributed-CellProfiler_Configuration_1](images/sample_DCP_config_1.png)
 
 This is an example of one possible configuration.
 It's a fairly large machine that is able to process 64 jobs at the same time.
@@ -159,9 +168,9 @@ The Config settings for this example are:
 
 **DOCKER_CORES** = 4        (copies of CellProfiler to run inside a docker)  
 **CPU_SHARES** = 4096       (number of cores for each Docker * 1024)  
-**MEMORY** = 15000          (MB for each Docker)    
+**MEMORY** = 15000          (MB for each Docker)
 
-!(Sample_Distributed-CellProfiler_Configuration_2)[images/sample_DCP_config_2.png]
+![Sample_Distributed-CellProfiler_Configuration_2](images/sample_DCP_config_2.png)
 
 This is an example of another possible configuration.
 When we run Distributed CellProfiler we tend to prefer running a larger number of smaller machine.
@@ -175,4 +184,4 @@ The Config settings for this example are:
 
 **DOCKER_CORES** = 4        (copies of CellProfiler to run inside a docker)  
 **CPU_SHARES** = 4096       (number of cores for each Docker * 1024)  
-**MEMORY** = 15000          (MB for each Docker)    
+**MEMORY** = 15000          (MB for each Docker)

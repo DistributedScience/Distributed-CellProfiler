@@ -24,6 +24,7 @@ MACHINE_TYPE = ['m5.xlarge']
 MACHINE_PRICE = 0.20
 EBS_VOL_SIZE = 30                       # In GB.  Minimum allowed is 22.
 DOWNLOAD_FILES = 'False'
+ASSIGN_IP = 'False'                     # If false, will overwrite setting in Fleet file
 
 # DOCKER INSTANCE RUNNING ENVIRONMENT:
 DOCKER_CORES = 4                        # Number of CellProfiler processes to run inside a docker container

@@ -32,7 +32,7 @@
           "DeviceIndex": 0,
           "SubnetId": "subnet-WWWWWWWW",
           "DeleteOnTermination": true,
-          "AssociatePublicIpAddress": true,
+          "AssociatePublicIpAddress": false,
           "Groups": [
             "sg-ZZZZZZZZZ"
           ]
