@@ -596,7 +596,8 @@ def startCluster():
         spotfleetConfig['LaunchSpecifications'][LaunchSpecification]["UserData"]=userData
         spotfleetConfig['LaunchSpecifications'][LaunchSpecification]['BlockDeviceMappings'][1]['Ebs']["VolumeSize"]= EBS_VOL_SIZE
         spotfleetConfig['LaunchSpecifications'][LaunchSpecification]['InstanceType'] = MACHINE_TYPE[LaunchSpecification]
-    if not ASSIGN_IP:
+    if ASSIGN_IP.lower() == 'false':
+        print("Setting 'AssociatePublicIPAddress' to False, overwriting setting in Fleet file")
         try:
             spotfleetConfig['LaunchSpecifications'][0]['NetworkInterfaces'][0]['AssociatePublicIpAddress'] = False
         except:
