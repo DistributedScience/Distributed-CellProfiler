@@ -424,7 +424,17 @@ SQS queues are free to create and use up to 1 million requests/month.</p>
 <p><a class="reference internal" href="step_2_submit_jobs.html"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">submitJobs</span></code></span></a> places messages in the SQS queue which is free (under 1 million requests/month).</p>
 <p><a class="reference internal" href="step_3_start_cluster.html"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">startCluster</span></code></span></a> is the only command that incurs costs with initiation of your spot fleet request, creating machine alarms, and optionally creating a run dashboard.</p>
 <p>The spot fleet is the major cost of running Distributed-CellProfiler, exact pricing of which depends on the number of machines, type of machines, and duration of use.
-Your bid is configured in the <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">config file</span></a>.</p>
+Your bid is configured in the <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">config file</span></a>.
+Simple spot fleet configurations can be minimized by:</p>
+<ol class="arabic simple">
+<li><p>Optimize <code class="docutils literal notranslate"><span class="pre">MACHINE_TYPE</span></code> and <code class="docutils literal notranslate"><span class="pre">EBS_VOL_SIZE</span></code> based on the actual memory and harddrive needs of your run.</p></li>
+<li><p>When possible, mount your S3 bucket using S3FS so that you can set <code class="docutils literal notranslate"><span class="pre">DOWNLOAD_FILES</span> <span class="pre">=</span> <span class="pre">'False'</span></code> to not incur file egress costs.
+See <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">Step 1 Configuration</span></a> for more information.
+Data egress charges range for various reasons including traversing AWS regions and/or AWS availability zones but are <a class="reference external" href="https://aws.amazon.com/blogs/apn/aws-data-transfer-charges-for-server-and-serverless-architectures/">often $0.08–$0.12 per GB</a>.</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">ASSIGN_IP</span> <span class="pre">=</span> <span class="pre">'False'</span></code> so that you don’t pay for IPv4 addresses per EC2 instance in your spot fleet.
+Public IPv4 costs are minimal (<a class="reference external" href="https://aws.amazon.com/blogs/aws/new-aws-public-ipv4-address-charge-public-ip-insights/">$0.005/IP/hour as of February 1, 2024</a>) but there is no need to incur even this minimal cost unless you have a specific need for it.
+See <a class="reference internal" href="step_1_configuration.html"><span class="doc std std-doc">Step 1 Configuration</span></a> for more information.</p></li>
+</ol>
 <p>Spot fleet costs can be minimized/stopped in multiple ways:</p>
 <ol class="arabic simple">
 <li><p>We encourage the use of <a class="reference internal" href="step_4_monitor.html"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">monitor</span></code></span></a> during your job to help minimize the spot fleet cost as it automatically scales down your spot fleet request as your job queue empties and cancels your spot fleet request when you have no more jobs in the queue.

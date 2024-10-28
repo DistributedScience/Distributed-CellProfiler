@@ -594,7 +594,15 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘False’</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>DOCKER_CORES</p></td>
+<tr class="row-even"><td><p>ASSIGN_IP</p></td>
+<td><p>‘False’</p></td>
+<td><p>‘False’</p></td>
+<td><p>‘False’</p></td>
+<td><p>‘False’</p></td>
+<td><p>‘False’</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>DOCKER_CORES</p></td>
 <td><p>4</p></td>
 <td><p>4</p></td>
 <td><p>4</p></td>
@@ -602,7 +610,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>3</p></td>
 <td><p>If using c class machines and large images (2k + pixels) then you might need to reduce this number.</p></td>
 </tr>
-<tr class="row-odd"><td><p>CPU_SHARES</p></td>
+<tr class="row-even"><td><p>CPU_SHARES</p></td>
 <td><p>DOCKER_CORES * 1024</p></td>
 <td><p>DOCKER_CORES * 1024</p></td>
 <td><p>DOCKER_CORES * 1024</p></td>
@@ -610,7 +618,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>DOCKER_CORES * 1024</p></td>
 <td><p>We never change this.</p></td>
 </tr>
-<tr class="row-even"><td><p>MEMORY</p></td>
+<tr class="row-odd"><td><p>MEMORY</p></td>
 <td><p>7500</p></td>
 <td><p>7500</p></td>
 <td><p>7500</p></td>
@@ -618,7 +626,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>7500</p></td>
 <td><p>This must match your machine type. m class use 15000, c class use 7500.</p></td>
 </tr>
-<tr class="row-odd"><td><p>SECONDS_TO_START</p></td>
+<tr class="row-even"><td><p>SECONDS_TO_START</p></td>
 <td><p>60</p></td>
 <td><p>3*60</p></td>
 <td><p>60</p></td>
@@ -626,7 +634,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>3*60</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>SQS_QUEUE_NAME</p></td>
+<tr class="row-odd"><td><p>SQS_QUEUE_NAME</p></td>
 <td><p>APP_NAME + ‘Queue’</p></td>
 <td><p>APP_NAME + ‘Queue’</p></td>
 <td><p>APP_NAME + ‘Queue’</p></td>
@@ -634,7 +642,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>APP_NAME + ‘Queue’</p></td>
 <td><p>We never change this.</p></td>
 </tr>
-<tr class="row-odd"><td><p>SQS_MESSAGE_VISIBILITY</p></td>
+<tr class="row-even"><td><p>SQS_MESSAGE_VISIBILITY</p></td>
 <td><p>3*60</p></td>
 <td><p>240*60</p></td>
 <td><p>15*60</p></td>
@@ -642,7 +650,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>120*60</p></td>
 <td><p>About how long you expect a job to take * 1.5 in seconds</p></td>
 </tr>
-<tr class="row-even"><td><p>SQS_DEAD_LETTER_QUEUE</p></td>
+<tr class="row-odd"><td><p>SQS_DEAD_LETTER_QUEUE</p></td>
 <td><p>‘YOURNAME_DEADMESSAGES’</p></td>
 <td><p>‘YOURNAME_DEADMESSAGES’</p></td>
 <td><p>‘YOURNAME_DEADMESSAGES’</p></td>
@@ -650,7 +658,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘YOURNAME_DEADMESSAGES’</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p>JOB_RETRIES</p></td>
+<tr class="row-even"><td><p>JOB_RETRIES</p></td>
 <td><p>3</p></td>
 <td><p>3</p></td>
 <td><p>3</p></td>
@@ -658,7 +666,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>3</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>AUTO_MONITOR</p></td>
+<tr class="row-odd"><td><p>AUTO_MONITOR</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
@@ -666,7 +674,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘True’</p></td>
 <td><p>Can be turned off if manually running Monitor.</p></td>
 </tr>
-<tr class="row-odd"><td><p>CREATE_DASHBOARD</p></td>
+<tr class="row-even"><td><p>CREATE_DASHBOARD</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
@@ -674,7 +682,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘True’</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p>CLEAN_DASHBOARD</p></td>
+<tr class="row-odd"><td><p>CLEAN_DASHBOARD</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
@@ -682,7 +690,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘True’</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p>CHECK_IF_DONE_BOOL</p></td>
+<tr class="row-even"><td><p>CHECK_IF_DONE_BOOL</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
 <td><p>‘True’</p></td>
@@ -690,7 +698,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘True’</p></td>
 <td><p>Can be turned off if wanting to overwrite old data.</p></td>
 </tr>
-<tr class="row-even"><td><p>EXPECTED_NUMBER_FILES</p></td>
+<tr class="row-odd"><td><p>EXPECTED_NUMBER_FILES</p></td>
 <td><p>1 (an image)</p></td>
 <td><p>number channels + 1 (an .npy for each channel and isdone)</p></td>
 <td><p>3 (Experiment.csv, Image.csv, and isdone)</p></td>
@@ -698,7 +706,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>5 (Experiment, Image, Cells, Nuclei, and Cytoplasm .csvs)</p></td>
 <td><p>Better to underestimate than overestimate.</p></td>
 </tr>
-<tr class="row-odd"><td><p>MIN_FILE_SIZE_BYTES</p></td>
+<tr class="row-even"><td><p>MIN_FILE_SIZE_BYTES</p></td>
 <td><p>1</p></td>
 <td><p>1</p></td>
 <td><p>1</p></td>
@@ -706,7 +714,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>1</p></td>
 <td><p>Count files of any size.</p></td>
 </tr>
-<tr class="row-even"><td><p>NECESSARY_STRING</p></td>
+<tr class="row-odd"><td><p>NECESSARY_STRING</p></td>
 <td><p>‘’</p></td>
 <td><p>‘’</p></td>
 <td><p>‘’</p></td>
@@ -714,7 +722,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘’</p></td>
 <td><p>Not necessary for standard workflows.</p></td>
 </tr>
-<tr class="row-odd"><td><p>ALWAYS_CONTINUE</p></td>
+<tr class="row-even"><td><p>ALWAYS_CONTINUE</p></td>
 <td><p>‘False’</p></td>
 <td><p>‘False’</p></td>
 <td><p>‘False’</p></td>
@@ -722,7 +730,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘False’</p></td>
 <td><p>Use with caution.</p></td>
 </tr>
-<tr class="row-even"><td><p>USE_PLUGINS</p></td>
+<tr class="row-odd"><td><p>USE_PLUGINS</p></td>
 <td><p>‘False’</p></td>
 <td><p>‘False’</p></td>
 <td><p>‘False’</p></td>
@@ -730,7 +738,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘False’</p></td>
 <td><p>Not necessary for standard workflows.</p></td>
 </tr>
-<tr class="row-odd"><td><p>UPDATE_PLUGINS</p></td>
+<tr class="row-even"><td><p>UPDATE_PLUGINS</p></td>
 <td><p>‘False’</p></td>
 <td><p>‘False’</p></td>
 <td><p>‘False’</p></td>
@@ -738,7 +746,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘False’</p></td>
 <td><p>Not necessary for standard workflows.</p></td>
 </tr>
-<tr class="row-even"><td><p>PLUGINS_COMMIT</p></td>
+<tr class="row-odd"><td><p>PLUGINS_COMMIT</p></td>
 <td><p>‘’</p></td>
 <td><p>‘’</p></td>
 <td><p>‘’</p></td>
@@ -746,7 +754,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘’</p></td>
 <td><p>Not necessary for standard workflows.</p></td>
 </tr>
-<tr class="row-odd"><td><p>INSTALL_REQUIREMENTS</p></td>
+<tr class="row-even"><td><p>INSTALL_REQUIREMENTS</p></td>
 <td><p>‘False’</p></td>
 <td><p>‘False’</p></td>
 <td><p>‘False’</p></td>
@@ -754,7 +762,7 @@ A standard pipeline can be found <a class="reference external" href="https://git
 <td><p>‘False’</p></td>
 <td><p>Not necessary for standard workflows.</p></td>
 </tr>
-<tr class="row-even"><td><p>REQUIREMENTS_FILE</p></td>
+<tr class="row-odd"><td><p>REQUIREMENTS_FILE</p></td>
 <td><p>‘’</p></td>
 <td><p>‘’</p></td>
 <td><p>‘’</p></td>

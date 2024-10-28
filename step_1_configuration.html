@@ -486,12 +486,19 @@ Distinct clusters for each job are not necessary, but if you’re running multip
 <li><p><strong>MACHINE_TYPE:</strong> A list of what type(s) of machines your spot fleet should contain.</p></li>
 <li><p><strong>MACHINE_PRICE:</strong> How much you’re willing to pay per hour for each machine launched.
 AWS has a handy <a class="reference external" href="https://console.aws.amazon.com/ec2sp/v1/spot/home">price history tracker</a> you can use to make a reasonable estimate of how much to bid.
-If your jobs complete quickly and/or you don’t need the data immediately you can reduce your bid accordingly; jobs that may take many hours to finish or that you need results from immediately may justify a higher bid.</p></li>
+If your jobs complete quickly and/or you don’t need the data immediately you can reduce your bid accordingly; jobs that may take many hours to finish or that you need results from immediately may justify a higher bid.
+See also <a class="reference external" href="https://aws.amazon.com/ec2/pricing/on-demand/">AWS on-demand pricing</a> to compare the cost savings of using spot fleets.</p></li>
 <li><p><strong>EBS_VOL_SIZE:</strong> The size of the temporary hard drive associated with each EC2 instance in GB.
 The minimum allowed is 22.
 If you have multiple Dockers running per machine, each Docker will have access to (EBS_VOL_SIZE/TASKS_PER_MACHINE)- 2 GB of space.</p></li>
 <li><p><strong>DOWNLOAD_FILES:</strong> Whether or not to download the image files to the EBS volume before processing, as opposed to accessing them all from S3FS.
-This typically requires a larger EBS volume (depending on the size of your image sets, and how many sets are processed per group), but avoids occasional issues with S3FS that can crop up on longer runs.</p></li>
+This typically requires a larger EBS volume (depending on the size of your image sets, and how many sets are processed per group), but avoids occasional issues with S3FS that can crop up on longer runs.
+By default, DCP uses S3FS to mount the S3 <code class="docutils literal notranslate"><span class="pre">SOURCE_BUCKET</span></code> as a pseudo-file system on each EC2 instance in your spot fleet to avoid file download.
+If you are unable to mount the <code class="docutils literal notranslate"><span class="pre">SOURCE_BUCKET</span></code> (perhaps because of a permissions issue) you should proceed with <code class="docutils literal notranslate"><span class="pre">DOWNLOAD_FILES</span> <span class="pre">=</span> <span class="pre">'True'</span></code>.</p></li>
+<li><p><strong>ASSIGN_IP:</strong> Whether or not to assign an a public IPv4 address to each instance in the spot fleet.
+If set to ‘False’ will overwrite whatever is in the Fleet file.
+If set to ‘True’ will respect whatever is in the Fleet file.
+Distributed-CellProfiler originally defaulted to assign an IP address to each instance so that one could connect to the instance for troubleshooting but that need has been mostly obviated by the level of logging currently in DCP.</p></li>
 </ul>
 </section>
 <hr class="docutils" />
@@ -596,7 +603,7 @@ If you need to use deprecated plugin organization you can access previous commit
 <hr class="docutils" />
 <section id="example-configurations">
 <h3>EXAMPLE CONFIGURATIONS<a class="headerlink" href="#example-configurations" title="Permalink to this heading">#</a></h3>
-<p>!(Sample_Distributed-CellProfiler_Configuration_1)[images/sample_DCP_config_1.png]</p>
+<p><img alt="Sample_Distributed-CellProfiler_Configuration_1" src="_images/sample_DCP_config_1.png" /></p>
 <p>This is an example of one possible configuration.
 It’s a fairly large machine that is able to process 64 jobs at the same time.</p>
 <p>The Config settings for this example are:<br />
@@ -606,7 +613,7 @@ It’s a fairly large machine that is able to process 64 jobs at the same time.<
 <p><strong>DOCKER_CORES</strong> = 4        (copies of CellProfiler to run inside a docker)<br />
 <strong>CPU_SHARES</strong> = 4096       (number of cores for each Docker * 1024)<br />
 <strong>MEMORY</strong> = 15000          (MB for each Docker)</p>
-<p>!(Sample_Distributed-CellProfiler_Configuration_2)[images/sample_DCP_config_2.png]</p>
+<p><img alt="Sample_Distributed-CellProfiler_Configuration_2" src="_images/sample_DCP_config_2.png" /></p>
 <p>This is an example of another possible configuration.
 When we run Distributed CellProfiler we tend to prefer running a larger number of smaller machine.
 This is an example of a configuration we often use.
