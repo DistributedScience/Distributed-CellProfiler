@@ -21,6 +21,7 @@ AUTO_MONITOR = 'False'
 REQUIREMENTS_FILE = False
 ALWAYS_CONTINUE = 'False'
 JOB_RETRIES = 10
+ASSIGN_IP = 'True'
 
 from config import *
 
@@ -595,7 +596,11 @@ def startCluster():
         spotfleetConfig['LaunchSpecifications'][LaunchSpecification]["UserData"]=userData
         spotfleetConfig['LaunchSpecifications'][LaunchSpecification]['BlockDeviceMappings'][1]['Ebs']["VolumeSize"]= EBS_VOL_SIZE
         spotfleetConfig['LaunchSpecifications'][LaunchSpecification]['InstanceType'] = MACHINE_TYPE[LaunchSpecification]
-
+    if not ASSIGN_IP:
+        try:
+            spotfleetConfig['LaunchSpecifications'][0]['NetworkInterfaces'][0]['AssociatePublicIpAddress'] = False
+        except:
+            print("Couldn't add or overwrite 'AssociatePublicIpAddress' to False in spot fleet config.")
 
     # Step 2: make the spot fleet request
     ec2client=boto3.client('ec2')
