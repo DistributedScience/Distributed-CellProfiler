@@ -16,7 +16,11 @@ Simple spot fleet configurations can be minimized by:
 
 1) Optimize `MACHINE_TYPE` and `EBS_VOL_SIZE` based on the actual memory and harddrive needs of your run.
 2) When possible, mount your S3 bucket using S3FS so that you can set `DOWNLOAD_FILES = 'False'` to not incur file egress costs.
+See [Step 1 Configuration](step_1_configuration.md) for more information.
+Data egress charges range for various reasons including traversing AWS regions and/or AWS availability zones but are [often $0.08–$0.12 per GB](https://aws.amazon.com/blogs/apn/aws-data-transfer-charges-for-server-and-serverless-architectures/).
 3) Set `ASSIGN_IP = 'False'` so that you don't pay for IPv4 addresses per EC2 instance in your spot fleet.
+Public IPv4 costs are minimal ([$0.005/IP/hour as of February 1, 2024](https://aws.amazon.com/blogs/aws/new-aws-public-ipv4-address-charge-public-ip-insights/)) but there is no need to incur even this minimal cost unless you have a specific need for it.
+See [Step 1 Configuration](step_1_configuration.md) for more information.
 
 Spot fleet costs can be minimized/stopped in multiple ways:
 

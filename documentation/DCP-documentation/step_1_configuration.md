@@ -49,15 +49,18 @@ Distinct clusters for each job are not necessary, but if you're running multiple
 * **MACHINE_PRICE:** How much you're willing to pay per hour for each machine launched.
 AWS has a handy [price history tracker](https://console.aws.amazon.com/ec2sp/v1/spot/home) you can use to make a reasonable estimate of how much to bid.
 If your jobs complete quickly and/or you don't need the data immediately you can reduce your bid accordingly; jobs that may take many hours to finish or that you need results from immediately may justify a higher bid.
+See also [AWS on-demand pricing](https://aws.amazon.com/ec2/pricing/on-demand/) to compare the cost savings of using spot fleets.
 * **EBS_VOL_SIZE:** The size of the temporary hard drive associated with each EC2 instance in GB.
 The minimum allowed is 22.
 If you have multiple Dockers running per machine, each Docker will have access to (EBS_VOL_SIZE/TASKS_PER_MACHINE)- 2 GB of space.
 * **DOWNLOAD_FILES:** Whether or not to download the image files to the EBS volume before processing, as opposed to accessing them all from S3FS.
 This typically requires a larger EBS volume (depending on the size of your image sets, and how many sets are processed per group), but avoids occasional issues with S3FS that can crop up on longer runs.
+By default, DCP uses S3FS to mount the S3 `SOURCE_BUCKET` as a pseudo-file system on each EC2 instance in your spot fleet to avoid file download.
+If you are unable to mount the `SOURCE_BUCKET` (perhaps because of a permissions issue) you should proceed with `DOWNLOAD_FILES = 'True'`.
 * **ASSIGN_IP:** Whether or not to assign an a public IPv4 address to each instance in the spot fleet.
 If set to 'False' will overwrite whatever is in the Fleet file.
 If set to 'True' will respect whatever is in the Fleet file.
-Distributed-CellProfiler originally defaulted to assign an IP address to each instance so that one could connect to the instance for troubleshooting but that need has been obviated by the level of logging currently in DCP.
+Distributed-CellProfiler originally defaulted to assign an IP address to each instance so that one could connect to the instance for troubleshooting but that need has been mostly obviated by the level of logging currently in DCP.
 
 ***
 
