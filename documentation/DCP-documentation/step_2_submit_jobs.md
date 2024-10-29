@@ -61,9 +61,6 @@ As of Distributed-CellProfiler 2.2.0, `run_batch_general.py` has been reformatte
 
 * `step` is the step that you would like to make jobs for.
 Supported steps are `zproj`, `illum`, `qc`, `qc_persite`, `assaydev`, and`analysis`
-* `path_style` is the style of the input and output paths.
-Supported options are `default` or `cpg` (for Cell Painting Gallery structure).
-All paths can be overwritten with flags (see below).
 * `identifier` is the project identifier (e.g. "cpg0000-jump-pilot" or "2024_11_07_Collaborator_Cell_Painting")
 * `batch` is the name of the data batch (e.g. "2020_11_04_CPJUMP1")
 * `platelist` is the list of plates to process.
@@ -71,14 +68,20 @@ Format the list in quotes with individual plates separated by commas and no spac
 
 A minimal `run_batch_general.py` command may look like:
 """bash
-run_batch_general.py analysis default 2024_05_16_Segmentation_Project 2024_10_10_Batch1 "Plate1,Plate2,Plate3"
+run_batch_general.py analysis 2024_05_16_Segmentation_Project 2024_10_10_Batch1 "Plate1,Plate2,Plate3"
 """
 
 ### Required input for Cell Painting Gallery
 
-Runs being made off of the Cell Painting Gallery require the additional flag of `--source <value>` to specify the identifier-specific source of the data.
+Runs being made off of the Cell Painting Gallery require two additional flags:
+
+* `--source <value>` to specify the identifier-specific source of the data.
+* `--path-style cpg` is to set the input and output paths as data is structured in the Cell Painting Gallery.
+All paths can be overwritten with flags (see below).
+
+A minimal `run_batch_general.py` command for a dataset on the Cell Painting Gallery may look like:
 """bash
-run_batch_general.py analysis cpg cpg0000-jump-pilot 2020_11_04_CPJUMP1 "BR00116991,BR00116992" --source broad
+run_batch_general.py analysis cpg0000-jump-pilot 2020_11_04_CPJUMP1 "BR00116991,BR00116992" --path-style cpg --source broad
 """
 
 ### Plate layout flags

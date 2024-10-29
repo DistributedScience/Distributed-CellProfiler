@@ -27,10 +27,10 @@ class JobQueue():
 
 def run_batch_general(
     step,  # (zproj, illum, qc, qc_persite, assaydev, or analysis)
-    path_style="",  # ("cpg" or "default")
     identifier="",  # (e.g. cpg0000-jump-pilot)
     batch="",  # (e.g. 2020_11_04_CPJUMP1)
     platelist=[],  # (e.g. ['Plate1','Plate2'])
+    path_style="default",  # ("cpg" or "default")
     source="",  # (e.g. source_4, broad. Only with path_style=="cpg")
     plate_format="",  # (96 or 384. Overwrites rows and columns if passed. Not used by illum.)
     rows=list(string.ascii_uppercase)[0:16], # (Not used by illum.)
@@ -514,13 +514,15 @@ if __name__ == "__main__":
         "step",
         help="Step to make jobs for. Supported steps are zproj, illum, qc, qc_persite, assaydev, analysis",
     )
-    parser.add_argument(
-        "path_style",
-        help="Style of input/output path. default or cpg (for Cell Painting Gallery structure).",
-    )
     parser.add_argument("identifier", help="Project identifier")
     parser.add_argument("batch", help="Name of batch")
     parser.add_argument("platelist", type=lambda s: list(s.split(",")), help="List of plates to process")
+    parser.add_argument(
+        "--path-style",
+        dest="path_style",
+        default="default",
+        help="Style of input/output path. default or cpg (for Cell Painting Gallery structure).",
+    )
     parser.add_argument(
         "--source",
         dest="source",
