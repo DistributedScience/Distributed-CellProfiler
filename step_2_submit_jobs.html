@@ -415,7 +415,15 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuring-your-job-file">Configuring your job file</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alternate-job-submission-run-batch-general-py">Alternate job submission: run_batch_general.py</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alternate-job-submission-run-batch-general-py">Alternate job submission: run_batch_general.py</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#required-inputs">Required inputs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#required-input-for-cell-painting-gallery">Required input for Cell Painting Gallery</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plate-layout-flags">Plate layout flags</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overwrite-structural-defaults">Overwrite structural defaults</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overwrite-defaults-for-runs-using-load-data-csv-s-and-cppipe">Overwrite defaults (for runs using load data .csv’s and .cppipe)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overwrite-defaults-for-runs-using-h5-batch-files">Overwrite defaults (for runs using .h5 batch files)</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -481,6 +489,81 @@ Note that for job files that specify groupings in this way, the <code class="doc
 This file essentially serves as a “shortcut” to run many common types of stereotyped experiments we run in our lab.
 Essentially, if your data follows a regular structure (such as N rows, N columns, N grouping, a particular structure for output, etc.), you may find it useful to take and modify this file for your own usage.<br />
 We recommend new users use the <code class="docutils literal notranslate"><span class="pre">submitJobs</span></code> pathway, as it will help users understand the kinds of information Distributed-CellProfiler needs in order to run properly, but once they are comfortable with it they may find <code class="docutils literal notranslate"><span class="pre">run_batch_general.py</span></code> helps them create jobs faster in the future.</p>
+<p>As of Distributed-CellProfiler 2.2.0, <code class="docutils literal notranslate"><span class="pre">run_batch_general.py</span></code> has been reformatted as a CLI tool with greatly enhanced customizeability.
+<code class="docutils literal notranslate"><span class="pre">run_batch_general.py</span></code> must be passed 5 pieces of information:</p>
+<section id="required-inputs">
+<h3>Required inputs<a class="headerlink" href="#required-inputs" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">step</span></code> is the step that you would like to make jobs for.
+Supported steps are <code class="docutils literal notranslate"><span class="pre">zproj</span></code>, <code class="docutils literal notranslate"><span class="pre">illum</span></code>, <code class="docutils literal notranslate"><span class="pre">qc</span></code>, <code class="docutils literal notranslate"><span class="pre">qc_persite</span></code>, <code class="docutils literal notranslate"><span class="pre">assaydev</span></code>, and<code class="docutils literal notranslate"><span class="pre">analysis</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">identifier</span></code> is the project identifier (e.g. “cpg0000-jump-pilot” or “2024_11_07_Collaborator_Cell_Painting”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch</span></code> is the name of the data batch (e.g. “2020_11_04_CPJUMP1”)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">platelist</span></code> is the list of plates to process.
+Format the list in quotes with individual plates separated by commas and no spaces (e.g. “Plate1,Plate2,Plate3”)</p></li>
+</ul>
+<p>A minimal <code class="docutils literal notranslate"><span class="pre">run_batch_general.py</span></code> command may look like:
+“””bash
+run_batch_general.py analysis 2024_05_16_Segmentation_Project 2024_10_10_Batch1 “Plate1,Plate2,Plate3”
+“””</p>
+</section>
+<section id="required-input-for-cell-painting-gallery">
+<h3>Required input for Cell Painting Gallery<a class="headerlink" href="#required-input-for-cell-painting-gallery" title="Permalink to this heading">#</a></h3>
+<p>Runs being made off of the Cell Painting Gallery require two additional flags:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--source</span> <span class="pre">&lt;value&gt;</span></code> to specify the identifier-specific source of the data.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--path-style</span> <span class="pre">cpg</span></code> is to set the input and output paths as data is structured in the Cell Painting Gallery.
+All paths can be overwritten with flags (see below).</p></li>
+</ul>
+<p>A minimal <code class="docutils literal notranslate"><span class="pre">run_batch_general.py</span></code> command for a dataset on the Cell Painting Gallery may look like:
+“””bash
+run_batch_general.py analysis cpg0000-jump-pilot 2020_11_04_CPJUMP1 “BR00116991,BR00116992” –path-style cpg –source broad
+“””</p>
+</section>
+<section id="plate-layout-flags">
+<h3>Plate layout flags<a class="headerlink" href="#plate-layout-flags" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--plate-format</span> <span class="pre">&lt;value&gt;</span></code>: if used, can be <code class="docutils literal notranslate"><span class="pre">96</span></code> or <code class="docutils literal notranslate"><span class="pre">384</span></code> and will overwrite <code class="docutils literal notranslate"><span class="pre">rows</span></code> and <code class="docutils literal notranslate"><span class="pre">columns</span></code> to produce standard 96- or 384-well plate well names (e.g. A01, A02, etc.)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--rows</span> <span class="pre">&lt;value&gt;</span></code>: a custom list of row labels.
+Will be combined with <code class="docutils literal notranslate"><span class="pre">columns</span></code> to generate well names.
+Separate values with commas and no spaces and surround with quotation marks (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;A,B,C,D,E,F,G&quot;</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--columns</span> <span class="pre">&lt;value&gt;</span></code>: a custom list of column labels.
+Will be combined with <code class="docutils literal notranslate"><span class="pre">rows</span></code> to generate well names.
+Separate values with commas and no spaces and surround with quotation marks (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;1,2,3,4,5,6,7,8,9,10&quot;</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--wells</span> <span class="pre">&lt;value&gt;</span></code>: a custom list of wells.
+Overwrites <code class="docutils literal notranslate"><span class="pre">rows</span></code> and <code class="docutils literal notranslate"><span class="pre">columns</span></code>.
+Separate values with commas and no spaces and surround with quotation marks (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;C02,D04,E04,N12&quot;</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--no-well-digit-pad</span></code>: Formats wells without well digit padding.
+Formats wells passed with <code class="docutils literal notranslate"><span class="pre">--plate</span> <span class="pre">format</span></code> or <code class="docutils literal notranslate"><span class="pre">--rows</span></code> and <code class="docutils literal notranslate"><span class="pre">--columns</span></code> but not <code class="docutils literal notranslate"><span class="pre">--wells</span></code>.
+(e.g. <code class="docutils literal notranslate"><span class="pre">A1</span></code> NOT <code class="docutils literal notranslate"><span class="pre">A01</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--sites</span> <span class="pre">&lt;value&gt;</span></code>: a custom list of sites (fields of view) to be analyzed.
+Separate values with commas and no spaces and surround with quotation marks (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;1,2,3,4,5,6&quot;</span></code>)</p></li>
+</ul>
+</section>
+<section id="overwrite-structural-defaults">
+<h3>Overwrite structural defaults<a class="headerlink" href="#overwrite-structural-defaults" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--output-structure</span> <span class="pre">&lt;value&gt;</span></code>: overwrite default output structure</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--output-path</span> <span class="pre">&lt;value&gt;</span></code>: overwrite default output path</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--input-path</span> <span class="pre">&lt;value&gt;</span></code>: overwrite the default path to input files</p></li>
+</ul>
+</section>
+<section id="overwrite-defaults-for-runs-using-load-data-csv-s-and-cppipe">
+<h3>Overwrite defaults (for runs using load data .csv’s and .cppipe)<a class="headerlink" href="#overwrite-defaults-for-runs-using-load-data-csv-s-and-cppipe" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--pipeline</span> <span class="pre">&lt;value&gt;</span></code>: overwrite the default pipeline name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--pipeline-path</span> <span class="pre">&lt;value&gt;</span></code>: overwrite the default path to pipelines</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--datafile-name</span> <span class="pre">&lt;value&gt;</span></code>: overwrite the default load data .csv name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--datafile-path</span> <span class="pre">&lt;value&gt;</span></code>: overwrite the default path to load data files</p></li>
+</ul>
+</section>
+<section id="overwrite-defaults-for-runs-using-h5-batch-files">
+<h3>Overwrite defaults (for runs using .h5 batch files)<a class="headerlink" href="#overwrite-defaults-for-runs-using-h5-batch-files" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--use-batch</span></code>: use h5 batch files instead of load data csv and .cppipe files</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--batchfile-name</span> <span class="pre">&lt;value&gt;</span></code>: overwrite default batchfile name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--batchfile-path</span> <span class="pre">&lt;value&gt;</span></code>: overwrite default path to the batchfile</p></li>
+</ul>
+</section>
 </section>
 <div class="toctree-wrapper compound">
 </div>
@@ -551,7 +634,15 @@ We recommend new users use the <code class="docutils literal notranslate"><span 
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuring-your-job-file">Configuring your job file</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alternate-job-submission-run-batch-general-py">Alternate job submission: run_batch_general.py</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alternate-job-submission-run-batch-general-py">Alternate job submission: run_batch_general.py</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#required-inputs">Required inputs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#required-input-for-cell-painting-gallery">Required input for Cell Painting Gallery</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plate-layout-flags">Plate layout flags</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overwrite-structural-defaults">Overwrite structural defaults</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overwrite-defaults-for-runs-using-load-data-csv-s-and-cppipe">Overwrite defaults (for runs using load data .csv’s and .cppipe)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#overwrite-defaults-for-runs-using-h5-batch-files">Overwrite defaults (for runs using .h5 batch files)</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
