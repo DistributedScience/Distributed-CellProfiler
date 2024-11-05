@@ -4,7 +4,7 @@ APP_NAME = 'DistributedCP'                # Used to generate derivative names un
 LOG_GROUP_NAME = APP_NAME
 
 # DOCKER REGISTRY INFORMATION:
-DOCKERHUB_TAG = 'cellprofiler/distributed-cellprofiler:2.0.0_4.2.4'
+DOCKERHUB_TAG = 'cellprofiler/distributed-cellprofiler:2.2.0_4.2.8'
 
 # AWS GENERAL SETTINGS:
 AWS_REGION = 'us-east-1'

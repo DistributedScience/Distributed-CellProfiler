@@ -30,7 +30,7 @@ Our internal configurations for each pipeline are as follows:
 |---|---|---|---|---|---|---|
 | APP_NAME | 'PROJECT_NAME_Zproj' |'PROJECT_NAME_Illum' | 'PROJECT_NAME_QC' |' PROJECT_NAME_AssayDev' | 'PROJECT_NAME_Analysis' | If the PROJECT_NAME is excessively long you can enter a truncated version of it here but you will need to be careful to use the correct version in subsequent steps in the protocol. (e.g. 2021_06_08_WCPC_Zproj) |
 | LOG_GROUP_NAME | APP_NAME | APP_NAME | APP_NAME | APP_NAME |APP_NAME | We never change this. |
-| DOCKERHUB_TAG | 'cellprofiler/distributed-cellprofiler:2.0.0_4.2.4' | 'cellprofiler/distributed-cellprofiler:2.0.0_4.2.4' | 'cellprofiler/distributed-cellprofiler:2.0.0_4.2.4' | 'cellprofiler/distributed-cellprofiler:2.0.0_4.2.4' | 'cellprofiler/distributed-cellprofiler:2.0.0_4.2.4' | Ensure the CP tag number matches the version of CellProfiler for your pipeline (can easily see by opening the pipeline in a text editor and looking for the 3rd line “DateRevision: 413”). |
+| DOCKERHUB_TAG | 'cellprofiler/distributed-cellprofiler:2.2.0_4.2.8' | 'cellprofiler/distributed-cellprofiler:2.2.0_4.2.8' | 'cellprofiler/distributed-cellprofiler:2.2.0_4.2.8' | 'cellprofiler/distributed-cellprofiler:2.2.0_4.2.8' | 'cellprofiler/distributed-cellprofiler:2.2.0_4.2.8' | Ensure the CP tag number matches the version of CellProfiler for your pipeline (can easily see by opening the pipeline in a text editor and looking for the 3rd line “DateRevision: 413”). |
 | AWS_REGION | 'us-east-1' | 'us-east-1' | 'us-east-1' | 'us-east-1' | 'us-east-1' |  |
 | AWS_PROFILE | 'default' | 'default' | 'default' | 'default' | 'default' |  |
 | SSH_KEY_NAME | 'YOURPEM.pem' | 'YOURPEM.pem' | 'YOURPEM.pem' | 'YOURPEM.pem' | 'YOURPEM.pem' |   |
