@@ -38,14 +38,14 @@ Job files that don't include it will use the default structure.
 For large numbers of groups, it may be helpful to create this list separately as a .txt file you can then append into the job's JSON file.
 You may create this yourself in your favorite scripting language.
 Alternatively, you can use the following additional tools to help you create and format this list:
-    * `batches.sh` allows you to provide a list of all the individual metadata components (plates, columns, rows, etc).
+  * `batches.sh` allows you to provide a list of all the individual metadata components (plates, columns, rows, etc).
     It then uses [GNU parallel](https://www.gnu.org/software/parallel/parallel_tutorial.html) to create a formatted text file with all the possible combinations of the components you provided.
     This approach is best when you have a large number of groups and the group structure is uniform.
 
       Example: for a 96-well plate experiment where one there are 3 plates and the experiment is grouped by Plate and Well, `batches.sh` would read:
-        `parallel echo '{\"Metadata\": \"Metadata_Plate={1},Metadata_Well={2}{3}\"},' ::: Plate1 Plate2 Plate3 ::: A B C D E F G H ::: 01 02 03 04 05 06 07 08 09 10 11 12 | sort > batches.txt`      
-    * You may also use the list of groupings created by calling `cellprofiler --print-groups` from the command line (see [here](https://github.com/CellProfiler/CellProfiler/wiki/Adapting-CellProfiler-to-a-LIMS-environment#cmd) and [here](https://github.com/CellProfiler/Distributed-CellProfiler/issues/52) for more information).  
-    Note that for job files that specify groupings in this way, the `output_structure` variable is NOT optional - it must be specified or an error will be returned.
+        `parallel echo '{\"Metadata\": \"Metadata_Plate={1},Metadata_Well={2}{3}\"},' ::: Plate1 Plate2 Plate3 ::: A B C D E F G H ::: 01 02 03 04 05 06 07 08 09 10 11 12 | sort > batches.txt`
+  * You may also use the list of groupings created by calling `cellprofiler --print-groups` from the command line (see [here](https://github.com/CellProfiler/CellProfiler/wiki/Adapting-CellProfiler-to-a-LIMS-environment#cmd) and [here](https://github.com/CellProfiler/Distributed-CellProfiler/issues/52) for more information).  
+  Note that for job files that specify groupings in this way, the `output_structure` variable is NOT optional - it must be specified or an error will be returned.
 
 ## Alternate job submission: run_batch_general.py
 
@@ -53,3 +53,70 @@ We also support an alternate second path besides `submitJobs` to create the list
 This file essentially serves as a "shortcut" to run many common types of stereotyped experiments we run in our lab.
 Essentially, if your data follows a regular structure (such as N rows, N columns, N grouping, a particular structure for output, etc.), you may find it useful to take and modify this file for your own usage.  
 We recommend new users use the `submitJobs` pathway, as it will help users understand the kinds of information Distributed-CellProfiler needs in order to run properly, but once they are comfortable with it they may find `run_batch_general.py` helps them create jobs faster in the future.
+
+As of Distributed-CellProfiler 2.2.0, `run_batch_general.py` has been reformatted as a CLI tool with greatly enhanced customizeability.
+`run_batch_general.py` must be passed 5 pieces of information:
+
+### Required inputs
+
+* `step` is the step that you would like to make jobs for.
+Supported steps are `zproj`, `illum`, `qc`, `qc_persite`, `assaydev`, and`analysis`
+* `identifier` is the project identifier (e.g. "cpg0000-jump-pilot" or "2024_11_07_Collaborator_Cell_Painting")
+* `batch` is the name of the data batch (e.g. "2020_11_04_CPJUMP1")
+* `platelist` is the list of plates to process.
+Format the list in quotes with individual plates separated by commas and no spaces (e.g. "Plate1,Plate2,Plate3")
+
+A minimal `run_batch_general.py` command may look like:
+"""bash
+run_batch_general.py analysis 2024_05_16_Segmentation_Project 2024_10_10_Batch1 "Plate1,Plate2,Plate3"
+"""
+
+### Required input for Cell Painting Gallery
+
+Runs being made off of the Cell Painting Gallery require two additional flags:
+
+* `--source <value>` to specify the identifier-specific source of the data.
+* `--path-style cpg` is to set the input and output paths as data is structured in the Cell Painting Gallery.
+All paths can be overwritten with flags (see below).
+
+A minimal `run_batch_general.py` command for a dataset on the Cell Painting Gallery may look like:
+"""bash
+run_batch_general.py analysis cpg0000-jump-pilot 2020_11_04_CPJUMP1 "BR00116991,BR00116992" --path-style cpg --source broad
+"""
+
+### Plate layout flags
+
+* `--plate-format <value>`: if used, can be `96` or `384` and will overwrite `rows` and `columns` to produce standard 96- or 384-well plate well names (e.g. A01, A02, etc.)
+* `--rows <value>`: a custom list of row labels.
+Will be combined with `columns` to generate well names.
+Separate values with commas and no spaces and surround with quotation marks (e.g. `"A,B,C,D,E,F,G"`)
+* `--columns <value>`: a custom list of column labels.
+Will be combined with `rows` to generate well names.
+Separate values with commas and no spaces and surround with quotation marks (e.g. `"1,2,3,4,5,6,7,8,9,10"`)
+* `--wells <value>`: a custom list of wells.
+Overwrites `rows` and `columns`.
+Separate values with commas and no spaces and surround with quotation marks (e.g. `"C02,D04,E04,N12"`)
+* `--no-well-digit-pad`: Formats wells without well digit padding.
+Formats wells passed with `--plate format` or `--rows` and `--columns` but not `--wells`.
+(e.g. `A1` NOT `A01`)
+* `--sites <value>`: a custom list of sites (fields of view) to be analyzed.
+Separate values with commas and no spaces and surround with quotation marks (e.g. `"1,2,3,4,5,6"`)
+
+### Overwrite structural defaults
+
+* `--output-structure <value>`: overwrite default output structure
+* `--output-path <value>`: overwrite default output path
+* `--input-path <value>`: overwrite the default path to input files
+
+### Overwrite defaults (for runs using load data .csv's and .cppipe)
+
+* `--pipeline <value>`: overwrite the default pipeline name
+* `--pipeline-path <value>`: overwrite the default path to pipelines
+* `--datafile-name <value>`: overwrite the default load data .csv name
+* `--datafile-path <value>`: overwrite the default path to load data files
+
+### Overwrite defaults (for runs using .h5 batch files)
+
+* `--use-batch`: use h5 batch files instead of load data csv and .cppipe files
+* `--batchfile-name <value>`: overwrite default batchfile name
+* `--batchfile-path <value>`: overwrite default path to the batchfile
