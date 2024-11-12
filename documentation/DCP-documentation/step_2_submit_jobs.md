@@ -99,7 +99,7 @@ Separate values with commas and no spaces and surround with quotation marks (e.g
 * `--no-well-digit-pad`: Formats wells without well digit padding.
 Formats wells passed with `--plate format` or `--rows` and `--columns` but not `--wells`.
 (e.g. `A1` NOT `A01`)
-* `--sites <value>`: a custom list of sites (fields of view) to be analyzed.
+* `--sites <value>`: a custom list of sites (fields of view) to be analyzed. Default is 9 sites (1 to 9). Not used by `illum`, `qc`, or `assaydev` steps.
 Separate values with commas and no spaces and surround with quotation marks (e.g. `"1,2,3,4,5,6"`)
 
 ### Overwrite structural defaults
