@@ -36,6 +36,7 @@ Our internal configurations for each pipeline are as follows:
 | SSH_KEY_NAME | 'YOURPEM.pem' | 'YOURPEM.pem' | 'YOURPEM.pem' | 'YOURPEM.pem' | 'YOURPEM.pem' |   |
 | AWS_BUCKET | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | Usually a bucket in the account that is running DCP.  |
 | SOURCE_BUCKET | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | Can be a public bucket like cellpainting-gallery.  |
+| WORKSPACE_BUCKET | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | If reading images from a public bucket, you might still want to read metadata from your bucket.  |
 | DESTINATION_BUCKET | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | Usually a bucket in the account that is running DCP.  |
 | UPLOAD_FLAGS | '' | '' | '' | '' | '' |   |
 | ECS_CLUSTER | 'default' | 'default' | 'default' | 'default' | 'default' | Most of the time we all just use the default cluster but if there are multiple jobs being run at once you can create your own cluster by changing default to YOURNAME so that the correct dockers go on the correct machines. |
