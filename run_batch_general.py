@@ -427,7 +427,7 @@ def run_batch_general(
 
         print("AssayDev job submitted. Check your queue")
 
-    elif step == "assaydev_bysite":
+    elif step == "assaydev_persite":
         assaydevqueue = JobQueue(f"{identifier}_AssayDev")
         if not outpath:
             outpath = path_dict[path_style]["assaydevoutpath"]
