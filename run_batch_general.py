@@ -577,7 +577,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "step",
-        help="Step to make jobs for. Supported steps are zproj, illum, qc, qc_persite, assaydev, assdev_persite, analysis",
+        help="Step to make jobs for. Supported steps are zproj, illum, qc, qc_persite, assaydev, assaydev_persite, analysis",
     )
     parser.add_argument("identifier", help="Project identifier")
     parser.add_argument("batch", help="Name of batch")
