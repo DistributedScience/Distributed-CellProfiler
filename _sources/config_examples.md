@@ -59,8 +59,8 @@ Our internal configurations for each pipeline are as follows:
 | AUTO_MONITOR | 'True' | 'True' | 'True' | 'True' | 'True' | Can be turned off if manually running Monitor. |
 | CREATE_DASHBOARD | 'True' | 'True' | 'True' | 'True' | 'True' | |
 | CLEAN_DASHBOARD | 'True' | 'True' | 'True' | 'True' | 'True' | |
-| CHECK_IF_DONE_BOOL | 'True' | 'True' | 'True' | 'True' | 'True' | Can be turned off if wanting to overwrite old data. |
-| EXPECTED_NUMBER_FILES | 1 (an image) | number channels + 1 (an .npy for each channel and isdone) | 3 (Experiment.csv, Image.csv, and isdone) | 1 (an image) | 5 (Experiment, Image, Cells, Nuclei, and Cytoplasm .csvs) | Better to underestimate than overestimate. |
+| CHECK_IF_DONE_BOOL | 'False' | 'True' | 'True' | 'True' | 'True' | Can be turned off if wanting to overwrite old data. |
+| EXPECTED_NUMBER_FILES | 1 (can be anything, False above) | number channels + 1 (an .npy for each channel and isdone) | 3 (Experiment.csv, Image.csv, and isdone) | 1 (an image) | 5 (Experiment, Image, Cells, Nuclei, and Cytoplasm .csvs) | Better to underestimate than overestimate. |
 | MIN_FILE_SIZE_BYTES | 1 | 1 | 1 | 1 | 1 | Count files of any size. |
 | NECESSARY_STRING | '' | '' | '' | '' | '' |  Not necessary for standard workflows. |
 | ALWAYS_CONTINUE | 'False' | 'False' | 'False' | 'False' | 'False' |  Use with caution. |

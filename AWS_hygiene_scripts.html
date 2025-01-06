@@ -436,8 +436,8 @@ document.write(`
 <section id="clean-out-old-alarms">
 <h2>Clean out old alarms<a class="headerlink" href="#clean-out-old-alarms" title="Permalink to this heading">#</a></h2>
 <p>Python:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">boto3</span>
-<span class="kn">import</span> <span class="nn">time</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">boto3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="n">filterstring</span> <span class="o">=</span> <span class="s1">&#39;MyProjectName&#39;</span>
 <span class="n">client</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="s1">&#39;cloudwatch&#39;</span><span class="p">)</span>
 <span class="n">alarms</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">describe_alarms</span><span class="p">(</span><span class="n">AlarmTypes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;MetricAlarm&#39;</span><span class="p">],</span><span class="n">StateValue</span><span class="o">=</span><span class="s1">&#39;INSUFFICIENT_DATA&#39;</span><span class="p">)</span>
