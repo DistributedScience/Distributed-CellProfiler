@@ -84,7 +84,7 @@ def run_batch_general(
             "pipelinepath": posixpath.join(
                 "projects", identifier, "workspace", "pipelines", batch
             ),
-            "zprojoutpath": posixpath.join("projects", identifier, batch, "images"),
+            "zprojoutpath": posixpath.join("projects", identifier, batch, "images_projected"),
             "zprojoutputstructure": "Metadata_Plate",
             "illumoutpath": posixpath.join("projects", identifier, batch, "illum"),
             "QCoutpath": posixpath.join(
