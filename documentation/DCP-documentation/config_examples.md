@@ -47,7 +47,7 @@ Our internal configurations for each pipeline are as follows:
 | EBS_VOL_SIZE (if using S3 mounted as a file system) | 22 | 22 | 22 | 22 | 22 | Files are read directly off of S3, mounted as a file system when `DOWNLOAD_FILES = False`. |
 | EBS_VOL_SIZE (if downloading files) | 22 | 200 | 22 | 22 | 40 | Files are downloaded to the EBS volume when `DOWNLOAD_FILES = True`. |
 | DOWNLOAD_FILES | 'False' | 'False' | 'False' | 'False' | 'False' |   |
-| ASSIGN_IP | 'False' | 'False' | 'False' | 'False'  | 'False' |  |
+| ASSIGN_IP | 'True' | 'True' | 'True' | 'True'  | 'True' |  |
 | DOCKER_CORES | 4 | 4 | 4 | 4  | 3 | If using c class machines and large images (2k + pixels) then you might need to reduce this number. |
 | CPU_SHARES | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | We never change this. |
 | MEMORY | 7500 | 7500 | 7500 | 7500 | 7500 | This must match your machine type. m class use 15000, c class use 7500. |
