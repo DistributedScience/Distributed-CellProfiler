@@ -399,6 +399,7 @@ def create_dashboard(requestInfo):
                     "metrics": [
                         [ "AWS/SQS", "ApproximateNumberOfMessagesVisible", "QueueName", f'{APP_NAME}Queue' ],
                         [ ".", "ApproximateNumberOfMessagesNotVisible", ".", "."],
+                        [ ".", "ApproximateNumberOfMessagesVisible", ".", f'{SQS_DEAD_LETTER_QUEUE}' ],
                     ],
                     "view": "timeSeries",
                     "stacked": True,
