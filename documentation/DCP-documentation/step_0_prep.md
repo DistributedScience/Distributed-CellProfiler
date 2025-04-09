@@ -1,22 +1,26 @@
 # Step 0: Prep
+
 There are two classes of AWS resources that Distributed-CellProfiler interacts with: 1) infrastructure that is made once per AWS account to enable any Distributed-CellProfiler implementation to run and 2) infrastructure that is made and destroyed with every run.
-This section describes the creation of the first class of AWS infrastructure and only needs to be followed once per account. 
+This section describes the creation of the first class of AWS infrastructure and only needs to be followed once per account.
 
 ## AWS Configuration
+
 The AWS resources involved in running Distributed-CellProfiler are configured using the [AWS Web Console](https://aws.amazon.com/console/) and a setup script we provide ([setup_AWS.py](../../setup_AWS.py)).
-You need an active AWS account configured to proceed. 
+You need an active AWS account configured to proceed.
 Login into your AWS account, and make sure the following list of resources is created:
 
 ### 1.1 Manually created resources
+
 * **Security Credentials**: Get [security credentials](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) for your account.
 Store your credentials in a safe place that you can access later.
 * **SSH Key**: You will probably need an ssh key to login into your EC2 instances (control or worker nodes).
 [Generate an SSH key](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html) and store it in a safe place for later use.
 If you'd rather, you can generate a new key pair to use for this during creation of the control node; make sure to `chmod 600` the private key when you download it.
-* **SSH Connection**: You can use your default AWS account VPC, subnet, and security groups. 
+* **SSH Connection**: You can use your default AWS account VPC, subnet, and security groups.
 You should add an inbound SSH connection from your IP address to your security group.
 
 ### 1.2 Automatically created resources
+
 * BEFORE running setup_AWS, you need to open `lambda_function.py` and edit the `BUCKET_NAME` (keeping the quotes around the name) at the top of the file to be the name of your bucket.
 After editing, Line 12 of `lambda_function.py` should look like `bucket = "my-bucket-name"`.
 * Run setup_AWS by entering `python setup_AWS.py` from your command line.
@@ -29,15 +33,19 @@ It will automatically create:
   * a Monitor lambda function that is used for auto-monitoring of your runs (see [Step 4: Monitor](step_4_monitor.md) for more information).
 
 ### 1.3 Auxiliary Resources
+
 *You can certainly configure Distributed-CellProfiler for use without S3, but most DS implementations use S3 for storage.*
+
 * [Create an S3 bucket](http://docs.aws.amazon.com/AmazonS3/latest/gsg/CreatingABucket.html) and upload your data to it.
 Add permissions to your bucket so that [logs can be exported to it](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/S3ExportTasksConsole.html) (Step 3, first code block).
 
 ### 1.4 Increase Spot Limits
+
 AWS initially [limits the number of spot instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-limits.html) you can use at one time; you can request more through a process in the linked documentation.
 Depending on your workflow (your scale and how you group your jobs), this may not be necessary.
 
 ## The Control Node
+
 The control node is a machine that is used for running the Distributed-CellProfiler scripts.
 It can be your local machine, if it is configured properly, or it can also be a small instance in AWS.
 We prefer to have a small EC2 instance dedicated to controlling our Distributed-CellProfiler workflows for simplicity of access and configuration.
@@ -50,12 +58,15 @@ The control node needs the following tools to successfully run Distributed-CellP
 These instructions assume you are using the command line in a Linux machine, but you are free to try other operating systems too.
 
 ### Create Control Node from Scratch
+
 #### 2.1 Install Python 3.8 or higher and pip
+
 Most scripts are written in Python and support Python 3.8 and 3.9.
 Follow installation instructions for your platform to install Python.
 pip should be included with the installation of Python 3.8 or 3.9, but if you do not have it installed, install pip.
 
 #### 2.2 Clone this repository and install requirements
+
 You will need the scripts in Distributed-CellProfiler locally available in your control node.
 <pre>
     sudo apt-get install git
@@ -68,6 +79,7 @@ You will need the scripts in Distributed-CellProfiler locally available in your 
 </pre>
 
 #### 2.3 Install AWS CLI
+
 The command line interface is the main mode of interaction between the local node and the resources in AWS.
 You need to install [awscli](http://docs.aws.amazon.com/cli/latest/userguide/installing.html) for Distributed-CellProfiler to work properly:
 
@@ -81,22 +93,27 @@ When running the last step (`aws configure`), you will need to enter your AWS cr
 Make sure to set the region correctly (i.e. us-west-1 or eu-east-1, not eu-west-2a), and set the default file type to json.
 
 #### 2.1.4 s3fs-fuse (optional)
+
 [s3fs-fuse](https://github.com/s3fs-fuse/s3fs-fuse) allows you to mount your s3 bucket as a pseudo-file system.
 It does not have all the performance of a real file system, but allows you to easily access all the files in your s3 bucket.
 Follow the instructions at the link to mount your bucket.
 
 ### Create Control Node from AMI (optional)
+
 Once you've set up the other software (and gotten a job running, so you know everything is set up correctly), you can use Amazon's web console to set this up as an Amazon Machine Instance, or AMI, to replicate the current state of the hard drive.
 Create future control nodes using this AMI so that you don't need to repeat the above installation.
 
 ## Removing long-term infrastructure
+
 If you decide that you never want to run Distributed-CellProfiler again and would like to remove the long-term infrastructure, follow these steps.
 
 ### Remove Roles, Lambda Monitor, and Monitor SNS
+
 <pre>
 python setup_AWS.py destroy
 </pre>
 
 ### Remove EC2 Control node
-If you made your control node as an EC2 instance, while in the AWS console, select the instance. 
+
+If you made your control node as an EC2 instance, while in the AWS console, select the instance.
 Select `Instance state` => `Terminate instance`.

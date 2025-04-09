@@ -4,6 +4,7 @@ We've tried very hard to make Distributed-CellProfiler light and adaptable, but 
 Below is a non-comprehensive list of places where you can adapt the code to your own purposes.
 
 ***
+
 ## Changes you can make to Distributed-CellProfiler outside of the Docker container
 
 * **Location of ECS configuration files:** By default these are placed into your bucket with a prefix of 'ecsconfigs/'.
@@ -29,14 +30,16 @@ This value can be modified in run.py .
 * **Distributed-CellProfiler version:** At least CellProfiler version 4.2.4, and use the DOCKERHUB_TAG in config.py as `bethcimini/distributed-cellprofiler:2.1.0_4.2.4_plugins`.
 * **Custom model: If using a [custom User-trained model](https://cellpose.readthedocs.io/en/latest/models.html) generated using Cellpose, add the model file to S3.
 We use the following structure to organize our files on S3.
-```
+
+```text
    └── <project_name>
       └── workspace
            └── model
                └── custom_model_filename
 ```
-* **RunCellpose module:** 
-    * Inside RunCellpose, select the "custom" Detection mode.
-    In "Location of the pre-trained model file", enter the mounted bucket path to your model. 
+
+* **RunCellpose module:**
+  * Inside RunCellpose, select the "custom" Detection mode.
+    In "Location of the pre-trained model file", enter the mounted bucket path to your model.
     e.g. **/home/ubuntu/bucket/projects/<project_name>/workspace/model/**
-    * In "Pre-trained model file name", enter your custom_model_filename
+  * In "Pre-trained model file name", enter your custom_model_filename

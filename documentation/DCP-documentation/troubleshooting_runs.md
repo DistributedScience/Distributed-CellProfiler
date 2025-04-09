@@ -29,6 +29,7 @@ Services/behaviors that are as expected and/or not relevant for diagnosing a pro
 | Jobs moving to dead messages | "CP PROBLEM: Done file reports failure." | No files are output to S3 | N/A | Something went wrong in your CellProfiler pipeline. | Read the logs above the CP PROBLEM message to see what the specific CellProfiler error is and fix that error in your pipeline. |
 
 Further hints:
+
 - The SSH_KEY_NAME in the config.py file contains the name of the key pair used to access AWS.
 This field is the name of the file with the .pem extension (SSH_KEY_NAME = "MyKeyPair.pem").
 The same name is used in the fleet configuration file (e.g. exampleFleet.json) but without using the .pem extension ("KeyName": "MyKeyPair").
