@@ -109,6 +109,8 @@ def printandlog(text,logger):
 #################################
 
 def runCellProfiler(message):
+    s3client=boto3.client('s3')
+
     #List the directories in the bucket- this prevents a strange s3fs error
     rootlist=os.listdir(DATA_ROOT)
     for eachSubDir in rootlist:
@@ -167,7 +169,6 @@ def runCellProfiler(message):
     # See if this is a message you've already handled, if you've so chosen
     if CHECK_IF_DONE_BOOL.upper() == 'TRUE':
         try:
-            s3client=boto3.client('s3')
             bucketlist=s3client.list_objects(Bucket=DESTINATION_BUCKET,Prefix=f'{remoteOut}/')
             objectsizelist=[k['Size'] for k in bucketlist['Contents']]
             objectsizelist = [i for i in objectsizelist if i >= MIN_FILE_SIZE_BYTES]
@@ -187,7 +188,6 @@ def runCellProfiler(message):
     subfolders = '/'.join((csv_insubfolders)[:-1])
     if not os.path.exists(os.path.join(localIn,subfolders)):
         os.makedirs(os.path.join(localIn,subfolders), exist_ok=True)
-    s3client=boto3.client('s3')
     try:
         s3client.download_file(WORKSPACE_BUCKET, message['data_file'], data_file_path)
     except botocore.exceptions.ClientError:
