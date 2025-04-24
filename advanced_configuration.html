@@ -167,9 +167,6 @@ const thebe_selector_output = ".output, .cell_output"
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">FAQ</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="overview_2.html">What happens in AWS when I run Distributed-CellProfiler?</a></li>
-
-
-
 <li class="toctree-l1"><a class="reference internal" href="costs.html">What does Distributed-CellProfiler cost?</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Running DCP</span></p>
@@ -197,10 +194,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="external_buckets.html">Using External Buckets</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Advanced Configuration of DCP</a></li>
 <li class="toctree-l1"><a class="reference internal" href="AWS_hygiene_scripts.html">AWS Hygiene Scripts</a></li>
-
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting_runs.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="versions.html">Versions</a></li>
-
 </ul>
 
     </div>
@@ -462,7 +457,7 @@ This value can be modified in run.py .</p></li>
 <li><p>**Custom model: If using a <a class="reference external" href="https://cellpose.readthedocs.io/en/latest/models.html">custom User-trained model</a> generated using Cellpose, add the model file to S3.
 We use the following structure to organize our files on S3.</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   └── &lt;project_name&gt;
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>   └── &lt;project_name&gt;
       └── workspace
            └── model
                └── custom_model_filename

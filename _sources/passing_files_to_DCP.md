@@ -4,12 +4,13 @@ Distributed-CellProfiler can be told what files to use through LoadData.csv, Bat
 
 ## Metadata use in DCP
 
-Distributed-CellProfiler requires metadata and grouping in order to split jobs. 
-This means that, unlikely a generic CellProfiler workflow, the inclusion of metadata and grouping are NOT optional for pipelines you wish to use in Distributed-CellProfiler. 
-- If using LoadData, this means ensuring that your input CSV has some metadata to use for grouping and "Group images by metdata?" is set to "Yes". 
-- If using batch files or file lists, this means ensuring that the Metadata and Groups modules are enabled, and that you are extracting metadata from file and folder names _that will also be present in your remote system_ in the Metadata module in your CellProfiler pipeline. 
-You can pass additional metadata to CellProfiler by `Add another extraction method`, setting the method to `Import from file` and setting Metadata file location to `Default Input Folder`. 
-Metadata of either type can be used for grouping. 
+Distributed-CellProfiler requires metadata and grouping in order to split jobs.
+This means that, unlikely a generic CellProfiler workflow, the inclusion of metadata and grouping are NOT optional for pipelines you wish to use in Distributed-CellProfiler.
+
+- If using LoadData, this means ensuring that your input CSV has some metadata to use for grouping and "Group images by metdata?" is set to "Yes".
+- If using batch files or file lists, this means ensuring that the Metadata and Groups modules are enabled, and that you are extracting metadata from file and folder names _that will also be present in your remote system_ in the Metadata module in your CellProfiler pipeline.
+You can pass additional metadata to CellProfiler by `Add another extraction method`, setting the method to `Import from file` and setting Metadata file location to `Default Input Folder`.
+Metadata of either type can be used for grouping.
 
 ## Load Data
 
@@ -25,14 +26,14 @@ Some users have reported issues with using relative paths in the PathName column
 You can create this CSV yourself via your favorite scripting language.
 We maintain a script for creating LoadData.csv from Phenix metadata XML files called [pe2loaddata](https://github.com/broadinstitute/pe2loaddata).
 
-You can also create the LoadData.csv in a local copy of CellProfiler using the standard input modules of Images, Metadata, NamesAndTypes and Groups. 
+You can also create the LoadData.csv in a local copy of CellProfiler using the standard input modules of Images, Metadata, NamesAndTypes and Groups.
 More written and video information about using the input modules can be found [here](broad.io/CellProfilerInput).
 After loading in your images, use the `Export`->`Image Set Listing` command.
 You will then need to replace the local paths with the paths where the files can be found in S3 which is hardcoded to `/home/ubuntu/bucket`.
 If your files are nested in the same structure, this can be done with a simple find and replace in any text editing software.
 (e.g. Find '/Users/eweisbar/Desktop' and replace with '/home/ubuntu/bucket')
 
-More detail: The [Dockerfile](https://github.com/DistributedScience/Distributed-CellProfiler/blob/master/worker/Dockerfile) is the first script to execute in the Docker. 
+More detail: The [Dockerfile](https://github.com/DistributedScience/Distributed-CellProfiler/blob/master/worker/Dockerfile) is the first script to execute in the Docker.
 It creates the `/home/ubuntu/` folder and then executes [run_worker.sh](https://github.com/DistributedScience/Distributed-CellProfiler/blob/master/worker/run-worker.sh) from that point.
 run_worker.sh makes `/home/ubuntu/bucket/` and uses S3FS to mount your S3 bucket at that location. (If you set `DOWNLOAD_FILES='True'` in your [config](step_1_configuration.md), then the S3FS mount is bypassed but files are downloaded locally to the `/home/ubuntu/bucket` path so that the paths are the same as if it was S3FS mounted.)
 
@@ -53,7 +54,7 @@ To use a batch file, your data needs to have the same structure in the cloud as 
 
 ### Creating batch files
 
-To create a batch file, load all your images into a local copy of CellProfiler using the standard input modules of Images, Metadata, NamesAndTypes and Groups. 
+To create a batch file, load all your images into a local copy of CellProfiler using the standard input modules of Images, Metadata, NamesAndTypes and Groups.
 More written and video information about using the input modules can be found [here](broad.io/CellProfilerInput).
 Put the `CreateBatchFiles` module at the end of your pipeline and ensure that it is selected.
 Add a path mapping and edit the `Local root path` and `Cluster root path`.
@@ -71,8 +72,8 @@ Note that if you do not follow our standard file organization, under **#not proj
 
 ## File lists
 
-You can also simply pass a list of absolute file paths (not relative paths) with one file per row in `.txt` format. 
-These must be the absolute paths that Distributed-CellProfiler will see, aka relative to the root of your bucket (which will be mounted as `/bucket`. 
+You can also simply pass a list of absolute file paths (not relative paths) with one file per row in `.txt` format.
+These must be the absolute paths that Distributed-CellProfiler will see, aka relative to the root of your bucket (which will be mounted as `/bucket`.
 
 ### Creating File Lists
 

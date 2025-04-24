@@ -166,9 +166,6 @@ const thebe_selector_output = ".output, .cell_output"
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">FAQ</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="overview_2.html">What happens in AWS when I run Distributed-CellProfiler?</a></li>
-
-
-
 <li class="toctree-l1"><a class="reference internal" href="costs.html">What does Distributed-CellProfiler cost?</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Running DCP</span></p>
@@ -196,10 +193,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="external_buckets.html">Using External Buckets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced_configuration.html">Advanced Configuration of DCP</a></li>
 <li class="toctree-l1"><a class="reference internal" href="AWS_hygiene_scripts.html">AWS Hygiene Scripts</a></li>
-
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting_runs.html">Troubleshooting</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Versions</a></li>
-
 </ul>
 
     </div>
@@ -412,20 +407,19 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Versions</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#version-history">Version History</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#forthcoming">2.1.0 (forthcoming)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc2-released-20201110">2.0.0rc2 - Released 20201110</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc1-released-20201105">2.0.0rc1 - Released 20201105</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20201103">1.2.2 - Released 20201103</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20200109-updated-through-20191002">1.2.1 - Released 20200109, Updated through 20191002</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20181108-updated-through-20200109">1.2.0 - Released 20181108, Updated through 20200109</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20170217-updated-20170221-bugfixes-20181018">1.1.0 - Released 20170217, Updated 20170221 (bugfixes) - 20181018</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-as-of-20170213">1.0.0 - Version as of 20170213</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-history">Version History</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20241105">2.2.0 - Released 20241105</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20230518">2.1.0 - Released 20230518</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rc2-released-20201110">2.0.0rc2 - Released 20201110</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rc1-released-20201105">2.0.0rc1 - Released 20201105</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20201103">1.2.2 - Released 20201103</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20200109-updated-through-20191002">1.2.1 - Released 20200109, Updated through 20191002</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20181108-updated-through-20200109">1.2.0 - Released 20181108, Updated through 20200109</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20170217-updated-20170221-bugfixes-20181018">1.1.0 - Released 20170217, Updated 20170221 (bugfixes) - 20181018</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#version-as-of-20170213">1.0.0 - Version as of 20170213</a></li>
 </ul>
 </li>
 </ul>
-
             </nav>
         </div>
     </div>
@@ -439,30 +433,42 @@ document.write(`
   <section id="versions">
 <h1>Versions<a class="headerlink" href="#versions" title="Permalink to this heading">#</a></h1>
 <p>The most current release can always be found on DockerHub at <code class="docutils literal notranslate"><span class="pre">cellprofiler/distributed-cellprofiler</span></code>.
-Current version is 2.0.0.<br />
-Our current tag system is dcpversion_CellProfilerversion, e.g. 1.2.0_3.1.8</p>
+Current version is 2.2.0.<br />
+Our current tag system is DCPversion_CellProfilerversion, e.g. 1.2.0_3.1.8</p>
 <p>Previous release versions can be accessed at <code class="docutils literal notranslate"><span class="pre">bethcimini/distributed-cellprofiler:versionnumber</span></code></p>
-</section>
 <hr class="docutils" />
 <section id="version-history">
-<h1>Version History<a class="headerlink" href="#version-history" title="Permalink to this heading">#</a></h1>
-<section id="forthcoming">
-<h2>2.1.0 (forthcoming)<a class="headerlink" href="#forthcoming" title="Permalink to this heading">#</a></h2>
+<h2>Version History<a class="headerlink" href="#version-history" title="Permalink to this heading">#</a></h2>
+<section id="released-20241105">
+<h3>2.2.0 - Released 20241105<a class="headerlink" href="#released-20241105" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Increase support for using plugins</p></li>
-<li><p>Improve role handling and allow file download/upload from/to S3 buckets in different accounts</p></li>
-<li><p>Improve file download to S3FS can be completely bypassed</p></li>
-<li><p>Name EBS volumes</p></li>
+<li><p>run_batch_general overhauled to be a CLI tool with support for Cell Painting Gallery structure</p></li>
+<li><p>Support for AWS IAM assumed roles</p></li>
+<li><p>Improved handling of CellProfiler-plugins and update to current CellProfiler-plugins organization</p></li>
+<li><p>Adds WORKSPACE_BUCKET to the config so that image files and metadata files can be read off different buckets</p></li>
+<li><p>Adds JOB_RETRIES to the config so that the number of retries before sending a job to DeadMessages is configurable</p></li>
+<li><p>Adds ALWAYS_CONTINUE to the config so that the flag can be passed to CellProfiler</p></li>
+<li><p>Adds ASSIGN_IP to the config and defaults to false so that EC2 spot fleet instances do not automatically get assigned a private IP address</p></li>
+</ul>
+</section>
+<section id="released-20230518">
+<h3>2.1.0 - Released 20230518<a class="headerlink" href="#released-20230518" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Addition of setup_AWS.py to automate AWS infrastructure setup</p></li>
+<li><p>Addition of optional auto-monitor</p></li>
+<li><p>Addition of auto-dashboard creation</p></li>
+<li><p>Addition of auto-Deadletter queue creation</p></li>
+<li><p>Improved handling of AWS credentials</p></li>
 </ul>
 </section>
 <section id="rc2-released-20201110">
-<h2>2.0.0rc2 - Released 20201110<a class="headerlink" href="#rc2-released-20201110" title="Permalink to this heading">#</a></h2>
+<h3>2.0.0rc2 - Released 20201110<a class="headerlink" href="#rc2-released-20201110" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add optional ability to download files to EBS rather than reading from S3 (helpful for pipelines that access many files/image sets)</p></li>
 </ul>
 </section>
 <section id="rc1-released-20201105">
-<h2>2.0.0rc1 - Released 20201105<a class="headerlink" href="#rc1-released-20201105" title="Permalink to this heading">#</a></h2>
+<h3>2.0.0rc1 - Released 20201105<a class="headerlink" href="#rc1-released-20201105" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Remove requirement for boto and fabric, using only boto3</p></li>
 <li><p>Add support for Python 3 and CellProfiler 4</p></li>
@@ -473,7 +479,7 @@ Our current tag system is dcpversion_CellProfilerversion, e.g. 1.2.0_3.1.8</p>
 </ul>
 </section>
 <section id="released-20201103">
-<h2>1.2.2 - Released 20201103<a class="headerlink" href="#released-20201103" title="Permalink to this heading">#</a></h2>
+<h3>1.2.2 - Released 20201103<a class="headerlink" href="#released-20201103" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Allow pipelines using batch files to also designate an input output_top_directory</p></li>
 <li><p>Add support for multiple LaunchData specifications</p></li>
@@ -482,21 +488,21 @@ Our current tag system is dcpversion_CellProfilerversion, e.g. 1.2.0_3.1.8</p>
 </ul>
 </section>
 <section id="released-20200109-updated-through-20191002">
-<h2>1.2.1 - Released 20200109, Updated through 20191002<a class="headerlink" href="#released-20200109-updated-through-20191002" title="Permalink to this heading">#</a></h2>
+<h3>1.2.1 - Released 20200109, Updated through 20191002<a class="headerlink" href="#released-20200109-updated-through-20191002" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Allow monitor to downscale machines when number of jobs &lt; number of machines</p></li>
 <li><p>Add a parameter to discount files when running CHECK_IF_DONE checks if less than a certain size</p></li>
 </ul>
 </section>
 <section id="released-20181108-updated-through-20200109">
-<h2>1.2.0 - Released 20181108, Updated through 20200109<a class="headerlink" href="#released-20181108-updated-through-20200109" title="Permalink to this heading">#</a></h2>
+<h3>1.2.0 - Released 20181108, Updated through 20200109<a class="headerlink" href="#released-20181108-updated-through-20200109" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Improved compatibility with CellProfiler 2 and 3</p></li>
 <li><p>Better handling of logging when using output_structure</p></li>
 </ul>
 </section>
 <section id="released-20170217-updated-20170221-bugfixes-20181018">
-<h2>1.1.0 - Released 20170217, Updated 20170221 (bugfixes) - 20181018<a class="headerlink" href="#released-20170217-updated-20170221-bugfixes-20181018" title="Permalink to this heading">#</a></h2>
+<h3>1.1.0 - Released 20170217, Updated 20170221 (bugfixes) - 20181018<a class="headerlink" href="#released-20170217-updated-20170221-bugfixes-20181018" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Changes in this release:</p>
 <ul>
@@ -507,7 +513,8 @@ Our current tag system is dcpversion_CellProfilerversion, e.g. 1.2.0_3.1.8</p>
 </ul>
 </section>
 <section id="version-as-of-20170213">
-<h2>1.0.0 - Version as of 20170213<a class="headerlink" href="#version-as-of-20170213" title="Permalink to this heading">#</a></h2>
+<h3>1.0.0 - Version as of 20170213<a class="headerlink" href="#version-as-of-20170213" title="Permalink to this heading">#</a></h3>
+</section>
 </section>
 </section>
 
@@ -565,20 +572,19 @@ Our current tag system is dcpversion_CellProfilerversion, e.g. 1.2.0_3.1.8</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Versions</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#version-history">Version History</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#forthcoming">2.1.0 (forthcoming)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc2-released-20201110">2.0.0rc2 - Released 20201110</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rc1-released-20201105">2.0.0rc1 - Released 20201105</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20201103">1.2.2 - Released 20201103</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20200109-updated-through-20191002">1.2.1 - Released 20200109, Updated through 20191002</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20181108-updated-through-20200109">1.2.0 - Released 20181108, Updated through 20200109</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20170217-updated-20170221-bugfixes-20181018">1.1.0 - Released 20170217, Updated 20170221 (bugfixes) - 20181018</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-as-of-20170213">1.0.0 - Version as of 20170213</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-history">Version History</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20241105">2.2.0 - Released 20241105</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20230518">2.1.0 - Released 20230518</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rc2-released-20201110">2.0.0rc2 - Released 20201110</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rc1-released-20201105">2.0.0rc1 - Released 20201105</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20201103">1.2.2 - Released 20201103</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20200109-updated-through-20191002">1.2.1 - Released 20200109, Updated through 20191002</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20181108-updated-through-20200109">1.2.0 - Released 20181108, Updated through 20200109</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#released-20170217-updated-20170221-bugfixes-20181018">1.1.0 - Released 20170217, Updated 20170221 (bugfixes) - 20181018</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#version-as-of-20170213">1.0.0 - Version as of 20170213</a></li>
 </ul>
 </li>
 </ul>
-
   </nav></div>
 
 </div></div>

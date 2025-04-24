@@ -167,9 +167,6 @@ const thebe_selector_output = ".output, .cell_output"
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">FAQ</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="overview_2.html">What happens in AWS when I run Distributed-CellProfiler?</a></li>
-
-
-
 <li class="toctree-l1"><a class="reference internal" href="costs.html">What does Distributed-CellProfiler cost?</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Running DCP</span></p>
@@ -197,10 +194,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="external_buckets.html">Using External Buckets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced_configuration.html">Advanced Configuration of DCP</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">AWS Hygiene Scripts</a></li>
-
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting_runs.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="versions.html">Versions</a></li>
-
 </ul>
 
     </div>
@@ -413,13 +408,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">AWS Hygiene Scripts</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clean-out-old-alarms">Clean out old alarms</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clean-out-old-log-groups">Clean out old log groups</a></li>
 </ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#clean-out-old-log-groups">Clean out old log groups</a></li>
-</ul>
-
             </nav>
         </div>
     </div>
@@ -453,9 +444,8 @@ document.write(`
 </pre></div>
 </div>
 </section>
-</section>
 <section id="clean-out-old-log-groups">
-<h1>Clean out old log groups<a class="headerlink" href="#clean-out-old-log-groups" title="Permalink to this heading">#</a></h1>
+<h2>Clean out old log groups<a class="headerlink" href="#clean-out-old-log-groups" title="Permalink to this heading">#</a></h2>
 <p>Bash:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>aws<span class="w"> </span>logs<span class="w"> </span>describe-log-groups<span class="p">|</span><span class="w"> </span>in2csv<span class="w"> </span>-f<span class="w"> </span>json<span class="w"> </span>--key<span class="w"> </span>logGroups<span class="w"> </span>&gt;<span class="w"> </span>logs.csv
 </pre></div>
@@ -484,6 +474,7 @@ document.write(`
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>parallel<span class="w"> </span>aws<span class="w"> </span>logs<span class="w"> </span>delete-log-group<span class="w"> </span>--log-group-name<span class="w"> </span><span class="o">{</span><span class="m">1</span><span class="o">}</span><span class="w"> </span>::::<span class="w"> </span>logs_clear.txt
 </pre></div>
 </div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -549,13 +540,9 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">AWS Hygiene Scripts</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clean-out-old-alarms">Clean out old alarms</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clean-out-old-log-groups">Clean out old log groups</a></li>
 </ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#clean-out-old-log-groups">Clean out old log groups</a></li>
-</ul>
-
   </nav></div>
 
 </div></div>

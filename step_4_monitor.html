@@ -167,9 +167,6 @@ const thebe_selector_output = ".output, .cell_output"
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">FAQ</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="overview_2.html">What happens in AWS when I run Distributed-CellProfiler?</a></li>
-
-
-
 <li class="toctree-l1"><a class="reference internal" href="costs.html">What does Distributed-CellProfiler cost?</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Running DCP</span></p>
@@ -197,10 +194,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="external_buckets.html">Using External Buckets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced_configuration.html">Advanced Configuration of DCP</a></li>
 <li class="toctree-l1"><a class="reference internal" href="AWS_hygiene_scripts.html">AWS Hygiene Scripts</a></li>
-
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting_runs.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="versions.html">Versions</a></li>
-
 </ul>
 
     </div>
@@ -499,13 +494,13 @@ Additionally, if there is limited capacity for your requested configuration when
 <h2>Monitor file<a class="headerlink" href="#monitor-file" title="Permalink to this heading">#</a></h2>
 <p>The JSON monitor file containing all the information Distributed-CellProfiler needs will have been automatically created when you sent the instructions to start your cluster in the <a class="reference internal" href="step_3_start_cluster.html"><span class="doc std std-doc">previous step</span></a>.
 The file itself is quite simple and contains the following information:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s2">&quot;MONITOR_FLEET_ID&quot;</span> <span class="p">:</span> <span class="s2">&quot;sfr-9999ef99-99fc-9d9d-9999-9999999e99ab&quot;</span><span class="p">,</span>
-<span class="s2">&quot;MONITOR_APP_NAME&quot;</span> <span class="p">:</span> <span class="s2">&quot;2021_12_13_Project_Analysis&quot;</span><span class="p">,</span>
-<span class="s2">&quot;MONITOR_ECS_CLUSTER&quot;</span> <span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
-<span class="s2">&quot;MONITOR_QUEUE_NAME&quot;</span> <span class="p">:</span> <span class="s2">&quot;2021_12_13_Project_AnalysisQueue&quot;</span><span class="p">,</span>
-<span class="s2">&quot;MONITOR_BUCKET_NAME&quot;</span> <span class="p">:</span> <span class="s2">&quot;bucket-name&quot;</span><span class="p">,</span>
-<span class="s2">&quot;MONITOR_LOG_GROUP_NAME&quot;</span> <span class="p">:</span> <span class="s2">&quot;2021_12_13_Project_Analysis&quot;</span><span class="p">,</span>
-<span class="s2">&quot;MONITOR_START_TIME&quot;</span> <span class="p">:</span> <span class="s2">&quot;1649187798951&quot;</span><span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">&quot;MONITOR_FLEET_ID&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sfr-9999ef99-99fc-9d9d-9999-9999999e99ab&quot;</span><span class="p">,</span>
+<span class="nt">&quot;MONITOR_APP_NAME&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2021_12_13_Project_Analysis&quot;</span><span class="p">,</span>
+<span class="nt">&quot;MONITOR_ECS_CLUSTER&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+<span class="nt">&quot;MONITOR_QUEUE_NAME&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2021_12_13_Project_AnalysisQueue&quot;</span><span class="p">,</span>
+<span class="nt">&quot;MONITOR_BUCKET_NAME&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;bucket-name&quot;</span><span class="p">,</span>
+<span class="nt">&quot;MONITOR_LOG_GROUP_NAME&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2021_12_13_Project_Analysis&quot;</span><span class="p">,</span>
+<span class="nt">&quot;MONITOR_START_TIME&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1649187798951&quot;</span><span class="p">}</span>
 </pre></div>
 </div>
 <p>For any Distributed-CellProfiler run where you have run <a class="reference internal" href="step_3_start_cluster.html"><span class="doc std std-doc"><code class="docutils literal notranslate"><span class="pre">startCluster</span></code></span></a> more than once, the most recent values will overwrite the older values in the monitor file.

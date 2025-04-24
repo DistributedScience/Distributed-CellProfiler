@@ -167,9 +167,6 @@ const thebe_selector_output = ".output, .cell_output"
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">FAQ</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="overview_2.html">What happens in AWS when I run Distributed-CellProfiler?</a></li>
-
-
-
 <li class="toctree-l1"><a class="reference internal" href="costs.html">What does Distributed-CellProfiler cost?</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Running DCP</span></p>
@@ -197,10 +194,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Using External Buckets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced_configuration.html">Advanced Configuration of DCP</a></li>
 <li class="toctree-l1"><a class="reference internal" href="AWS_hygiene_scripts.html">AWS Hygiene Scripts</a></li>
-
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting_runs.html">Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="versions.html">Versions</a></li>
-
 </ul>
 
     </div>
@@ -460,11 +455,12 @@ If you don’t need to add UPLOAD_FLAGS, keep it as the default ‘’.</p></li>
 <h2>Example configs<a class="headerlink" href="#example-configs" title="Permalink to this heading">#</a></h2>
 <section id="reading-from-the-cell-painting-gallery">
 <h3>Reading from the Cell Painting Gallery<a class="headerlink" href="#reading-from-the-cell-painting-gallery" title="Permalink to this heading">#</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AWS_REGION</span> <span class="o">=</span> <span class="s1">&#39;your-region&#39;</span>              <span class="c1"># e.g. &#39;us-east-1&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">AWS_REGION</span> <span class="o">=</span> <span class="s1">&#39;your-region&#39;</span>              <span class="c1"># e.g. &#39;us-east-1&#39;</span>
 <span class="n">AWS_PROFILE</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>                 <span class="c1"># The same profile used by your AWS CLI installation</span>
 <span class="n">SSH_KEY_NAME</span> <span class="o">=</span> <span class="s1">&#39;your-key-file.pem&#39;</span>      <span class="c1"># Expected to be in ~/.ssh</span>
 <span class="n">AWS_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;bucket-name&#39;</span>              <span class="c1"># Your bucket</span>
 <span class="n">SOURCE_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;cellpainting-gallery&#39;</span>  
+<span class="n">WORKSPACE_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;bucket-name&#39;</span>        <span class="c1"># Likely your bucket</span>
 <span class="n">DESTINATION_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;bucket-name&#39;</span>      <span class="c1"># Your bucket</span>
 <span class="n">UPLOAD_FLAGS</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>                      
 </pre></div>
@@ -472,21 +468,23 @@ If you don’t need to add UPLOAD_FLAGS, keep it as the default ‘’.</p></li>
 </section>
 <section id="read-write-to-a-collaborator-s-bucket">
 <h3>Read/Write to a collaborator’s bucket<a class="headerlink" href="#read-write-to-a-collaborator-s-bucket" title="Permalink to this heading">#</a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AWS_REGION</span> <span class="o">=</span> <span class="s1">&#39;your-region&#39;</span>              <span class="c1"># e.g. &#39;us-east-1&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">AWS_REGION</span> <span class="o">=</span> <span class="s1">&#39;your-region&#39;</span>              <span class="c1"># e.g. &#39;us-east-1&#39;</span>
 <span class="n">AWS_PROFILE</span> <span class="o">=</span> <span class="s1">&#39;role-permissions&#39;</span>        <span class="c1"># A profile with the permissions setup described above</span>
 <span class="n">SSH_KEY_NAME</span> <span class="o">=</span> <span class="s1">&#39;your-key-file.pem&#39;</span>      <span class="c1"># Expected to be in ~/.ssh</span>
 <span class="n">AWS_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;bucket-name&#39;</span>              <span class="c1"># Your bucket</span>
 <span class="n">SOURCE_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;collaborator-bucket&#39;</span>  
+<span class="n">WORKSPACE_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;collaborator-bucket&#39;</span>
 <span class="n">DESTINATION_BUCKET</span> <span class="o">=</span> <span class="s1">&#39;collaborator-bucket&#39;</span>    
-<span class="n">UPLOAD_FLAGS</span> <span class="o">=</span> <span class="s1">&#39;--acl bucket-owner-full-control --metadata-directive REPLACE&#39;</span>
+<span class="n">UPLOAD_FLAGS</span> <span class="o">=</span> <span class="s1">&#39;--acl bucket-owner-full-control --metadata-directive REPLACE&#39;</span> <span class="c1"># Examples of flags that may be necessary</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="permissions-setup">
 <h2>Permissions setup<a class="headerlink" href="#permissions-setup" title="Permalink to this heading">#</a></h2>
-<p>If you are reading from a public bucket, no additional setup is necessary.</p>
-<p>If you are reading from a non-public bucket or writing to a bucket, you wil need further permissions setup.
+<p>If you are reading from a public bucket, no additional setup is necessary.
+Note that, depending on the configuration of that bucket, you may not be able to mount the public bucket so you will need to set <code class="docutils literal notranslate"><span class="pre">DOWNLOAD_FILES='True'</span></code>.</p>
+<p>If you are reading from a non-public bucket or writing to a bucket that is not yours, you wil need further permissions setup.
 Often, access to someone else’s AWS account is handled through a role that can be assumed.
 Learn more about AWS IAM roles <a class="reference external" href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html">here</a>.
 Your collaborator will define the access limits of the role within their AWS IAM.
@@ -496,26 +494,25 @@ You will also need to define role limits within your AWS IAM so that when you as
 <p>In AWS IAM, for the role that has external bucket access, you will need to add all of the DCP permissions described in <a class="reference internal" href="step_0_prep.html"><span class="doc std std-doc">Step 0</span></a>.</p>
 <p>You will also need to edit the trust relationship for the role so that ECS and EC2 can assume the role.
 A template is as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-    <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Statement&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;Effect&quot;</span><span class="p">:</span> <span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;Principal&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;AWS&quot;</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="s2">&quot;arn:aws:iam::123456789123:user/image_analyst&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;arn:aws:iam::123456789123:user/image_expert&quot;</span>
-                <span class="p">],</span>
-                <span class="s2">&quot;Service&quot;</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="s2">&quot;ecs-tasks.amazonaws.com&quot;</span><span class="p">,</span>
-                    <span class="s2">&quot;ec2.amazonaws.com&quot;</span>
-                <span class="p">]</span>
-            <span class="p">},</span>
-            <span class="s2">&quot;Action&quot;</span><span class="p">:</span> <span class="s2">&quot;sts:AssumeRole&quot;</span>
-        <span class="p">}</span>
-    <span class="p">]</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Statement&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;Effect&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Allow&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;Principal&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;AWS&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                    </span><span class="s2">&quot;arn:aws:iam::123456789123:user/image_analyst&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;arn:aws:iam::123456789123:user/image_expert&quot;</span>
+<span class="w">                </span><span class="p">],</span>
+<span class="w">                </span><span class="nt">&quot;Service&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                    </span><span class="s2">&quot;ecs-tasks.amazonaws.com&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s2">&quot;ec2.amazonaws.com&quot;</span>
+<span class="w">                </span><span class="p">]</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">            </span><span class="nt">&quot;Action&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sts:AssumeRole&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
 <span class="p">}</span>
-
 </pre></div>
 </div>
 </section>
