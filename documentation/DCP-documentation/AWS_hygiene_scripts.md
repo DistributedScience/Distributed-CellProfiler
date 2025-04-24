@@ -23,7 +23,8 @@ while True:
   alarms = client.describe_alarms(AlarmTypes=['MetricAlarm'],StateValue='INSUFFICIENT_DATA',NextToken=token)
 ```
 
-# Clean out old log groups
+## Clean out old log groups
+
 Bash:
 
 ```sh

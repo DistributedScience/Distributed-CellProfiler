@@ -1,4 +1,4 @@
-## What happens in AWS when I run Distributed-CellProfiler?
+# What happens in AWS when I run Distributed-CellProfiler?
 
 The steps for actually running the Distributed-CellProfiler code are outlined in the repository [README](https://github.com/DistributedScience/Distributed-CellProfiler/blob/master/README.md), and details of the parameters you set in each step are on their respective Documentation pages ([Step 1: Config](step_1_configuration.md), [Step 2: Jobs](step_2_submit_jobs.md), [Step 3: Fleet](step_3_start_cluster.md), and optional [Step 4: Monitor](step_4_monitor.md)).
 We'll give an overview of what happens in AWS at each step here and explain what AWS does automatically once you have it set up.
@@ -8,6 +8,7 @@ We'll give an overview of what happens in AWS at each step here and explain what
 **Step 1**:
 In the Config file you set quite a number of specifics that are used by EC2, ECS, SQS, and in making Dockers.
 When you run `$ python3 run.py setup` to execute the Config, it does three major things:
+
 * Creates task definitions.
 These are found in ECS.
 They define the configuration of the Dockers and include the settings you gave for **CHECK_IF_DONE_BOOL**, **DOCKER_CORES**, **EXPECTED_NUMBER_FILES**, and **MEMORY**.
@@ -25,6 +26,7 @@ In the Config file you set the number and size of the EC2 instances you want.
 This information, along with account-specific configuration in the Fleet file is used to start the fleet with `$ python3 run.py startCluster`.
 
 **After these steps are complete, a number of things happen automatically**:
+
 * ECS puts Docker containers onto EC2 instances.
 If there is a mismatch within your Config file and the Docker is larger than the instance it will not be placed.
 ECS will keep placing Dockers onto an instance until it is full, so if you accidentally create instances that are too large you may end up with more Dockers placed on it than intended.
@@ -59,6 +61,7 @@ Read more about this and other configurations in [Step 1: Configuration](step_1_
 ## How do I determine my configuration?
 
 To some degree, you determine the best configuration for your needs through trial and error.  
+
 * Looking at the resources your software uses on your local computer when it runs your jobs can give you a sense of roughly how much hard drive and memory space each job requires, which can help you determine your group size and what machines to use.  
 * Prices of different machine sizes fluctuate, so the choice of which type of machines to use in your spot fleet is best determined at the time you run it.
 How long a job takes to run and how quickly you need the data may also affect how much you're willing to bid for any given machine.
@@ -67,12 +70,14 @@ However, you're also at a greater risk of running out of hard disk space.
 
 Keep an eye on all of the logs the first few times you run any workflow and you'll get a sense of whether your resources are being utilized well or if you need to do more tweaking.
 
- ## What does this look like on AWS?
+## What does this look like on AWS?
+
  The following five are the primary resources that Distributed-CellProfiler interacts with.
  After you have finished [preparing for Distributed-CellProfiler](step_0_prep), you do not need to directly interact with any of these services outside of Distributed-CellProfiler.
  If you would like a granular view of what Distributed-CellProfiler is doing while it runs, you can open each console in a separate tab in your browser and watch their individual behaviors, though this is not necessary, especially if you run the [monitor command](step_4_monitor.md) and/or have DS automatically create a Dashboard for you (see [Configuration](step_1_configuration.md)).
- * [S3 Console](https://console.aws.amazon.com/s3)
- * [EC2 Console](https://console.aws.amazon.com/ec2/)
- * [ECS Console](https://console.aws.amazon.com/ecs/)
- * [SQS Console](https://console.aws.amazon.com/sqs/)
- * [CloudWatch Console](https://console.aws.amazon.com/cloudwatch/)
+
+* [S3 Console](https://console.aws.amazon.com/s3)
+* [EC2 Console](https://console.aws.amazon.com/ec2/)
+* [ECS Console](https://console.aws.amazon.com/ecs/)
+* [SQS Console](https://console.aws.amazon.com/sqs/)
+* [CloudWatch Console](https://console.aws.amazon.com/cloudwatch/)
