@@ -28,8 +28,10 @@ For more information and examples, see [External Buckets](external_buckets.md).
 This is generally the bucket in the account in which you are running compute.
 * **SOURCE_BUCKET:** The bucket where the image files you will be reading are.
 Often, this is the same as AWS_BUCKET.
-* **WORKSPACE:** The bucket where non-image files you will be reading are (e.g. pipeline, load_data.csv, etc.).
+These files can be downloaded or read directly off the bucket (see `DOWNLOAD_FILES` below for more).
+* **WORKSPACE_BUCKET:** The bucket where non-image files you will be reading are (e.g. pipeline, load_data.csv, etc.).
 Often, this is the same as AWS_BUCKET.
+Workspace files will always be automatically downloaded to your EC2 instance (as of v2.2.1).
 * **DESTINATION_BUCKET:** The bucket where you want to write your output files.
 Often, this is the same as AWS_BUCKET.
 * **UPLOAD_FLAGS:** If you need to add flags to an AWS CLI command to upload flags to your DESTINATION_BUCKET, this is where you enter them.
@@ -57,6 +59,7 @@ If you have multiple Dockers running per machine, each Docker will have access t
 This typically requires a larger EBS volume (depending on the size of your image sets, and how many sets are processed per group), but avoids occasional issues with S3FS that can crop up on longer runs.
 By default, DCP uses S3FS to mount the S3 `SOURCE_BUCKET` as a pseudo-file system on each EC2 instance in your spot fleet to avoid file download.
 If you are unable to mount the `SOURCE_BUCKET` (perhaps because of a permissions issue) you should proceed with `DOWNLOAD_FILES = 'True'`.
+Note that as of v2.2.1, all non-image files (e.g. load_data.csv's and pipelines) are downloaded regardless of this setting and regardless of whether `SOURCE_BUCKET` and `WORKSPACE_BUCKET` are the same.
 * **ASSIGN_IP:** Whether or not to assign an a public IPv4 address to each instance in the spot fleet.
 If set to 'False' will overwrite whatever is in the Fleet file.
 If set to 'True' will respect whatever is in the Fleet file.
