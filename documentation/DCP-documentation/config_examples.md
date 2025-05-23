@@ -40,7 +40,7 @@ Our internal configurations for each pipeline are as follows:
 | DESTINATION_BUCKET | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | Usually a bucket in the account that is running DCP.  |
 | UPLOAD_FLAGS | '' | '' | '' | '' | '' |   |
 | ECS_CLUSTER | 'default' | 'default' | 'default' | 'default' | 'default' | Most of the time we all just use the default cluster but if there are multiple jobs being run at once you can create your own cluster by changing default to YOURNAME so that the correct dockers go on the correct machines. |
-| CLUSTER_MACHINES | 100-200 | number of plates / CPUs and rounded up | 25-100 | 25-100 | 100-200 | AWS has limits on the number of machines you can request at a time. 200 is generally the largest we request for a single job to ensure there is some capacity for other users in the team. |
+| CLUSTER_MACHINES | 100-200 | number of plates / 4 and rounded up | 25-100 | 25-100 | 100-200 | AWS has limits on the number of machines you can request at a time. 200 is generally the largest we request for a single job to ensure there is some capacity for other users in the team. For Illum, use number of plates divided by number of CPUs - we assume 4 vCPUs (as on 'c5.xlarge' machines).|
 | TASKS_PER_MACHINE | 1 | 1 | 1 | 1 | 1 |  |
 | MACHINE_TYPE | ['c5.xlarge'] | ['c5.xlarge'] | ['c5.xlarge'] | ['c5.xlarge'] | ['c5.xlarge'] | Historically we have used m4.xlarge and then m5.xlarge however very recently we have been having a hard time getting m class machines so we have switched to c class. Note that they have different memory sizes so you need to make sure MEMORY is set correctly if changing between classes. |
 | MACHINE_PRICE | .20 | .20 | .20 | .20 | .20 | Will be different for different size/classes of machines. |
