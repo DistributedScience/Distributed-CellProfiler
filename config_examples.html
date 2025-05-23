@@ -543,11 +543,11 @@ A standard pipeline can be found <a class="reference external" href="https://git
 </tr>
 <tr class="row-even"><td><p>CLUSTER_MACHINES</p></td>
 <td><p>100-200</p></td>
-<td><p>number of plates / CPUs and rounded up</p></td>
+<td><p>number of plates / 4 and rounded up</p></td>
 <td><p>25-100</p></td>
 <td><p>25-100</p></td>
 <td><p>100-200</p></td>
-<td><p>AWS has limits on the number of machines you can request at a time. 200 is generally the largest we request for a single job to ensure there is some capacity for other users in the team.</p></td>
+<td><p>AWS has limits on the number of machines you can request at a time. 200 is generally the largest we request for a single job to ensure there is some capacity for other users in the team. For Illum, use number of plates divided by number of CPUs - we assume 4 vCPUs (as on ‘c5.xlarge’ machines).</p></td>
 </tr>
 <tr class="row-odd"><td><p>TASKS_PER_MACHINE</p></td>
 <td><p>1</p></td>
