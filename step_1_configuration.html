@@ -458,9 +458,11 @@ For more information and examples, see <a class="reference internal" href="exter
 <li><p><strong>AWS_BUCKET:</strong> The bucket to which you would like to write log files.
 This is generally the bucket in the account in which you are running compute.</p></li>
 <li><p><strong>SOURCE_BUCKET:</strong> The bucket where the image files you will be reading are.
-Often, this is the same as AWS_BUCKET.</p></li>
-<li><p><strong>WORKSPACE:</strong> The bucket where non-image files you will be reading are (e.g. pipeline, load_data.csv, etc.).
-Often, this is the same as AWS_BUCKET.</p></li>
+Often, this is the same as AWS_BUCKET.
+These files can be downloaded or read directly off the bucket (see <code class="docutils literal notranslate"><span class="pre">DOWNLOAD_FILES</span></code> below for more).</p></li>
+<li><p><strong>WORKSPACE_BUCKET:</strong> The bucket where non-image files you will be reading are (e.g. pipeline, load_data.csv, etc.).
+Often, this is the same as AWS_BUCKET.
+Workspace files will always be automatically downloaded to your EC2 instance (as of v2.2.1).</p></li>
 <li><p><strong>DESTINATION_BUCKET:</strong> The bucket where you want to write your output files.
 Often, this is the same as AWS_BUCKET.</p></li>
 <li><p><strong>UPLOAD_FLAGS:</strong> If you need to add flags to an AWS CLI command to upload flags to your DESTINATION_BUCKET, this is where you enter them.
@@ -488,7 +490,8 @@ If you have multiple Dockers running per machine, each Docker will have access t
 <li><p><strong>DOWNLOAD_FILES:</strong> Whether or not to download the image files to the EBS volume before processing, as opposed to accessing them all from S3FS.
 This typically requires a larger EBS volume (depending on the size of your image sets, and how many sets are processed per group), but avoids occasional issues with S3FS that can crop up on longer runs.
 By default, DCP uses S3FS to mount the S3 <code class="docutils literal notranslate"><span class="pre">SOURCE_BUCKET</span></code> as a pseudo-file system on each EC2 instance in your spot fleet to avoid file download.
-If you are unable to mount the <code class="docutils literal notranslate"><span class="pre">SOURCE_BUCKET</span></code> (perhaps because of a permissions issue) you should proceed with <code class="docutils literal notranslate"><span class="pre">DOWNLOAD_FILES</span> <span class="pre">=</span> <span class="pre">'True'</span></code>.</p></li>
+If you are unable to mount the <code class="docutils literal notranslate"><span class="pre">SOURCE_BUCKET</span></code> (perhaps because of a permissions issue) you should proceed with <code class="docutils literal notranslate"><span class="pre">DOWNLOAD_FILES</span> <span class="pre">=</span> <span class="pre">'True'</span></code>.
+Note that as of v2.2.1, all non-image files (e.g. load_data.csv’s and pipelines) are downloaded regardless of this setting and regardless of whether <code class="docutils literal notranslate"><span class="pre">SOURCE_BUCKET</span></code> and <code class="docutils literal notranslate"><span class="pre">WORKSPACE_BUCKET</span></code> are the same.</p></li>
 <li><p><strong>ASSIGN_IP:</strong> Whether or not to assign an a public IPv4 address to each instance in the spot fleet.
 If set to ‘False’ will overwrite whatever is in the Fleet file.
 If set to ‘True’ will respect whatever is in the Fleet file.
