@@ -190,7 +190,6 @@ const thebe_selector_output = ".output, .cell_output"
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Technical Guides</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">AWS Cloudwatch Dashboard</a></li>
-
 <li class="toctree-l1"><a class="reference internal" href="external_buckets.html">Using External Buckets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced_configuration.html">Advanced Configuration of DCP</a></li>
 <li class="toctree-l1"><a class="reference internal" href="AWS_hygiene_scripts.html">AWS Hygiene Scripts</a></li>
@@ -408,21 +407,15 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">AWS Cloudwatch Dashboard</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fulfilledcapacity">FulfilledCapacity:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fulfilledcapacity">FulfilledCapacity</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numberofmessagesreceived-deleted">NumberOfMessagesReceived/Deleted</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memoryutilization">MemoryUtilization</a></li>
-</ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#messagesvisible-notvisible">MessagesVisible/NotVisible</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#messagesvisible-notvisible">MessagesVisible/NotVisible</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distinct-logs">Distinct Logs</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#all-logs">All logs</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#show-errors">Show Errors</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interacting-with-a-dashboard">Interacting with a Dashboard:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interacting-with-a-dashboard">Interacting with a Dashboard</a></li>
 </ul>
-</li>
-</ul>
-
             </nav>
         </div>
     </div>
@@ -444,7 +437,7 @@ These options are set in <a class="reference internal" href="step_1_configuratio
 Some things you can see include: whether your machines are sized appropriately for your jobs, how stable your spot fleet is, whether your jobs are failing and if so if they’re failing in a consistent manner.
 All told, this can help you understand and optimize your resource usage, thus saving you time and money</p>
 <section id="fulfilledcapacity">
-<h2>FulfilledCapacity:<a class="headerlink" href="#fulfilledcapacity" title="Permalink to this heading">#</a></h2>
+<h2>FulfilledCapacity<a class="headerlink" href="#fulfilledcapacity" title="Permalink to this heading">#</a></h2>
 <p><img alt="Fulfilled Capacity widget" src="_images/fulfilledcapacity.png" /></p>
 <p>This widget shows the number of machines in your spot fleet that are fulfilled, i.e. how many machines you actually have at any given point.
 After a short spin-up time after initiating a run, you hope to see a straight line at the number of machines requested in your fleet and then a steady decrease at the end of a run as monitor scales your fleet down to match the remaining jobs.</p>
@@ -471,14 +464,13 @@ If there are often gaps between the lines then it means a fraction of your jobs 
 Note that this is showing memory utilization in bulk for your cluster, not for individual machines.
 Because different machines reach memory intensive steps at different points in time, and because we’re looking at an average across 5 minute windows, the max percentage you see is likely to be much less than 100%, even if you are using all the memory in your machines at some points.</p>
 </section>
-</section>
 <section id="messagesvisible-notvisible">
-<h1>MessagesVisible/NotVisible<a class="headerlink" href="#messagesvisible-notvisible" title="Permalink to this heading">#</a></h1>
+<h2>MessagesVisible/NotVisible<a class="headerlink" href="#messagesvisible-notvisible" title="Permalink to this heading">#</a></h2>
 <p><img alt="MessagesVisible/NotVisible" src="_images/messages_change_slope.png" /></p>
 <p>Visible messages are messages waiting in your queue.
 Hidden messages (aka MessagesNotVisible) have been started and will remain hidden until either they are completed and therefore removed from the queue or they reach the time set in SQS_MESSAGE_VISIBILITY in your config file, whichever comes first.
 (<a class="reference internal" href="SQS_QUEUE_information.html"><span class="doc std std-doc">Read more about Message Visibility</span></a>.)
-After starting your fleet (and waiting long enough for at least one round of jobs to complete), you hope to see a linear decline in total messages with the number of hidden messages equal to the number of jobs being run (fleet size * tasks per machine * docker cores).</p>
+After starting your fleet (and waiting long enough for at least one round of jobs to complete), you hope to see a linear decline in total messages with the number of hidden messages equal to the number of jobs being run (fleet size <em>tasks per machine</em> docker cores).</p>
 <p><img alt="Blip in MessagesVisible/NotVisible" src="_images/blip_in_messagesnotvisible.png" /></p>
 <p>Sometimes you’ll see a blip where there is a rapid increase in the number of hidden messages (as pictured above).
 This can happen if there is an error on a machine and the hard disk gets full - it rapidly pulls jobs and puts them back until the machine error is caught and rebooted.
@@ -488,6 +480,8 @@ This appears in the widget the amount of time set in SQS_MESSAGE_VISIBILITY in y
 <p>The relative slope of your graph can also be informative.
 For the run pictured at top, we discovered that a fraction of our jobs were erroring because the machines were running out of memory.
 Midway through 7/12 we upped the memory of the machines in our fleet and you can see from that point on a greater slope as more jobs were finishing in the same amount of time (as fewer were failing to complete because of memory errors.)</p>
+<p>As of v2.2.1, messages in your DeadLetter queue was added to the MessagesVisible/NotVisible stack so that you can see, when messages are no longer in the job queue, if they complete (disappear from graph) or fail (go to DeadLetter queue).</p>
+</section>
 <section id="distinct-logs">
 <h2>Distinct Logs<a class="headerlink" href="#distinct-logs" title="Permalink to this heading">#</a></h2>
 <p><img alt="Logs comparison" src="_images/logs_comparison.png" /></p>
@@ -509,7 +503,7 @@ Ideally, this widget will remain empty.
 If it is logging errors, you can toggle each row for more information - it will show the job that errored in &#64;logStream and the actual error message in &#64;message.</p>
 </section>
 <section id="interacting-with-a-dashboard">
-<h2>Interacting with a Dashboard:<a class="headerlink" href="#interacting-with-a-dashboard" title="Permalink to this heading">#</a></h2>
+<h2>Interacting with a Dashboard<a class="headerlink" href="#interacting-with-a-dashboard" title="Permalink to this heading">#</a></h2>
 <p>Once you have your Dashboard created and full of widgets, you can adjust the timescale for which the widget is reporting metrics.
 For any of the widgets you can set the absolute or relative time that the widget is showing by selecting the time scale from the upper right corner of the screen.
 Zoom in to a particular time selection on a visible widget by drawing a box around that time on the widget itself (note that zooming in doesn’t change what’s plotted, just what part of the plot you can see so metrics like Show Errors won’t update with a zoom).</p>
@@ -584,21 +578,15 @@ After making changes, make sure to select Save dashboard from the top menu so th
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">AWS Cloudwatch Dashboard</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fulfilledcapacity">FulfilledCapacity:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fulfilledcapacity">FulfilledCapacity</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numberofmessagesreceived-deleted">NumberOfMessagesReceived/Deleted</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#memoryutilization">MemoryUtilization</a></li>
-</ul>
-</li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#messagesvisible-notvisible">MessagesVisible/NotVisible</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#messagesvisible-notvisible">MessagesVisible/NotVisible</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distinct-logs">Distinct Logs</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#all-logs">All logs</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#show-errors">Show Errors</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interacting-with-a-dashboard">Interacting with a Dashboard:</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#interacting-with-a-dashboard">Interacting with a Dashboard</a></li>
 </ul>
-</li>
-</ul>
-
   </nav></div>
 
 </div></div>
