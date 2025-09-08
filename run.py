@@ -365,7 +365,7 @@ def create_dashboard(requestInfo):
                     "stacked": False,
                     "region": AWS_REGION,
                     "period": 300,
-                    "stat": "Average"
+                    "stat": "Sum"
                 }
             },
             {
