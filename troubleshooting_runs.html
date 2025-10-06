@@ -529,49 +529,56 @@ Services/behaviors that are as expected and/or not relevant for diagnosing a pro
 <td><p>You have a corrupted pipeline</p></td>
 <td><p>Check if you can open your pipeline locally. It may have been corrupted on upload or it may have an error within the pipeline itself.</p></td>
 </tr>
-<tr class="row-odd"><td><p>N/A</p></td>
+<tr class="row-odd"><td><p>Jobs moving to dead messages</p></td>
+<td><p>CloudWatch logs for the plate shows <code class="docutils literal notranslate"><span class="pre">IsADirectoryError:</span> <span class="pre">[Errno</span> <span class="pre">21]</span> <span class="pre">Is</span> <span class="pre">a</span> <span class="pre">directory:</span></code></p></td>
+<td><p>No outputs are written to S3</p></td>
+<td><p>N/A</p></td>
+<td><p>There might be an issue with job submission</p></td>
+<td><p>Check if there are any spaces in between the plate names in the <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">run_batch_general.py</span></code> command that you passed</p></td>
+</tr>
+<tr class="row-even"><td><p>N/A</p></td>
 <td><p>“== ERR move failed:An error occurred (SlowDown) when calling the PutObject operation (reached max retries: 4): Please reduce your request rate.” Error may not show initially and may become more prevalent with time.</p></td>
 <td><p>N/A</p></td>
 <td><p>N/A</p></td>
 <td><p>Too many jobs are finishing too quickly creating a backlog of jobs waiting to upload to S3.</p></td>
 <td><p>You can 1) check out fewer machines at a time, 2) check out smaller machines and run fewer copies of DCP at the same time, or 3) group jobs in larger groupings (e.g. by Plate instead of Well or Site). If this happens because you have many jobs finishing at the same time (but not finishing very rapidly such that it’s not creating an increasing backlog) you can increase SECONDS_TO_START in config.py so there is more separation between jobs finishing.</p></td>
 </tr>
-<tr class="row-even"><td><p>N/A</p></td>
+<tr class="row-odd"><td><p>N/A</p></td>
 <td><p>“/home/ubuntu/bucket: Transport endpoint is not connected”</p></td>
 <td><p>S3 cannot be accessed by fleet.</p></td>
 <td><p>N/A</p></td>
 <td><p>S3FS has stochastically dropped/failed to connect.</p></td>
 <td><p>Perform your run without using S3FS by setting DOWNLOAD_FILES = TRUE in your config.py. Note that, depending upon your job and machine setup,  you may need to increase the size of your EBS volume to account for the files being downloaded.</p></td>
 </tr>
-<tr class="row-odd"><td><p>Jobs moving to dead messages</p></td>
+<tr class="row-even"><td><p>Jobs moving to dead messages</p></td>
 <td><p>“SSL: certificate subject name (*.s3.amazonaws.com) does not match target host name ‘xxx.yyy.s3.amazonaws.com’”</p></td>
 <td><p>S3 cannot be accessed by fleet.</p></td>
 <td><p>N/A</p></td>
 <td><p>S3FS fails to mount if your bucket name has a dot (.) in it.</p></td>
 <td><p>You can bypass S3FS usage by setting DOWNLOAD_FILES = TRUE in your config.py. Note that, depending upon your job and machine setup,  you may need to increase the size of your EBS volume to account for the files being downloaded. Alternatively, you can make your own DCP Docker and edit run-worker.sh to <code class="docutils literal notranslate"><span class="pre">use_path_request_style</span></code>. If your region is not us-east-1 you also need to specify <code class="docutils literal notranslate"><span class="pre">endpoint</span></code>. See S3FS documentation for more information.</p></td>
 </tr>
-<tr class="row-even"><td><p>N/A</p></td>
+<tr class="row-odd"><td><p>N/A</p></td>
 <td><p>Your logs show that files are downloading but it never moves beyond that point.</p></td>
 <td><p>N/A</p></td>
 <td><p>N/A</p></td>
 <td><p>If you have set DOWNLOAD_FILES = TRUE in your config, then your files are failing to completely download because you are running out of space and it is failing silently.</p></td>
 <td><p>Place larger volumes on your instances by increasing EBS_VOL_SIZE in your config.py</p></td>
 </tr>
-<tr class="row-odd"><td><p>Jobs moving to dead messages</p></td>
+<tr class="row-even"><td><p>Jobs moving to dead messages</p></td>
 <td><p>“ValueError: The Mito image is missing from the pipeline.”</p></td>
 <td><p>No files are output to S3</p></td>
 <td><p>N/A</p></td>
 <td><p>The CellProfiler pipeline is referencing a channel (in this example, “Mito”) that is not being loaded in the pipeline.</p></td>
 <td><p>Check that your load_data csv contains the FileNames and PathNames for all your images. This can sometimes happen when the load_data csv is being automatically generated or edited as part of a workflow.</p></td>
 </tr>
-<tr class="row-even"><td><p>Jobs moving to dead messages</p></td>
+<tr class="row-odd"><td><p>Jobs moving to dead messages</p></td>
 <td><p>“Failed to prepare run for module LoadData”, “ValueError: zero-size array to reduction operation maximum which has no identity”</p></td>
 <td><p>No files are output to S3</p></td>
 <td><p>N/A</p></td>
 <td><p>CellProfiler cannot read any information from your load_data.csv.</p></td>
 <td><p>Check that your load_data.csv contains data beyond the header. This can sometimes happen when the load_data csv is being automatically generated or edited as part of a workflow.</p></td>
 </tr>
-<tr class="row-odd"><td><p>Jobs moving to dead messages</p></td>
+<tr class="row-even"><td><p>Jobs moving to dead messages</p></td>
 <td><p>“CP PROBLEM: Done file reports failure.”</p></td>
 <td><p>No files are output to S3</p></td>
 <td><p>N/A</p></td>
