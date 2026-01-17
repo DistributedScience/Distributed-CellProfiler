@@ -36,17 +36,18 @@ Our internal configurations for each pipeline are as follows:
 | SSH_KEY_NAME | 'YOURPEM.pem' | 'YOURPEM.pem' | 'YOURPEM.pem' | 'YOURPEM.pem' | 'YOURPEM.pem' |   |
 | AWS_BUCKET | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | Usually a bucket in the account that is running DCP.  |
 | SOURCE_BUCKET | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | Can be a public bucket like cellpainting-gallery.  |
+| WORKSPACE_BUCKET | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | If reading images from a public bucket, you might still want to read metadata from your bucket.  |
 | DESTINATION_BUCKET | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | 'BUCKET' | Usually a bucket in the account that is running DCP.  |
 | UPLOAD_FLAGS | '' | '' | '' | '' | '' |   |
 | ECS_CLUSTER | 'default' | 'default' | 'default' | 'default' | 'default' | Most of the time we all just use the default cluster but if there are multiple jobs being run at once you can create your own cluster by changing default to YOURNAME so that the correct dockers go on the correct machines. |
-| CLUSTER_MACHINES | 100-200 | number of plates / CPUs and rounded up | 25-100 | 25-100 | 100-200 | AWS has limits on the number of machines you can request at a time. 200 is generally the largest we request for a single job to ensure there is some capacity for other users in the team. |
+| CLUSTER_MACHINES | 100-200 | number of plates / 4 and rounded up | 25-100 | 25-100 | 100-200 | AWS has limits on the number of machines you can request at a time. 200 is generally the largest we request for a single job to ensure there is some capacity for other users in the team. For Illum, use number of plates divided by number of CPUs - we assume 4 vCPUs (as on 'c5.xlarge' machines).|
 | TASKS_PER_MACHINE | 1 | 1 | 1 | 1 | 1 |  |
 | MACHINE_TYPE | ['c5.xlarge'] | ['c5.xlarge'] | ['c5.xlarge'] | ['c5.xlarge'] | ['c5.xlarge'] | Historically we have used m4.xlarge and then m5.xlarge however very recently we have been having a hard time getting m class machines so we have switched to c class. Note that they have different memory sizes so you need to make sure MEMORY is set correctly if changing between classes. |
 | MACHINE_PRICE | .20 | .20 | .20 | .20 | .20 | Will be different for different size/classes of machines. |
 | EBS_VOL_SIZE (if using S3 mounted as a file system) | 22 | 22 | 22 | 22 | 22 | Files are read directly off of S3, mounted as a file system when `DOWNLOAD_FILES = False`. |
 | EBS_VOL_SIZE (if downloading files) | 22 | 200 | 22 | 22 | 40 | Files are downloaded to the EBS volume when `DOWNLOAD_FILES = True`. |
 | DOWNLOAD_FILES | 'False' | 'False' | 'False' | 'False' | 'False' |   |
-| ASSIGN_IP | 'False' | 'False' | 'False' | 'False'  | 'False' |  |
+| ASSIGN_IP | 'True' | 'True' | 'True' | 'True'  | 'True' |  |
 | DOCKER_CORES | 4 | 4 | 4 | 4  | 3 | If using c class machines and large images (2k + pixels) then you might need to reduce this number. |
 | CPU_SHARES | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | DOCKER_CORES * 1024 | We never change this. |
 | MEMORY | 7500 | 7500 | 7500 | 7500 | 7500 | This must match your machine type. m class use 15000, c class use 7500. |
@@ -58,8 +59,8 @@ Our internal configurations for each pipeline are as follows:
 | AUTO_MONITOR | 'True' | 'True' | 'True' | 'True' | 'True' | Can be turned off if manually running Monitor. |
 | CREATE_DASHBOARD | 'True' | 'True' | 'True' | 'True' | 'True' | |
 | CLEAN_DASHBOARD | 'True' | 'True' | 'True' | 'True' | 'True' | |
-| CHECK_IF_DONE_BOOL | 'True' | 'True' | 'True' | 'True' | 'True' | Can be turned off if wanting to overwrite old data. |
-| EXPECTED_NUMBER_FILES | 1 (an image) | number channels + 1 (an .npy for each channel and isdone) | 3 (Experiment.csv, Image.csv, and isdone) | 1 (an image) | 5 (Experiment, Image, Cells, Nuclei, and Cytoplasm .csvs) | Better to underestimate than overestimate. |
+| CHECK_IF_DONE_BOOL | 'False' | 'True' | 'True' | 'True' | 'True' | Can be turned off if wanting to overwrite old data. |
+| EXPECTED_NUMBER_FILES | 1 (can be anything, False above) | number channels + 1 (an .npy for each channel and isdone) | 3 (Experiment.csv, Image.csv, and isdone) | 1 (an image) | 5 (Experiment, Image, Cells, Nuclei, and Cytoplasm .csvs) | Better to underestimate than overestimate. |
 | MIN_FILE_SIZE_BYTES | 1 | 1 | 1 | 1 | 1 | Count files of any size. |
 | NECESSARY_STRING | '' | '' | '' | '' | '' |  Not necessary for standard workflows. |
 | ALWAYS_CONTINUE | 'False' | 'False' | 'False' | 'False' | 'False' |  Use with caution. |

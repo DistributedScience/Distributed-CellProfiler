@@ -3,6 +3,7 @@
 **How do I run CellProfiler on Amazon?** Use Distributed-CellProfiler!
 
 Distributed-CellProfiler is a series of scripts designed to help you run a Dockerized version of CellProfiler on [Amazon Web Services](https://aws.amazon.com/) (AWS) using AWS's file storage and computing systems.  
+
 * Data is stored in S3 buckets.
 * Software is run on "Spot Fleets" of computers (or instances) in the cloud.
 
@@ -12,6 +13,7 @@ Docker is a software platform that packages software into containers.
 In a container is the software that you want to run as well as everything needed to run it (e.g. your software source code, operating system libraries, and dependencies).
 
 Dockerizing a workflow has many benefits including
+
 * Ease of use: Dockerized software doesn't require the user to install anything themselves.
 * Reproducibility: You don't need to worry about results being affected by the version of your software or its dependencies being used as those are fixed.
 

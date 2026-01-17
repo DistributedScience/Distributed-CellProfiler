@@ -18,7 +18,9 @@ Once the spot fleet is ready:
 Your job will begin shortly!
 
 ***
+
 ## Configuring your spot fleet request
+
 Definition of many of these terms and explanations of many of the individual configuration parameters of spot fleets are covered in AWS documentation [here](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet.html) and [here](http://docs.aws.amazon.com/cli/latest/reference/ec2/request-spot-fleet.html).
 You may also configure your spot fleet request through Amazon's web interface and simply download the JSON file at the "review" page to generate the configuration file you want, though we do not recommend this as Distributed-CellProfiler assumes a certain fleet request structure and has only been tested on certain Amazon AMI's.
 Looking at the output of this automatically generated spot fleet request can be useful though for obtaining values like your VPC's subnet and security groups, as well the ARN ID's of your roles.
@@ -36,6 +38,7 @@ If there is no template fleet file for your region, or the one here is too out-o
 If you have a good working configuration for a region that isn't represented or for a more up-to-date version of the AMI than we've had time to test, please feel free to create a pull request and we'll include it in the repo!
 
 ## Parameters that must be configured in the spot fleet in DCP 1 (but not current versions)
+
 These parameters were present in the spot fleet request in first version of DCP but not subsequent versions.
 We provide the information here because we have not officially deprecated DCP 1, however we strongly encourage you to use a more updated version.
 
@@ -49,7 +52,7 @@ AWS has a handy [price history tracker](https://console.aws.amazon.com/ec2sp/v1/
 If your jobs complete quickly and/or you don't need the data immediately you can reduce your bid accordingly.
 Jobs that may take many hours to finish or that you need results from immediately may justify a higher bid.
 
-## To run in a region where a spot fleet config isn't available or is out of date:
+## To run in a region where a spot fleet config isn't available or is out of date
 
 * Under EC2 -> Instances select "Launch Instance"
 
