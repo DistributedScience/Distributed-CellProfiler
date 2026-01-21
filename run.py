@@ -798,7 +798,7 @@ def monitor(cheapest=False):
             cloud.delete_alarms(AlarmNames=del_alarms)
             time.sleep(10)
             instancelist = instancelist[100:]
-        killdeadAlarms(fleetId,monitorapp)
+        killdeadAlarms(fleetId,monitorapp,ec2,cloud)
     except:
         pass
 
