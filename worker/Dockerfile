@@ -31,6 +31,7 @@ RUN apt-get install --only-upgrade bash
 WORKDIR /usr/local/src
 RUN git clone https://github.com/s3fs-fuse/s3fs-fuse.git
 WORKDIR /usr/local/src/s3fs-fuse
+RUN git checkout 561ce1e
 RUN ./autogen.sh
 RUN ./configure
 RUN make
