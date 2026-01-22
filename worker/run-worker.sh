@@ -47,19 +47,13 @@ python3.8 instance-monitor.py &
 # 5. UPDATE AND/OR INSTALL PLUGINS
 if [[ ${USE_PLUGINS} == 'True' ]]; then
   if [[ ${UPDATE_PLUGINS} == 'True' ]]; then
-    echo "Updating CellProfiler-plugins."
-    cd CellProfiler-plugins
-    git fetch --all
-    git pull
-    cd ..
+    (echo "Updating CellProfiler-plugins." & cd CellProfiler-plugins & git fetch --all & git pull & cd ..)
   fi
   if [[ -z "$PLUGINS_COMMIT" ]]; then
     PLUGINS_COMMIT='False'
   fi
   if [[ ${PLUGINS_COMMIT} != 'False' ]]; then
-    echo "Checking out specific CellProfiler-plugins commit."
-    cd CellProfiler-plugins
-    git checkout ${PLUGINS_COMMIT} & cd .. & echo "checkout successful" || (echo "No such commit, branch, or version; failing here." & exit 1)
+    (echo "Checking out specific CellProfiler-plugins commit." & cd CellProfiler-plugins & git checkout ${PLUGINS_COMMIT} & cd .. & echo "checkout successful" & sleep 3) || (echo "No such commit, branch, or version; failing here." & exit 1)
   fi 
   if [[ ${INSTALL_REQUIREMENTS} == 'True' ]]; then
     cd CellProfiler-plugins
@@ -67,13 +61,9 @@ if [[ ${USE_PLUGINS} == 'True' ]]; then
       REQUIREMENTS = $REQUIREMENTS_FILE
     fi
     if [[ -d "active_plugins" ]]; then
-      echo "Installing CellProfiler-plugins requirements."
-      pip install -e . ${REQUIREMENTS} || (echo "Requirements install failed." & exit 1)
-      cd ..
+      (echo "Installing CellProfiler-plugins requirements." & pip install -e . ${REQUIREMENTS} & cd ..) || (echo "Requirements install failed." & exit 1)
     else 
-      echo "Detected deprecated CellProfiler-plugins repo organization. Installing requirements."
-      pip install -r ${REQUIREMENTS} || (echo "Requirements file not present or install failed; failing here." & exit 1)
-      cd ..
+      (echo "Detected deprecated CellProfiler-plugins repo organization. Installing requirements." & pip install -r ${REQUIREMENTS} & cd ..) || (echo "Requirements file not present or install failed; failing here." & exit 1)
     fi
   fi
 fi
