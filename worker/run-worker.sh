@@ -59,8 +59,7 @@ if [[ ${USE_PLUGINS} == 'True' ]]; then
   if [[ ${PLUGINS_COMMIT} != 'False' ]]; then
     echo "Checking out specific CellProfiler-plugins commit."
     cd CellProfiler-plugins
-    git checkout ${PLUGINS_COMMIT} || echo "No such commit, branch, or version; failing here." & exit 1
-    cd ..
+    git checkout ${PLUGINS_COMMIT} & cd .. & echo "checkout successful" || (echo "No such commit, branch, or version; failing here." & exit 1)
   fi 
   if [[ ${INSTALL_REQUIREMENTS} == 'True' ]]; then
     cd CellProfiler-plugins
@@ -69,11 +68,11 @@ if [[ ${USE_PLUGINS} == 'True' ]]; then
     fi
     if [[ -d "active_plugins" ]]; then
       echo "Installing CellProfiler-plugins requirements."
-      pip install -e . ${REQUIREMENTS} || echo "Requirements install failed." & exit 1
+      pip install -e . ${REQUIREMENTS} || (echo "Requirements install failed." & exit 1)
       cd ..
     else 
       echo "Detected deprecated CellProfiler-plugins repo organization. Installing requirements."
-      pip install -r ${REQUIREMENTS} || echo "Requirements file not present or install failed; failing here." & exit 1
+      pip install -r ${REQUIREMENTS} || (echo "Requirements file not present or install failed; failing here." & exit 1)
       cd ..
     fi
   fi
