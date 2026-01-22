@@ -63,7 +63,7 @@ if [[ ${USE_PLUGINS} == 'True' ]]; then
     if [[ -d "active_plugins" ]]; then
       (echo "Installing CellProfiler-plugins requirements." & pip install -e . ${REQUIREMENTS} && cd ..) || (echo "Requirements install failed." & exit 1)
     else 
-      (echo "Detected deprecated CellProfiler-plugins repo organization. Installing requirements." & pip install -r ${REQUIREMENTS} & cd ..) || (echo "Requirements file not present or install failed; failing here." & exit 1)
+      (echo "Detected deprecated CellProfiler-plugins repo organization. Installing requirements." & pip install -r ${REQUIREMENTS} && cd ..) || (echo "Requirements file not present or install failed; failing here." & exit 1)
     fi
   fi
 fi
