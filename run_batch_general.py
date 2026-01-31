@@ -128,7 +128,7 @@ def run_batch_general(
                 "inbox_mit", "workspace", "workspace", "qc", batch, "results"
             ),
             "assaydevoutpath": posixpath.join(
-                "inbox_mit", "workspace", "workspace", "assaydev", batch
+                "inbox_mit", "Metadata_Plate", "AssayDev", "Metadata_TimepointID"
             ),
             "analysisoutpath": posixpath.join(
                 "inbox_mit", "workspace", "workspace", "analysis", batch
@@ -441,24 +441,28 @@ def run_batch_general(
                 if all(len(ele) == 0 for ele in wells):
                     for eachrow in rows:
                         for eachcol in columns:
+                            for eachtimepoint in timepoints:
+                                templateMessage_ad = {
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_TimepointID={str(eachtimepoint)}",
+                                    "pipeline": posixpath.join(pipelinepath, pipeline),
+                                    "output": outpath,
+                                    "output_structure": outputstructure,
+                                    "input": inputpath,
+                                    "data_file": posixpath.join(datafilepath, plate, csvname),
+                                }
+                                assaydevqueue.scheduleBatch(templateMessage_ad)
+                else:
+                    for well in wells:
+                        for eachtimepoint in timepoints:
                             templateMessage_ad = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}}",
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_TimepointID={str(eachtimepoint)}",
                                 "pipeline": posixpath.join(pipelinepath, pipeline),
                                 "output": outpath,
+                                "output_structure": outputstructure,
                                 "input": inputpath,
                                 "data_file": posixpath.join(datafilepath, plate, csvname),
                             }
                             assaydevqueue.scheduleBatch(templateMessage_ad)
-                else:
-                    for well in wells:
-                        templateMessage_ad = {
-                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell}",
-                            "pipeline": posixpath.join(pipelinepath, pipeline),
-                            "output": outpath,
-                            "input": inputpath,
-                            "data_file": posixpath.join(datafilepath, plate, csvname),
-                        }
-                        assaydevqueue.scheduleBatch(templateMessage_ad)
         else:
             if not batchfile:
                 batchfile = "Batch_data_assaydev.h5"
@@ -466,24 +470,28 @@ def run_batch_general(
                 if all(len(ele) == 0 for ele in wells):
                     for eachrow in rows:
                         for eachcol in columns:
+                            for eachtimepoint in timepoints:
+                                templateMessage_ad = {
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_TimepointID={str(eachtimepoint)}",
+                                    "pipeline": posixpath.join(batchpath, batchfile),
+                                    "output": outpath,
+                                    "output_structure": outputstructure,
+                                    "input": inputpath,
+                                    "data_file": posixpath.join(batchpath, batchfile),
+                                }
+                                assaydevqueue.scheduleBatch(templateMessage_ad)
+                else:
+                    for eachwell in wells:
+                        for eachtimepoint in timepoints:
                             templateMessage_ad = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}}",
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_TimepointID={str(eachtimepoint)}",
                                 "pipeline": posixpath.join(batchpath, batchfile),
                                 "output": outpath,
+                                "output_structure": outputstructure,
                                 "input": inputpath,
                                 "data_file": posixpath.join(batchpath, batchfile),
                             }
                             assaydevqueue.scheduleBatch(templateMessage_ad)
-                else:
-                    for eachwell in wells:
-                        templateMessage_ad = {
-                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell}",
-                            "pipeline": posixpath.join(batchpath, batchfile),
-                            "output": outpath,
-                            "input": inputpath,
-                            "data_file": posixpath.join(batchpath, batchfile),
-                        }
-                        assaydevqueue.scheduleBatch(templateMessage_ad)
 
         print("AssayDev job submitted. Check your queue")
 
