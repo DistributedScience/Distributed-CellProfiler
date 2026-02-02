@@ -443,7 +443,7 @@ def run_batch_general(
                         for eachcol in columns:
                             for site in sites:
                                 templateMessage_ad = {
-                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={site}",
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(site)}",
                                     "pipeline": posixpath.join(pipelinepath, pipeline),
                                     "output": outpath,
                                     "input": inputpath,
@@ -454,7 +454,7 @@ def run_batch_general(
                     for well in wells:
                         for site in sites:
                             templateMessage_ad = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={site}",
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(site)}",
                                 "pipeline": posixpath.join(pipelinepath, pipeline),
                                 "output": outpath,
                                 "input": inputpath,
@@ -470,7 +470,7 @@ def run_batch_general(
                         for eachcol in columns:
                             for site in sites:
                                 templateMessage_ad = {
-                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={site}",
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(site)}",
                                     "pipeline": posixpath.join(batchpath, batchfile),
                                     "output": outpath,
                                     "input": inputpath,
@@ -481,7 +481,7 @@ def run_batch_general(
                     for eachwell in wells:
                         for site in sites:
                             templateMessage_ad = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={site}",
+                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(site)}",
                                 "pipeline": posixpath.join(batchpath, batchfile),
                                 "output": outpath,
                                 "input": inputpath,
