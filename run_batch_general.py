@@ -118,9 +118,9 @@ def run_batch_general(
             "zprojoutputstructure": posixpath.join(
                 "Metadata_Plate", "images_projected"  
             ),
-            "illumoutputstructure": posixpath.join(
-                "Metadata_Plate", "illum", "Metadata_TimepointID"  
-            ),
+            # "illumoutputstructure": posixpath.join(
+            #     "Metadata_Plate", "illum", "Metadata_TimepointID"  
+            # ),
             "illumoutpath": posixpath.join(
                 "inbox_mit", "workspace", "images", batch, "illum" #needs to be updated
             ),
