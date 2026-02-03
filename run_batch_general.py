@@ -248,7 +248,9 @@ def run_batch_general(
         if not outpath:
             outpath = path_dict[path_style]["illumoutpath"]
         if not outputstructure:
-            outputstructure = path_dict[path_style]["illumoutputstructure"]
+            if illum_per_col == False:
+                # outputstructure = path_dict[path_style]["illumoutputstructure"]
+                raise Exception("Input an --output-structure or set --illum-per-col True")
         if not usebatch:
             if not pipeline:
                 pipeline = "illum.cppipe"
