@@ -271,7 +271,7 @@ def run_batch_general(
                 for plate in platelist:
                     for eachtimepoint in timepoints:
                         for eachcol in columns:
-                            outputstructure = posixpath.join(plate, "illum", f"sk{eachtimepoint}", f"col_{eachcol}")
+                            outputstructure = posixpath.join(plate, "illum_per_col", f"sk{eachtimepoint}", f"col_{eachcol}")
                             templateMessage_illum = {
                                 "Metadata": f"Metadata_Plate={plate},Metadata_TimepointID={str(eachtimepoint)},Metadata_Col={str(eachcol)}",
                                 "pipeline": posixpath.join(pipelinepath, pipeline),
