@@ -131,7 +131,7 @@ def run_batch_general(
                 "inbox_mit", "Metadata_Plate", "AssayDev", "Metadata_TimepointID"
             ),
             "analysisoutpath": posixpath.join(
-                "inbox_mit", "workspace", "workspace", "analysis", batch
+                "inbox_mit", "Metadata_Plate", "analysis", "Metadata_TimepointID"
             ),
             "inputpath": posixpath.join(
                 "inbox_mit", "workspace", "workspace", "qc", batch, "rules"
@@ -444,25 +444,27 @@ def run_batch_general(
                     for eachrow in rows:
                         for eachcol in columns:
                             for eachtimepoint in timepoints:
+                                for eachsite in sites:
+                                    templateMessage_ad = {
+                                        "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_TimepointID={str(eachtimepoint)},Metadata_Site={str(eachsite)}",
+                                        "pipeline": posixpath.join(pipelinepath, pipeline),
+                                        "output": outpath,
+                                        "output_structure": outputstructure,
+                                        "input": inputpath,
+                                        "data_file": posixpath.join(datafilepath, plate, csvname),
+                                    }
+                                    assaydevqueue.scheduleBatch(templateMessage_ad)
+                else:
+                    for well in wells:
+                        for eachtimepoint in timepoints:
+                            for eachsite in sites:
                                 templateMessage_ad = {
-                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_TimepointID={str(eachtimepoint)}",
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_TimepointID={str(eachtimepoint)},Metadata_Site={str(eachsite)}",
                                     "pipeline": posixpath.join(pipelinepath, pipeline),
                                     "output": outpath,
                                     "output_structure": outputstructure,
                                     "input": inputpath,
                                     "data_file": posixpath.join(datafilepath, plate, csvname),
-                                }
-                                assaydevqueue.scheduleBatch(templateMessage_ad)
-                else:
-                    for well in wells:
-                        for eachtimepoint in timepoints:
-                            templateMessage_ad = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_TimepointID={str(eachtimepoint)}",
-                                "pipeline": posixpath.join(pipelinepath, pipeline),
-                                "output": outpath,
-                                "output_structure": outputstructure,
-                                "input": inputpath,
-                                "data_file": posixpath.join(datafilepath, plate, csvname),
                             }
                             assaydevqueue.scheduleBatch(templateMessage_ad)
         else:
@@ -473,25 +475,27 @@ def run_batch_general(
                     for eachrow in rows:
                         for eachcol in columns:
                             for eachtimepoint in timepoints:
-                                templateMessage_ad = {
-                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_TimepointID={str(eachtimepoint)}",
-                                    "pipeline": posixpath.join(batchpath, batchfile),
-                                    "output": outpath,
-                                    "output_structure": outputstructure,
-                                    "input": inputpath,
-                                    "data_file": posixpath.join(batchpath, batchfile),
+                                for eachsite in sites:
+                                    templateMessage_ad = {
+                                        "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_TimepointID={str(eachtimepoint)},Metadata_Site={str(eachsite)}",
+                                        "pipeline": posixpath.join(batchpath, batchfile),
+                                        "output": outpath,
+                                        "output_structure": outputstructure,
+                                        "input": inputpath,
+                                        "data_file": posixpath.join(batchpath, batchfile),
                                 }
                                 assaydevqueue.scheduleBatch(templateMessage_ad)
                 else:
                     for eachwell in wells:
                         for eachtimepoint in timepoints:
-                            templateMessage_ad = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_TimepointID={str(eachtimepoint)}",
-                                "pipeline": posixpath.join(batchpath, batchfile),
-                                "output": outpath,
-                                "output_structure": outputstructure,
-                                "input": inputpath,
-                                "data_file": posixpath.join(batchpath, batchfile),
+                            for eachsite in sites:
+                                templateMessage_ad = {
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_TimepointID={str(eachtimepoint)},Metadata_Site={str(eachsite)}",
+                                    "pipeline": posixpath.join(batchpath, batchfile),
+                                    "output": outpath,
+                                    "output_structure": outputstructure,
+                                    "input": inputpath,
+                                    "data_file": posixpath.join(batchpath, batchfile),
                             }
                             assaydevqueue.scheduleBatch(templateMessage_ad)
 
@@ -515,11 +519,12 @@ def run_batch_general(
                     for eachrow in rows:
                         for eachcol in columns:
                             for eachsite in sites:
-                                templateMessage_analysis = {
-                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)}",
-                                    "pipeline": posixpath.join(pipelinepath, pipeline),
-                                    "output": outpath,
-                                    "output_structure": outputstructure,
+                                for eachtimepoint in timepoints:
+                                    templateMessage_analysis = {
+                                        "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_TimepointID={str(eachtimepoint)},Metadata_Site={str(eachsite)}",
+                                        "pipeline": posixpath.join(pipelinepath, pipeline),
+                                        "output": outpath,
+                                        "output_structure": outputstructure,
                                     "input": inputpath,
                                     "data_file": posixpath.join(
                                         datafilepath, plate, csvname
@@ -529,11 +534,12 @@ def run_batch_general(
                 else:
                     for eachwell in wells:
                         for eachsite in sites:
-                            templateMessage_analysis = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)}",
-                                "pipeline": posixpath.join(pipelinepath, pipeline),
-                                "output": outpath,
-                                "output_structure": outputstructure,
+                            for eachtimepoint in timepoints:
+                                templateMessage_analysis = {
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_TimepointID={str(eachtimepoint)},Metadata_Site={str(eachsite)}",
+                                    "pipeline": posixpath.join(pipelinepath, pipeline),
+                                    "output": outpath,
+                                    "output_structure": outputstructure,
                                 "input": inputpath,
                                 "data_file": posixpath.join(
                                     datafilepath, plate, csvname
@@ -548,11 +554,12 @@ def run_batch_general(
                     for eachrow in rows:
                         for eachcol in columns:
                             for eachsite in sites:
-                                templateMessage_analysis = {
-                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)}",
-                                    "pipeline": posixpath.join(batchpath, batchfile),
-                                    "output": outpath,
-                                    "output_structure": outputstructure,
+                                for eachtimepoint in timepoints:
+                                    templateMessage_analysis = {
+                                        "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_TimepointID={str(eachtimepoint)},Metadata_Site={str(eachsite)}",
+                                        "pipeline": posixpath.join(batchpath, batchfile),
+                                        "output": outpath,
+                                        "output_structure": outputstructure,
                                     "input": inputpath,
                                     "data_file": posixpath.join(batchpath, batchfile),
                                 }
@@ -560,11 +567,12 @@ def run_batch_general(
                 else:
                     for eachwell in wells:
                         for eachsite in sites:
-                            templateMessage_analysis = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)}",
-                                "pipeline": posixpath.join(batchpath, batchfile),
-                                "output": outpath,
-                                "output_structure": outputstructure,
+                            for eachtimepoint in timepoints:
+                                templateMessage_analysis = {
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_TimepointID={str(eachtimepoint)},Metadata_Site={str(eachsite)}",
+                                    "pipeline": posixpath.join(batchpath, batchfile),
+                                    "output": outpath,
+                                    "output_structure": outputstructure,
                                 "input": inputpath,
                                 "data_file": posixpath.join(batchpath, batchfile),
                             }
