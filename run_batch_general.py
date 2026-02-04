@@ -131,7 +131,7 @@ def run_batch_general(
                 "inbox_mit", "Metadata_Plate", "AssayDev", "Metadata_TimepointID"
             ),
             "analysisoutpath": posixpath.join(
-                "inbox_mit", "Metadata_Plate", "analysis", "Metadata_TimepointID"
+                "inbox_mit", "Metadata_Plate-skMetadata_TimepointID-Metadata_Well-Metadata_Site"
             ),
             "inputpath": posixpath.join(
                 "inbox_mit", "workspace", "workspace", "qc", batch, "rules"
@@ -505,7 +505,7 @@ def run_batch_general(
         analysisqueue = JobQueue(f"{identifier}_Analysis")
         if not outputstructure:
             outputstructure = (
-                "Metadata_Plate/analysis/Metadata_Plate-Metadata_Well-Metadata_Site"
+                "Metadata_Plate/analysis/Metadata_Plate-skMetadata_TimepointID-Metadata_Well-Metadata_Site"
             )
         if not outpath:
             outpath = path_dict[path_style]["analysisoutpath"]
