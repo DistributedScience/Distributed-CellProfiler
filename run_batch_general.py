@@ -452,8 +452,8 @@ def run_batch_general(
                                         "output_structure": outputstructure,
                                         "input": inputpath,
                                         "data_file": posixpath.join(datafilepath, plate, csvname),
-                                    }
-                                    assaydevqueue.scheduleBatch(templateMessage_ad)
+                                        }
+                                        assaydevqueue.scheduleBatch(templateMessage_ad)
                 else:
                     for well in wells:
                         for eachtimepoint in timepoints:
@@ -465,8 +465,8 @@ def run_batch_general(
                                     "output_structure": outputstructure,
                                     "input": inputpath,
                                     "data_file": posixpath.join(datafilepath, plate, csvname),
-                            }
-                            assaydevqueue.scheduleBatch(templateMessage_ad)
+                                }
+                                assaydevqueue.scheduleBatch(templateMessage_ad)
         else:
             if not batchfile:
                 batchfile = "Batch_data_assaydev.h5"
@@ -483,8 +483,8 @@ def run_batch_general(
                                         "output_structure": outputstructure,
                                         "input": inputpath,
                                         "data_file": posixpath.join(batchpath, batchfile),
-                                }
-                                assaydevqueue.scheduleBatch(templateMessage_ad)
+                                    }
+                                    assaydevqueue.scheduleBatch(templateMessage_ad)
                 else:
                     for eachwell in wells:
                         for eachtimepoint in timepoints:
@@ -496,8 +496,8 @@ def run_batch_general(
                                     "output_structure": outputstructure,
                                     "input": inputpath,
                                     "data_file": posixpath.join(batchpath, batchfile),
-                            }
-                            assaydevqueue.scheduleBatch(templateMessage_ad)
+                                }
+                                assaydevqueue.scheduleBatch(templateMessage_ad)
 
         print("AssayDev job submitted. Check your queue")
 
@@ -529,8 +529,8 @@ def run_batch_general(
                                     "data_file": posixpath.join(
                                         datafilepath, plate, csvname
                                     ),
-                                }
-                                analysisqueue.scheduleBatch(templateMessage_analysis)
+                                    }
+                                    analysisqueue.scheduleBatch(templateMessage_analysis)
                 else:
                     for eachwell in wells:
                         for eachsite in sites:
@@ -544,8 +544,8 @@ def run_batch_general(
                                 "data_file": posixpath.join(
                                     datafilepath, plate, csvname
                                 ),
-                            }
-                            analysisqueue.scheduleBatch(templateMessage_analysis)
+                                }
+                                analysisqueue.scheduleBatch(templateMessage_analysis)
         else:
             if not batchfile:
                 batchfile = "Batch_data_analysis.h5"
@@ -562,8 +562,8 @@ def run_batch_general(
                                         "output_structure": outputstructure,
                                     "input": inputpath,
                                     "data_file": posixpath.join(batchpath, batchfile),
-                                }
-                                analysisqueue.scheduleBatch(templateMessage_analysis)
+                                    }
+                                    analysisqueue.scheduleBatch(templateMessage_analysis)
                 else:
                     for eachwell in wells:
                         for eachsite in sites:
@@ -575,8 +575,8 @@ def run_batch_general(
                                     "output_structure": outputstructure,
                                 "input": inputpath,
                                 "data_file": posixpath.join(batchpath, batchfile),
-                            }
-                            analysisqueue.scheduleBatch(templateMessage_analysis)
+                                }
+                                analysisqueue.scheduleBatch(templateMessage_analysis)
 
         print("Analysis job submitted. Check your queue")
 
