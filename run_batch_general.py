@@ -452,8 +452,8 @@ def run_batch_general(
                                         "output_structure": outputstructure,
                                         "input": inputpath,
                                         "data_file": posixpath.join(datafilepath, plate, csvname),
-                                        }
-                                        assaydevqueue.scheduleBatch(templateMessage_ad)
+                                    }
+                                    assaydevqueue.scheduleBatch(templateMessage_ad)
                 else:
                     for well in wells:
                         for eachtimepoint in timepoints:
@@ -528,7 +528,7 @@ def run_batch_general(
                                     "input": inputpath,
                                     "data_file": posixpath.join(
                                         datafilepath, plate, csvname
-                                    ),
+                                        ),
                                     }
                                     analysisqueue.scheduleBatch(templateMessage_analysis)
                 else:
@@ -543,7 +543,7 @@ def run_batch_general(
                                 "input": inputpath,
                                 "data_file": posixpath.join(
                                     datafilepath, plate, csvname
-                                ),
+                                    ),
                                 }
                                 analysisqueue.scheduleBatch(templateMessage_analysis)
         else:
