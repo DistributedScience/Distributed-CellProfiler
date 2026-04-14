@@ -69,6 +69,7 @@ To use a batch file with run_batch_general.py, enter the name of the batch file 
 At the bottom of the file, set `batch=True` in the command for the step you are running.
 (e.g. `MakeAnalysisJobs(batch=True)`)
 Note that if you do not follow our standard file organization, under **#not project specific, unless you deviate from the structure** you will also need to edit `batchpath`.
+Note that batch files are NOT currently compatible with `DOWNLOAD_FILES` being set to True, since the file downloading code cannot at this time parse the batch file to figure out the necessary files needed for the run.
 
 ## File lists
 
