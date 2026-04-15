@@ -498,7 +498,8 @@ More information on the <code class="docutils literal notranslate"><span class="
 <p>To use a batch file with run_batch_general.py, enter the name of the batch file under <strong>#project specific stuff</strong> in <code class="docutils literal notranslate"><span class="pre">batchpipename{STEP}</span></code>.
 At the bottom of the file, set <code class="docutils literal notranslate"><span class="pre">batch=True</span></code> in the command for the step you are running.
 (e.g. <code class="docutils literal notranslate"><span class="pre">MakeAnalysisJobs(batch=True)</span></code>)
-Note that if you do not follow our standard file organization, under <strong>#not project specific, unless you deviate from the structure</strong> you will also need to edit <code class="docutils literal notranslate"><span class="pre">batchpath</span></code>.</p>
+Note that if you do not follow our standard file organization, under <strong>#not project specific, unless you deviate from the structure</strong> you will also need to edit <code class="docutils literal notranslate"><span class="pre">batchpath</span></code>.
+Note that batch files are NOT currently compatible with <code class="docutils literal notranslate"><span class="pre">DOWNLOAD_FILES</span></code> being set to True, since the file downloading code cannot at this time parse the batch file to figure out the necessary files needed for the run.</p>
 </section>
 </section>
 <section id="file-lists">
