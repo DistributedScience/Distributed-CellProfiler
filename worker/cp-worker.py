@@ -238,7 +238,7 @@ def runCellProfiler(message):
             printandlog(f'Downloading files for channels {channel_list}', logger)
             for channel in channel_list:
                 for field in range(csv_in.shape[0]):
-                    full_old_file_name = os.path.join(list(csv_in[f'PathName_{channel}'])[field],list(csv_in[f'FileName_{channel}'])[field])
+                    full_old_file_name = os.path.join(list(csv_in[f'Image_PathName_{channel}'])[field],list(csv_in[f'Image_FileName_{channel}'])[field])
                     prefix_on_bucket = full_old_file_name.split(DATA_ROOT)[1][1:]
                     new_file_name = os.path.join(localIn,prefix_on_bucket)
                     if not os.path.exists(os.path.split(new_file_name)[0]):

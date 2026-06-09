@@ -1,6 +1,6 @@
-user = cellprofiler
+user = estebanmiglietta
 project = distributed-cellprofiler
-tag = 2.2.0_4.2.8
+tag = 2.2.0_4.2.8_BiosensorV1
 
 .DEFAULT_GOAL: build
 build:
