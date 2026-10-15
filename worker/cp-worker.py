@@ -111,13 +111,6 @@ def printandlog(text,logger):
 def runCellProfiler(message):
     s3client=boto3.client('s3')
 
-    #List the directories in the bucket- this prevents a strange s3fs error
-    rootlist=os.listdir(DATA_ROOT)
-    for eachSubDir in rootlist:
-        subDirName=os.path.join(DATA_ROOT,eachSubDir)
-        if os.path.isdir(subDirName):
-            trashvar=os.system(f'ls {subDirName}')
-
     # Configure the logs
     logger = logging.getLogger(__name__)
 

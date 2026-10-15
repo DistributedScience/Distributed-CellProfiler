@@ -22,17 +22,19 @@ aws ec2 create-tags --resources $VOL_0_ID --tags Key=Name,Value=${APP_NAME}Worke
 VOL_1_ID=$(aws ec2 describe-instance-attribute --instance-id $MY_INSTANCE_ID --attribute blockDeviceMapping --output text --query BlockDeviceMappings[1].Ebs.[VolumeId])
 aws ec2 create-tags --resources $VOL_1_ID --tags Key=Name,Value=${APP_NAME}Worker
 
-# 2. MOUNT S3 
+# 2. MOUNT S3 (and ls for s3fs bug - issues/214)
 if [[ ${DOWNLOAD_FILES} == 'False' ]]; then
   echo "Mounting S3 using S3FS"
   if [[ -z "$AWS_ACCESS_KEY_ID" ]]; then
       echo "Using role credentials to mount S3"
       s3fs $SOURCE_BUCKET /home/ubuntu/bucket -o iam_role
+      ls /home/ubuntu/bucket/
   else
       echo "Using user credentials to mount S3"
       echo $AWS_ACCESS_KEY_ID:$AWS_SECRET_ACCESS_KEY > /credentials.txt
       chmod 600 /credentials.txt
       s3fs $SOURCE_BUCKET /home/ubuntu/bucket -o passwd_file=/credentials.txt
+      ls /home/ubuntu/bucket/ 
   fi
 fi
 
