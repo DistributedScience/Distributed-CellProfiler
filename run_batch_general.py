@@ -37,6 +37,8 @@ def run_batch_general(
     columns=range(1, 25), # (Not used by illum.)
     wells="", # (explicitly list wells. Overwrites rows and columns if passed. Not used by illum. e.g. ['B3','C7'])
     sites=range(1, 10), # (Not used by illum, qc, or assaydev.)
+    extra_grouping=False,
+    grouping=range(1, 5), # (Not used by illum, qc, or assaydev.)
     well_digit_pad=True,  # Set True to A01 well format name, set False to A1
     pipeline="",  # (overwrite default pipeline names)
     pipelinepath="",  # (overwrite default path to pipelines)
@@ -494,10 +496,16 @@ def run_batch_general(
 
     elif step == "analysis":
         analysisqueue = JobQueue(f"{identifier}_Analysis")
-        if not outputstructure:
-            outputstructure = (
-                "Metadata_Plate/analysis/Metadata_Plate-Metadata_Well-Metadata_Site"
-            )
+        if not extra_grouping:
+            if not outputstructure:
+                outputstructure = (
+                    "Metadata_Plate/analysis/Metadata_Plate-Metadata_Well-Metadata_Site"
+                )
+        else:
+            if not outputstructure:
+                outputstructure = (
+                    "Metadata_Plate/analysis/Metadata_Plate-Metadata_Well-Metadata_Site-Metadata_Group"
+                )            
         if not outpath:
             outpath = path_dict[path_style]["analysisoutpath"]
         if not usebatch:
@@ -510,8 +518,37 @@ def run_batch_general(
                     for eachrow in rows:
                         for eachcol in columns:
                             for eachsite in sites:
+                                if not extra_grouping:
+                                    templateMessage_analysis = {
+                                        "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)}",
+                                        "pipeline": posixpath.join(pipelinepath, pipeline),
+                                        "output": outpath,
+                                        "output_structure": outputstructure,
+                                        "input": inputpath,
+                                        "data_file": posixpath.join(
+                                            datafilepath, plate, csvname
+                                        ),
+                                    }
+                                    analysisqueue.scheduleBatch(templateMessage_analysis)
+                                else:
+                                    for eachgroup in grouping:
+                                        templateMessage_analysis = {
+                                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)},Metadata_Group={str(eachgroup)}",
+                                            "pipeline": posixpath.join(pipelinepath, pipeline),
+                                            "output": outpath,
+                                            "output_structure": outputstructure,
+                                            "input": inputpath,
+                                            "data_file": posixpath.join(
+                                                datafilepath, plate, csvname
+                                            ),
+                                        }
+                                        analysisqueue.scheduleBatch(templateMessage_analysis)
+                else:
+                    for eachwell in wells:
+                        for eachsite in sites:
+                            if not extra_grouping:
                                 templateMessage_analysis = {
-                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)}",
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)}",
                                     "pipeline": posixpath.join(pipelinepath, pipeline),
                                     "output": outpath,
                                     "output_structure": outputstructure,
@@ -521,20 +558,19 @@ def run_batch_general(
                                     ),
                                 }
                                 analysisqueue.scheduleBatch(templateMessage_analysis)
-                else:
-                    for eachwell in wells:
-                        for eachsite in sites:
-                            templateMessage_analysis = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)}",
-                                "pipeline": posixpath.join(pipelinepath, pipeline),
-                                "output": outpath,
-                                "output_structure": outputstructure,
-                                "input": inputpath,
-                                "data_file": posixpath.join(
-                                    datafilepath, plate, csvname
-                                ),
-                            }
-                            analysisqueue.scheduleBatch(templateMessage_analysis)
+                            else:
+                                for eachgroup in grouping:
+                                    templateMessage_analysis = {
+                                        "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)},Metadata_Group={str(eachgroup)}",
+                                        "pipeline": posixpath.join(pipelinepath, pipeline),
+                                        "output": outpath,
+                                        "output_structure": outputstructure,
+                                        "input": inputpath,
+                                        "data_file": posixpath.join(
+                                            datafilepath, plate, csvname
+                                        ),
+                                    }
+                                    analysisqueue.scheduleBatch(templateMessage_analysis)
         else:
             if not batchfile:
                 batchfile = "Batch_data_analysis.h5"
@@ -543,8 +579,33 @@ def run_batch_general(
                     for eachrow in rows:
                         for eachcol in columns:
                             for eachsite in sites:
+                                if not extra_grouping:
+                                    templateMessage_analysis = {
+                                        "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)}",
+                                        "pipeline": posixpath.join(batchpath, batchfile),
+                                        "output": outpath,
+                                        "output_structure": outputstructure,
+                                        "input": inputpath,
+                                        "data_file": posixpath.join(batchpath, batchfile),
+                                    }
+                                    analysisqueue.scheduleBatch(templateMessage_analysis)
+                                else:
+                                    for eachgroup in grouping:
+                                        templateMessage_analysis = {
+                                            "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)},Metadata_Group={str(eachgroup)}",
+                                            "pipeline": posixpath.join(batchpath, batchfile),
+                                            "output": outpath,
+                                            "output_structure": outputstructure,
+                                            "input": inputpath,
+                                            "data_file": posixpath.join(batchpath, batchfile),
+                                        }
+                                        analysisqueue.scheduleBatch(templateMessage_analysis)
+                else:
+                    for eachwell in wells:
+                        for eachsite in sites:
+                            if not extra_grouping:
                                 templateMessage_analysis = {
-                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachrow}{int(eachcol):{well_format}},Metadata_Site={str(eachsite)}",
+                                    "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)}",
                                     "pipeline": posixpath.join(batchpath, batchfile),
                                     "output": outpath,
                                     "output_structure": outputstructure,
@@ -552,18 +613,17 @@ def run_batch_general(
                                     "data_file": posixpath.join(batchpath, batchfile),
                                 }
                                 analysisqueue.scheduleBatch(templateMessage_analysis)
-                else:
-                    for eachwell in wells:
-                        for eachsite in sites:
-                            templateMessage_analysis = {
-                                "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)}",
-                                "pipeline": posixpath.join(batchpath, batchfile),
-                                "output": outpath,
-                                "output_structure": outputstructure,
-                                "input": inputpath,
-                                "data_file": posixpath.join(batchpath, batchfile),
-                            }
-                            analysisqueue.scheduleBatch(templateMessage_analysis)
+                            else:
+                                for eachgroup in grouping:
+                                    templateMessage_analysis = {
+                                        "Metadata": f"Metadata_Plate={plate},Metadata_Well={eachwell},Metadata_Site={str(eachsite)},Metadata_Group={str(eachgroup)}",
+                                        "pipeline": posixpath.join(batchpath, batchfile),
+                                        "output": outpath,
+                                        "output_structure": outputstructure,
+                                        "input": inputpath,
+                                        "data_file": posixpath.join(batchpath, batchfile),
+                                    }
+                                    analysisqueue.scheduleBatch(templateMessage_analysis)
 
         print("Analysis job submitted. Check your queue")
 
@@ -627,6 +687,20 @@ if __name__ == "__main__":
         type=lambda s: list(s.split(",")),
         default="1,2,3,4,5,6,7,8,9",
         help="List of site to process",
+    )
+    parser.add_argument(
+        "--extra-grouping",
+        dest="extra_grouping",
+        action="store_true",
+        default=False,
+        help="Add extra grouping to the job queue. Supported for analysis only.",
+    )
+    parser.add_argument(
+        "--grouping",
+        dest="grouping",
+        type=lambda s: list(s.split(",")),
+        default="1,2,3,4",
+        help="List of groups to process",
     )
     parser.add_argument(
         "--no-well-digit-pad",
@@ -710,6 +784,8 @@ if __name__ == "__main__":
         columns=args.columns,
         wells=args.wells,
         sites=args.sites,
+        extra_grouping=args.extra_grouping,
+        grouping=args.grouping,
         well_digit_pad=args.well_digit_pad,
         pipeline=args.pipeline,
         pipelinepath=args.pipelinepath,
